@@ -1,0 +1,32 @@
+project:
+  type: book
+  output-dir: docs
+
+book:
+  title: "BA for Agriculture"
+  author: "Dr. Amita Sharma"
+  date: "16/9/2026"
+  chapters:
+    - index.qmd
+    - syllabus.qmd
+    - schedule.qmd
+    - block-I-unit-1.qmd
+    - block-I-unit-2.qmd
+    - block-II-unit-1.qmd
+    - block-II-unit-2.qmd
+    - block-II-unit-3.qmd
+    - projects.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme:
+      - cosmo
+      - brand
+  pdf:
+    documentclass: scrreprt
+
+editor: visual
+

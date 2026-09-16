@@ -1,0 +1,66 @@
+# Syllabus
+
+## BUSINESS ANALYTICS FOR AGRICULTURE
+
+### Course Code: ABM-5319
+
+#### Credit: 02(1+1)
+
+##### WHY THIS COURSE?
+
+Analytics can enable farmers to make data-based decisions like which crops to plant for their next harvest. Reality as actionable insights to make decisions on data and information to improve agronomic opportunities, such as timing of applications, product decisions, amounts of products, and profitability of decision making.
+
+##### AIM OF THIS COURSE:
+
+To make the students understand the concepts of data science tools and techniques and develop the skills for using it strategically and for the developing of the agri business sector.
+
+The Course is organized as follows:
+
+|  |  |  |  |  |  |  |  |  |
+|----|----|----|----|----|----|----|----|----|
+|  |  |  |  |  |  |  |  |  |
+|  | **No** |  | **Blocks** |  | **Units** |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  | 1 |  | **Introduction** |  | 1 |  | Introduction |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  | 2 |  | Fundamentals of Research |  |
+|  |  |  |  |  |  |  |  |  |
+|  | 2 |  | **Machine and Deep** |  | 1\. Supervised machine learning-1 |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  | **Learning** |  | 2 |  | . Supervised machine learning-2 |  |
+|  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  | 3\. Deep learning |  |  |  |
+|  |  |  |  |  |  |  |  |  |
+
+##### LEARNING OUTCOMES
+
+To equip students of agribusiness with knowledge, skills and attitude for using  data science tools and techniques so that agribusiness get competent professionals who can  strategically and successfully implement data science applications.
+
+**BLOCK 1: INTRODUCTION**
+
+**Unit 1:** Introduction to data science, evolution of data science, work profile of a data  scientist, career in data science, nature of data science, typical working day of a data scientist,  importance of data science in agribusiness; defining algorithm, big data, business analytics,  statistical learning, defining machine learning, defining artificial intelligence, data mining;  difference between analysis and analytics, business intelligence and business analytics,  typical process of business analytics cycle.
+
+**Unit 2: Fundamental of Research**
+
+Fundamentals of R and RStudio, fundamentals of packages of RStudio, data manipulations, data transformations, normalization, standardization, missing values imputation, dummy variables, data visualization (2D and 3D), basic architecture of machine learning analytical cycle, descriptive analytics-case study covering data manipulation, measures of central tendency, measures of dispersion, measures of distribution,measures of associations, t-test, ftest, ANOVA, Chi-square test, basic statistical modeling framework.
+
+**BLOCK 2: MACHINE AND DEEP LEARNING**
+
+**Unit 1:** Supervised machine learning: Basic framework, regression models and classification models. Linear regression, nonlinear regression, multiple regression, polynomial regression,lasso regression, ridge regression, stepwise regression, quantile regression, logistic regression.
+
+**Unit 2**: Supervised machine learning:  Linear discriminant analysis, principal component analysis, factor analysis, support vector machines, naïve Bayes, nearest neighbors, decision trees,random forest, ensemble methods, *k*-fold cross validation, X gradient boosting. Unsupervised machine learning—basic framework, concept of clustering, k-means, c-means, hierarchical clustering, hidden Markov models, forecasting models (AR, MA, ARMA and ARIMA).
+
+**Unit 3**: Deep learning: Basic framework of neural nets, types of neural nets, computer vision, object detection and localization, gradient descent optimization for loss function, regularization L1 and L2, feed forward neural nets, back propagation, recurrent neural nets, convolutional neural nets, reinforcement neural net, concurrent net, introduction to IoT.
+
+All the illustrations used in the syllabus of Data Science in Agribusiness will be primarily from agribusiness domains and RStudio will be used for practical purposes.
+
+**SUGGESTED READINGS**
+
+Deep Learning with R. MEAP Edition, Manning Early Access Program. Version 1, © 2017, Manning Publication
+
+R. Gareth James, Daniela Witten, Trevor Hastie and Robert Tibshirani. 2017. *AnIntroduction to Statistical Learning with Application.* Springer Publication
+
+Frank Millstein. 2018. *Machine Learning With Tensorflow: A Deeper Look At MachineLearning With TensorFlow* Frank Millstein
+
+Jeffrey Stanton. 2012. *Introduction to Data Science.* Version 3, SAGE Publications, Inc;
+
