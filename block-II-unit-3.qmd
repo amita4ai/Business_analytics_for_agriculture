@@ -1,1 +1,7 @@
 # Block II Unit 3
+
+:::{.callout-note title="Chatper Outline"}
+
+Deep learning: Basic framework of neural nets, types of neural nets, computer vision, object detection and localization, gradient descent optimization for loss function, regularization L1 and L2, feed forward neural nets, back propagation, recurrent neural nets, convolutional neural nets, reinforcement neural net, concurrent net, introduction to IoT.
+
+:::

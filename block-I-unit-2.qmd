@@ -1,7 +1,9 @@
 # Block I Unit 2
 
 ::: {.callout-note title="Chapter Outline"}
+
 Fundamentals of R and RStudio, fundamentals of packages of RStudio, data manipulations, data transformations, normalization, standardization, missing values imputation, dummy variables, data visualization (2D and 3D), basic architecture of machine learning analytical cycle, descriptive analytics-case study covering data manipulation, measures of central tendency, measures of dispersion, measures of distribution, measures of associations, t-test, f-test, ANOVA, Chi-square test, basic statistical modeling framework.
+
 :::
 
 ---

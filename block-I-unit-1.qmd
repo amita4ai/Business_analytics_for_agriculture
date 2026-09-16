@@ -1,1 +1,7 @@
 # Block I Unit 1
+
+::: {.callout-note title="Chapter Outline"}
+
+Introduction to data science, evolution of data science, work profile of a data scientist, career in data science, nature of data science, typical working day of a data scientist, importance of data science in agribusiness; defining algorithm, big data, business analytics, statistical learning, defining machine learning, defining artificial intelligence, data mining; difference between analysis and analytics, business intelligence and business analytics, typical process of business analytics cycle.
+
+:::

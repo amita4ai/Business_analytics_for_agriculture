@@ -1,1 +1,7 @@
 # Block II Unit 1
+
+::: {.callout-note title="Chapter Outline"}
+
+Supervised machine learning: Basic framework, regression models and classification models. Linear regression, nonlinear regression, multiple regression, polynomial regression,lasso regression, ridge regression, stepwise regression, quantile regression, logistic regression.
+
+:::

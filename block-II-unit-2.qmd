@@ -1,1 +1,7 @@
 # Block II Unit 2
+
+:::{.callout-note title="Chapter Outline"}
+
+Supervised machine learning: Linear discriminant analysis, principal component analysis, factor analysis, support vector machines, naïve Bayes, nearest neighbors, decision trees,random forest, ensemble methods, k-fold cross validation, X gradient boosting. Unsupervised machine learning—basic framework, concept of clustering, k-means, c-means, hierarchical clustering, hidden Markov models, forecasting models (AR, MA, ARMA and ARIMA).
+
+:::

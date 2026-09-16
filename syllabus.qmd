@@ -63,4 +63,3 @@ R. Gareth James, Daniela Witten, Trevor Hastie and Robert Tibshirani. 2017. *AnI
 Frank Millstein. 2018. *Machine Learning With Tensorflow: A Deeper Look At MachineLearning With TensorFlow* Frank Millstein
 
 Jeffrey Stanton. 2012. *Introduction to Data Science.* Version 3, SAGE Publications, Inc;
-
