@@ -1031,40 +1031,294 @@ Write a function `lic_maturity(premium, years, rate = 0.06)` that calculates sim
 
 **Introduction to Git & GitHub**
 
-- **Version Control Concepts:** Understanding repositories, commits, branching, and remote hosting.
-- **RStudio Git Integration:** Setting up Git inside RStudio, staging changes, writing commit messages, and pushing/pulling code.
-- **Transitioning from R Markdown to Quarto:** Understanding the unified syntax of Quarto (`.qmd`) as the next-generation version of R Markdown (`.Rmd`).
-- **Quarto Document Anatomy:** Working with the YAML header, text formatting using markdown, and configuring executable R code chunks.
-- **Dynamic Document Generation:** Rendering a single source file into multiple output formats including HTML, PDF, and MS Word.
+Git = version control software installed on your computer. Tracks changes to files over time.
+GitHub = a website that hosts Git repositories online, so you can back up code and collaborate with others.
 
-**Dashboards, Shiny Apps, eBooks and Reproducible Reports**
+Think of Git as the engine, GitHub as the cloud garage where you park it.
+
+_The Three Pieces — What Each One Does_
+
+| Tool | What it is |
+|---|---|
+| **Git** | Version control engine installed on your computer |
+| **GitHub** | Website that hosts repositories online |
+| **GitHub Desktop** | A visual app that runs Git commands via buttons/clicks — no terminal needed |
+
+GitHub Desktop doesn't replace Git — it's a friendly face on top of it.
+
+_Step 1: Install Everything_
+
+1. Install **Git**: [git-scm.com](https://git-scm.com)
+2. Create a **GitHub** account: [github.com](https://github.com)
+3. Install **GitHub Desktop**: [desktop.github.com](https://desktop.github.com)
+4. Open GitHub Desktop → sign in with your GitHub account (File → Options → Accounts)
+
+_Step 2: Create a Repository — Two Ways_
+
+**A. Command line:**
+
+```bash
+git init
+git config --global user.name "Amita Sharma"
+git config --global user.email "your_email@example.com"
+```
+
+**B. GitHub Desktop (recommended for beginners):**
+
+- File → New Repository
+- Name it, choose local folder, pick "R" in the Git Ignore template
+- Click **Create Repository**
+
+## Step 3: Making Changes — The Core Workflow
+
+**Command line:**
+```bash
+git add .
+git commit -m "Added data cleaning script"
+git push
+```
+
+**GitHub Desktop:**
+1. Edit your R script/file as normal.
+2. Open GitHub Desktop — changed files appear automatically in the left panel with a diff view (green = added, red = removed).
+3. Type a commit message in the box at bottom-left → click **Commit to main**.
+4. Click **Push origin** (top bar) to send it to GitHub.
+
+GitHub Desktop's diff view is genuinely useful pedagogically — students *see* exactly what changed line-by-line before committing, which the terminal doesn't show as clearly.
+
+_Step 4: Connecting Local ↔ GitHub Website_
+
+**Command line:**
+```bash
+git remote add origin https://github.com/username/repo-name.git
+git branch -M main
+git push -u origin main
+```
+
+**GitHub Desktop:**
+
+- After creating a repo locally: **Repository → Push** — it auto-creates the matching repo on GitHub and links it (if not already linked), no manual `remote add` needed.
+- Or: File → Clone Repository → paste the GitHub URL → choose local folder.
+
+_Step 5: Branching (Both Ways)_
+
+**Command line:**
+```bash
+git checkout -b feature-x
+git checkout main
+git merge feature-x
+```
+
+**GitHub Desktop:**
+
+- Top bar → **Current Branch** dropdown → **New Branch** → name it.
+- Switch branches from the same dropdown.
+- To merge: switch to `main` → **Branch menu → Merge into current branch** → pick `feature-x`.
+
+_Step 6: History & Undoing_
+
+**Command line:**
+```bash
+git log --oneline
+git checkout -- filename.R
+git revert <commit-hash>
+```
+
+**GitHub Desktop:**
+
+- **History tab** (next to Changes tab) shows every commit visually with diffs.
+- Right-click any file in Changes → **Discard changes** (same as `checkout --`).
+- Right-click a commit in History → **Revert this commit**.
+
+`.gitignore` for R Projects
+
+Same file either way — GitHub Desktop auto-adds one if you pick "R" as the template at repo creation:
+
+```
+*.Rhistory
+*.RData
+.Rproj.user/
+data/raw/
+```
+
+_Which Should Students Use Day-to-Day?_
+
+- **Learning phase:** GitHub Desktop — visual feedback builds intuition fast, fewer typo-related errors.
+- **Once comfortable:** Push them to the terminal — real jobs and RStudio's Git pane (Terminal tab) expect command-line fluency, and Desktop can't do everything (e.g., interactive rebase, cherry-picking).
+
+**Quick Exercise**
+
+Create a repo in GitHub Desktop → make 3 commits with meaningful messages (visible in the History tab) → push to GitHub → then open a terminal in that same folder and run `git log --oneline` to confirm the same 3 commits appear identically from the command line.
+
+---
+
+**Documentation Production in R**
+
+R is not only about programming language and analysis. You can use to produce variety of documents like manuscript, books, presentations, website, reports, interactive documents (word, pdf), etc.
+
+![Read Quarto Ecosystem from this link](https://quarto.org/)
+
+Visit the gallery of Quardo Documentation: [Click](https://quarto.org/docs/gallery/)
+
+**Dashboards and Shiny Apps**
 
 - **Quarto Dashboards:** Building interactive, responsive grid layouts with rows, columns, tabs, and value boxes directly from markdown.
-- **Introduction to Shiny:** Understanding the foundational architecture of Shiny applications (User Interface `ui` vs. Server logic `server`).
-- **Reactive Programming:** Harnessing reactive values, expressions, and observers to update web app outputs dynamically based on user inputs.
-- **Publishing eBooks and Websites:** Structuring multi-file projects using `_quarto.yml` to compile complete books, documentation sites, or blogs.
-- **Reproducible Report Workflows:** Best practices for parameters (`params`), caching computational steps, and freezing execution for stable builds.
+
+- **Introduction to Shiny:**
+
+`Shiny` is the web application framework to create interactive web application and distribute it among the users through a shareable link. Watch out the Shiny Apps Gallery:
+
+![Shiny Apps Gallery](https://shiny.posit.co/r/gallery/)
+
+A Shiny app always carries two R files called as `ui.R` and `server.R`. The `ui.R` file builds the interface which interacts with users and takes inputs from users while `server.R` does backend calculations and sends output to the user interface. 
+
+![](shiny.png)
+
+Shiny apps can be used to create interactive document, web application, and dashboard. Check few live shiny apps:
+
+![City Cycle Race](https://sebastianwolf.shinyapps.io/stravachaserapp/)
+
+![Freedom Press Index](https://gallery.shinyapps.io/freedom-press-index/)
+
+![Location of Blodd Bank](https://opndt.shinyapps.io/bloodbank_india/)
+
+To build high quality Shiny apps, following book (FREE) is recommended:
+
+![Shiny Tutorial Book](https://shiny.posit.co/)
+
+To build production grade shiny apps which can be used by thousands of users, read following resource:
+
+![Production Grade Shiny Apps](https://engineering-shiny.org/successful-shiny-app.html)
+
+---
 
 **R/Posit Communities**
 
-- **Navigating the Ecosystem:** Utilizing official Posit community forums, package documentation, and standardized cheat sheets.
-- **Collaborative Learning Networks:** Engaging with regional R User Groups (RUGs), R-Ladies chapters, and the global `#rstats` community.
-- **Continuous Skill Building:** Leveraging open source initiatives like *TidyTuesday* to practice data manipulation and visualization safely.
+The classroom learning is only 5% learning. To build real skills for the industry, you are required to communicate with professional networks of R users. These networks help in removing bugs, errors, problems and issues you will encounter while developing projects in R. sFollowing are the platforms to develop a thriving network with R users:
+
+- **Navigating the Ecosystem:** 
+
+[Official Posit community forums](https://forum.posit.co/)
+
+[Standardized cheat sheets](https://opensource.posit.co/resources/cheatsheets/)
+
+- **Collaborative Learning Networks:** Engaging with regional R User Groups (RUGs), R-Ladies chapters, and the global `#rstats` community:
+
+![](rgroups.png)
+
+The global R user community group:
+
+![#rstats](https://www.reddit.com/r/rstats/)
+
+![Stake Overflow](https://stackoverflow.com/)
+
+![R-Bloggers](https://www.r-bloggers.com/)
+
+Use these communities to get help and give help. Remember, you can get a quality placement useing these networking platforms. Interact with authors, give them credits for their help and extend your help are the hidden tactics to get quality projects and jobs. 
+
+- **Continuous Skill Building:** Leveraging open source initiatives like *TidyTuesday*, kaggle.com, hackerearth.com, analyticsvidya.com, etc. to practice data manipulation and visualization safely.
+
+![Tidy Tuesday](https://benleamon.github.io/tidy-tuesday/)
+
+![Kaggle](https://www.kaggle.com/)
+
+![KDNuggets](https://www.kdnuggets.com/)
+
+![Hacker Earth](https://www.hackerearth.com/)
+
+---
 
 **Other Parts of R Ecosystem**
 
 - **Package Management Lifecycle:** Installing, updating, and loading extensions safely using `install.packages()`, `library()`, and CRAN mirrors.
+
 - **Reproducible Environments:** Introduction to `renv` for locking down package versions to prevent project-breaking dependency updates.
+
 - **Specialised R Sub-Ecosystems:** A high-level overview of ecosystem expansions like `tidymodels` for machine learning and `sf` / `terra` for geospatial analysis.
+
+`tidymodels` and `tidyverse` are the most versatile packages to carryout heavy lifting machine learning tasks with simple line of codes using pipe operators, We will discuss these packages in detail in the next units od the course. To gain expertise on these packages, you can visit following resources:
+
+![Tidymodels](https://www.tidymodels.org/)
+
+![Tidyverse](https://tidyverse.org/)
+
+:::{.callout-important}
+
+If you learn `tidymodels` and `tidyverse` packages thoroughly, majority of machine learning and data analysis tasks can be done through these packages only.
+
+:::
 
 ------------------------------------------------------------------------
 
 ## Data Preprocessing, Machine Learning Cycle & Inferential Statistics
 
+![](mlcycle.jpg)
+
+
 **Data Transformations and Preprocessing**
 
+When organisations collect data, they do it for their administrative purposes not for using machine learning tasks and advance level data analysis. In machine learning, various model building algorithms are used. Machine learning model uses the data in specific formats. 
+
+There are various machine learning algorithms in supervised machine learning. Superwised machine learning algorithms are used either to predict the future values or classify an obervation from tow or more categories. 
+
+For example, a company wants to know what will the next month sales based on last five years sales. This is an estimation problem. Machine learning algorithms which can bsed used to create model are linear regression, lasso regression, ElasticNet regression,random forest, decision tree, XGBoost, Support Vector Machine, k-Nearest Neighbours, Multi Layer Perceptron, Recurrent Neural Net, etc.
+
+To classify an observations in given catgories, we use classification machine learning algorithms. To mention a few; decision tree, logistic regression, random forest, naive Bayes, k-NN, Support Vector Machine, XGBoost, Multi Layer Perceptron, Convolutional neural Network, etc. 
+
+You can notice that some of the algorithm works in both types of tasks. 
+
+Data preprocessing is the step to prepare the data for machine learning tasks so that all data is in ht right format. Following are steps in data preprocessing:
+
 - **Normalization (Min-Max Scaling):** Rescaling feature values to a constrained range between 0 and 1.
+
+Sometimes, we need to scale the data so that comparison of the variables is possible. For example, we can not compare height in inches with weight in kilogram because both carry different units. 
+
+To get them on same scale, we normalize the data by doing Min-Max scaling. 
+
+```{r}
+
+# Normalization (Min-Max Scaling) Formula:
+# x_scaled = (x - min(x)) / (max(x) - min(x))
+
+# 1. Base R Approach
+normalize_base <- function(x) {
+  return((x - min(x)) / (max(x) - min(x)))
+}
+
+# Example numeric vector
+data_vector <- c(10, 20, 30, 40, 50)
+normalized_vector <- normalize_base(data_vector)
+print(normalized_vector)
+# Output: 0.00 0.25 0.50 0.75 1.00
+
+
+# 2. Tidyverse Approach (For entire data frames using caret or recipes)
+library(recipes)
+
+# Sample dataset
+df <- data.frame(
+  income = c(25000, 48000, 110000, 85000),
+  age = c(21, 34, 56, 42)
+)
+
+# Create and run a preprocessing recipe
+min_max_recipe <- recipe(~ ., data = df) %>%
+  step_range(all_numeric_predictors(), min = 0, max = 1) %>%
+  prep()
+
+normalized_df <- bake(min_max_recipe, new_data = df)
+print(normalized_df)
+
+```
+
+
 - **Standardization (Z-Score Scaling):** Transforming features to have a mean of 0 and a standard deviation of 1.
+
+Another way to scale different variables on the same scale is Z-Score scaling in which comparing variables are re-culculated by keeping mean zero and standar deviation 1. See this concept from following image: 
+
+![](zscore.jpg)
+
+
 - **Missing Values Imputation:** Evaluating strategies for handling incomplete data, including listwise deletion, mean/median substitution, and predictive imputation using `mice` or `missMDA`.
 - **Dummy Variables (One-Hot Encoding):** Converting categorical string values into numerical binary vectors (`0` or `1`) for machine learning models.
 

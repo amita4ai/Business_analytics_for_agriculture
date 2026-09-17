@@ -217,7 +217,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#fundamentals-of-r-and-rstudio" id="toc-fundamentals-of-r-and-rstudio" class="nav-link active" data-scroll-target="#fundamentals-of-r-and-rstudio"><span class="header-section-number">5.1</span> Fundamentals of R and RStudio</a></li>
   <li><a href="#quick-exercise" id="toc-quick-exercise" class="nav-link" data-scroll-target="#quick-exercise"><span class="header-section-number">5.2</span> Quick Exercise</a></li>
-  <li><a href="#data-preprocessing-machine-learning-cycle-inferential-statistics" id="toc-data-preprocessing-machine-learning-cycle-inferential-statistics" class="nav-link" data-scroll-target="#data-preprocessing-machine-learning-cycle-inferential-statistics"><span class="header-section-number">5.3</span> Data Preprocessing, Machine Learning Cycle &amp; Inferential Statistics</a></li>
+  <li><a href="#step-3-making-changes-the-core-workflow" id="toc-step-3-making-changes-the-core-workflow" class="nav-link" data-scroll-target="#step-3-making-changes-the-core-workflow"><span class="header-section-number">5.3</span> Step 3: Making Changes — The Core Workflow</a></li>
+  <li><a href="#data-preprocessing-machine-learning-cycle-inferential-statistics" id="toc-data-preprocessing-machine-learning-cycle-inferential-statistics" class="nav-link" data-scroll-target="#data-preprocessing-machine-learning-cycle-inferential-statistics"><span class="header-section-number">5.4</span> Data Preprocessing, Machine Learning Cycle &amp; Inferential Statistics</a></li>
   </ul>
 </nav>
     </div>
@@ -1592,41 +1593,341 @@ Item 3 costs Rs. 400 </code></pre>
 <p>Write a function <code>lic_maturity(premium, years, rate = 0.06)</code> that calculates simple maturity value as <code>premium * years * (1 + rate)</code>, then apply it to a vector of different premium amounts to show it working without a loop.</p>
 <hr>
 <p><strong>Introduction to Git &amp; GitHub</strong></p>
+<p>Git = version control software installed on your computer. Tracks changes to files over time. GitHub = a website that hosts Git repositories online, so you can back up code and collaborate with others.</p>
+<p>Think of Git as the engine, GitHub as the cloud garage where you park it.</p>
+<p><em>The Three Pieces — What Each One Does</em></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Tool</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Git</strong></td>
+<td>Version control engine installed on your computer</td>
+</tr>
+<tr class="even">
+<td><strong>GitHub</strong></td>
+<td>Website that hosts repositories online</td>
+</tr>
+<tr class="odd">
+<td><strong>GitHub Desktop</strong></td>
+<td>A visual app that runs Git commands via buttons/clicks — no terminal needed</td>
+</tr>
+</tbody>
+</table>
+<p>GitHub Desktop doesn’t replace Git — it’s a friendly face on top of it.</p>
+<p><em>Step 1: Install Everything</em></p>
+<ol type="1">
+<li>Install <strong>Git</strong>: <a href="https://git-scm.com">git-scm.com</a></li>
+<li>Create a <strong>GitHub</strong> account: <a href="https://github.com">github.com</a></li>
+<li>Install <strong>GitHub Desktop</strong>: <a href="https://desktop.github.com">desktop.github.com</a></li>
+<li>Open GitHub Desktop → sign in with your GitHub account (File → Options → Accounts)</li>
+</ol>
+<p><em>Step 2: Create a Repository — Two Ways</em></p>
+<p><strong>A. Command line:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb199"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb199-1"><a href="#cb199-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> init</span>
+<span id="cb199-2"><a href="#cb199-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> config <span class="at">--global</span> user.name <span class="st">"Amita Sharma"</span></span>
+<span id="cb199-3"><a href="#cb199-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> config <span class="at">--global</span> user.email <span class="st">"your_email@example.com"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>B. GitHub Desktop (recommended for beginners):</strong></p>
 <ul>
-<li><strong>Version Control Concepts:</strong> Understanding repositories, commits, branching, and remote hosting.</li>
-<li><strong>RStudio Git Integration:</strong> Setting up Git inside RStudio, staging changes, writing commit messages, and pushing/pulling code.</li>
-<li><strong>Transitioning from R Markdown to Quarto:</strong> Understanding the unified syntax of Quarto (<code>.qmd</code>) as the next-generation version of R Markdown (<code>.Rmd</code>).</li>
-<li><strong>Quarto Document Anatomy:</strong> Working with the YAML header, text formatting using markdown, and configuring executable R code chunks.</li>
-<li><strong>Dynamic Document Generation:</strong> Rendering a single source file into multiple output formats including HTML, PDF, and MS Word.</li>
+<li>File → New Repository</li>
+<li>Name it, choose local folder, pick “R” in the Git Ignore template</li>
+<li>Click <strong>Create Repository</strong></li>
 </ul>
-<p><strong>Dashboards, Shiny Apps, eBooks and Reproducible Reports</strong></p>
+</section>
+<section id="step-3-making-changes-the-core-workflow" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="step-3-making-changes-the-core-workflow"><span class="header-section-number">5.3</span> Step 3: Making Changes — The Core Workflow</h2>
+<p><strong>Command line:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb200"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb200-1"><a href="#cb200-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add .</span>
+<span id="cb200-2"><a href="#cb200-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"Added data cleaning script"</span></span>
+<span id="cb200-3"><a href="#cb200-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>GitHub Desktop:</strong> 1. Edit your R script/file as normal. 2. Open GitHub Desktop — changed files appear automatically in the left panel with a diff view (green = added, red = removed). 3. Type a commit message in the box at bottom-left → click <strong>Commit to main</strong>. 4. Click <strong>Push origin</strong> (top bar) to send it to GitHub.</p>
+<p>GitHub Desktop’s diff view is genuinely useful pedagogically — students <em>see</em> exactly what changed line-by-line before committing, which the terminal doesn’t show as clearly.</p>
+<p><em>Step 4: Connecting Local ↔︎ GitHub Website</em></p>
+<p><strong>Command line:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb201"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb201-1"><a href="#cb201-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> remote add origin https://github.com/username/repo-name.git</span>
+<span id="cb201-2"><a href="#cb201-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> branch <span class="at">-M</span> main</span>
+<span id="cb201-3"><a href="#cb201-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push <span class="at">-u</span> origin main</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>GitHub Desktop:</strong></p>
 <ul>
-<li><strong>Quarto Dashboards:</strong> Building interactive, responsive grid layouts with rows, columns, tabs, and value boxes directly from markdown.</li>
-<li><strong>Introduction to Shiny:</strong> Understanding the foundational architecture of Shiny applications (User Interface <code>ui</code> vs.&nbsp;Server logic <code>server</code>).</li>
-<li><strong>Reactive Programming:</strong> Harnessing reactive values, expressions, and observers to update web app outputs dynamically based on user inputs.</li>
-<li><strong>Publishing eBooks and Websites:</strong> Structuring multi-file projects using <code>_quarto.yml</code> to compile complete books, documentation sites, or blogs.</li>
-<li><strong>Reproducible Report Workflows:</strong> Best practices for parameters (<code>params</code>), caching computational steps, and freezing execution for stable builds.</li>
+<li>After creating a repo locally: <strong>Repository → Push</strong> — it auto-creates the matching repo on GitHub and links it (if not already linked), no manual <code>remote add</code> needed.</li>
+<li>Or: File → Clone Repository → paste the GitHub URL → choose local folder.</li>
 </ul>
+<p><em>Step 5: Branching (Both Ways)</em></p>
+<p><strong>Command line:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb202"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb202-1"><a href="#cb202-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout <span class="at">-b</span> feature-x</span>
+<span id="cb202-2"><a href="#cb202-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout main</span>
+<span id="cb202-3"><a href="#cb202-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> merge feature-x</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>GitHub Desktop:</strong></p>
+<ul>
+<li>Top bar → <strong>Current Branch</strong> dropdown → <strong>New Branch</strong> → name it.</li>
+<li>Switch branches from the same dropdown.</li>
+<li>To merge: switch to <code>main</code> → <strong>Branch menu → Merge into current branch</strong> → pick <code>feature-x</code>.</li>
+</ul>
+<p><em>Step 6: History &amp; Undoing</em></p>
+<p><strong>Command line:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb203"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb203-1"><a href="#cb203-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> log <span class="at">--oneline</span></span>
+<span id="cb203-2"><a href="#cb203-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout <span class="at">--</span> filename.R</span>
+<span id="cb203-3"><a href="#cb203-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> revert <span class="op">&lt;</span>commit-hash<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>GitHub Desktop:</strong></p>
+<ul>
+<li><strong>History tab</strong> (next to Changes tab) shows every commit visually with diffs.</li>
+<li>Right-click any file in Changes → <strong>Discard changes</strong> (same as <code>checkout --</code>).</li>
+<li>Right-click a commit in History → <strong>Revert this commit</strong>.</li>
+</ul>
+<p><code>.gitignore</code> for R Projects</p>
+<p>Same file either way — GitHub Desktop auto-adds one if you pick “R” as the template at repo creation:</p>
+<pre><code>*.Rhistory
+*.RData
+.Rproj.user/
+data/raw/</code></pre>
+<p><em>Which Should Students Use Day-to-Day?</em></p>
+<ul>
+<li><strong>Learning phase:</strong> GitHub Desktop — visual feedback builds intuition fast, fewer typo-related errors.</li>
+<li><strong>Once comfortable:</strong> Push them to the terminal — real jobs and RStudio’s Git pane (Terminal tab) expect command-line fluency, and Desktop can’t do everything (e.g., interactive rebase, cherry-picking).</li>
+</ul>
+<p><strong>Quick Exercise</strong></p>
+<p>Create a repo in GitHub Desktop → make 3 commits with meaningful messages (visible in the History tab) → push to GitHub → then open a terminal in that same folder and run <code>git log --oneline</code> to confirm the same 3 commits appear identically from the command line.</p>
+<hr>
+<p><strong>Documentation Production in R</strong></p>
+<p>R is not only about programming language and analysis. You can use to produce variety of documents like manuscript, books, presentations, website, reports, interactive documents (word, pdf), etc.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://quarto.org/.png" class="img-fluid figure-img"></p>
+<figcaption>Read Quarto Ecosystem from this link</figcaption>
+</figure>
+</div>
+<p>Visit the gallery of Quardo Documentation: <a href="https://quarto.org/docs/gallery/">Click</a></p>
+<p><strong>Dashboards and Shiny Apps</strong></p>
+<ul>
+<li><p><strong>Quarto Dashboards:</strong> Building interactive, responsive grid layouts with rows, columns, tabs, and value boxes directly from markdown.</p></li>
+<li><p><strong>Introduction to Shiny:</strong></p></li>
+</ul>
+<p><code>Shiny</code> is the web application framework to create interactive web application and distribute it among the users through a shareable link. Watch out the Shiny Apps Gallery:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://shiny.posit.co/r/gallery/.png" class="img-fluid figure-img"></p>
+<figcaption>Shiny Apps Gallery</figcaption>
+</figure>
+</div>
+<p>A Shiny app always carries two R files called as <code>ui.R</code> and <code>server.R</code>. The <code>ui.R</code> file builds the interface which interacts with users and takes inputs from users while <code>server.R</code> does backend calculations and sends output to the user interface.</p>
+<p><img src="shiny.png" class="img-fluid"></p>
+<p>Shiny apps can be used to create interactive document, web application, and dashboard. Check few live shiny apps:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://sebastianwolf.shinyapps.io/stravachaserapp/.png" class="img-fluid figure-img"></p>
+<figcaption>City Cycle Race</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://gallery.shinyapps.io/freedom-press-index/.png" class="img-fluid figure-img"></p>
+<figcaption>Freedom Press Index</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://opndt.shinyapps.io/bloodbank_india/.png" class="img-fluid figure-img"></p>
+<figcaption>Location of Blodd Bank</figcaption>
+</figure>
+</div>
+<p>To build high quality Shiny apps, following book (FREE) is recommended:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://shiny.posit.co/.png" class="img-fluid figure-img"></p>
+<figcaption>Shiny Tutorial Book</figcaption>
+</figure>
+</div>
+<p>To build production grade shiny apps which can be used by thousands of users, read following resource:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="https://engineering-shiny.org/successful-shiny-app.html" class="img-fluid"></p>
+<figcaption>Production Grade Shiny Apps</figcaption>
+</figure>
+</div>
+<hr>
 <p><strong>R/Posit Communities</strong></p>
+<p>The classroom learning is only 5% learning. To build real skills for the industry, you are required to communicate with professional networks of R users. These networks help in removing bugs, errors, problems and issues you will encounter while developing projects in R. sFollowing are the platforms to develop a thriving network with R users:</p>
 <ul>
-<li><strong>Navigating the Ecosystem:</strong> Utilizing official Posit community forums, package documentation, and standardized cheat sheets.</li>
-<li><strong>Collaborative Learning Networks:</strong> Engaging with regional R User Groups (RUGs), R-Ladies chapters, and the global <code>#rstats</code> community.</li>
-<li><strong>Continuous Skill Building:</strong> Leveraging open source initiatives like <em>TidyTuesday</em> to practice data manipulation and visualization safely.</li>
+<li><strong>Navigating the Ecosystem:</strong></li>
 </ul>
+<p><a href="https://forum.posit.co/">Official Posit community forums</a></p>
+<p><a href="https://opensource.posit.co/resources/cheatsheets/">Standardized cheat sheets</a></p>
+<ul>
+<li><strong>Collaborative Learning Networks:</strong> Engaging with regional R User Groups (RUGs), R-Ladies chapters, and the global <code>#rstats</code> community:</li>
+</ul>
+<p><img src="rgroups.png" class="img-fluid"></p>
+<p>The global R user community group:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://www.reddit.com/r/rstats/.png" class="img-fluid figure-img"></p>
+<figcaption>#rstats</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://stackoverflow.com/.png" class="img-fluid figure-img"></p>
+<figcaption>Stake Overflow</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://www.r-bloggers.com/.png" class="img-fluid figure-img"></p>
+<figcaption>R-Bloggers</figcaption>
+</figure>
+</div>
+<p>Use these communities to get help and give help. Remember, you can get a quality placement useing these networking platforms. Interact with authors, give them credits for their help and extend your help are the hidden tactics to get quality projects and jobs.</p>
+<ul>
+<li><strong>Continuous Skill Building:</strong> Leveraging open source initiatives like <em>TidyTuesday</em>, kaggle.com, hackerearth.com, analyticsvidya.com, etc. to practice data manipulation and visualization safely.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://benleamon.github.io/tidy-tuesday/.png" class="img-fluid figure-img"></p>
+<figcaption>Tidy Tuesday</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://www.kaggle.com/.png" class="img-fluid figure-img"></p>
+<figcaption>Kaggle</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://www.kdnuggets.com/.png" class="img-fluid figure-img"></p>
+<figcaption>KDNuggets</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://www.hackerearth.com/.png" class="img-fluid figure-img"></p>
+<figcaption>Hacker Earth</figcaption>
+</figure>
+</div>
+<hr>
 <p><strong>Other Parts of R Ecosystem</strong></p>
 <ul>
-<li><strong>Package Management Lifecycle:</strong> Installing, updating, and loading extensions safely using <code>install.packages()</code>, <code>library()</code>, and CRAN mirrors.</li>
-<li><strong>Reproducible Environments:</strong> Introduction to <code>renv</code> for locking down package versions to prevent project-breaking dependency updates.</li>
-<li><strong>Specialised R Sub-Ecosystems:</strong> A high-level overview of ecosystem expansions like <code>tidymodels</code> for machine learning and <code>sf</code> / <code>terra</code> for geospatial analysis.</li>
+<li><p><strong>Package Management Lifecycle:</strong> Installing, updating, and loading extensions safely using <code>install.packages()</code>, <code>library()</code>, and CRAN mirrors.</p></li>
+<li><p><strong>Reproducible Environments:</strong> Introduction to <code>renv</code> for locking down package versions to prevent project-breaking dependency updates.</p></li>
+<li><p><strong>Specialised R Sub-Ecosystems:</strong> A high-level overview of ecosystem expansions like <code>tidymodels</code> for machine learning and <code>sf</code> / <code>terra</code> for geospatial analysis.</p></li>
 </ul>
+<p><code>tidymodels</code> and <code>tidyverse</code> are the most versatile packages to carryout heavy lifting machine learning tasks with simple line of codes using pipe operators, We will discuss these packages in detail in the next units od the course. To gain expertise on these packages, you can visit following resources:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://www.tidymodels.org/.png" class="img-fluid figure-img"></p>
+<figcaption>Tidymodels</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://tidyverse.org/.png" class="img-fluid figure-img"></p>
+<figcaption>Tidyverse</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If you learn <code>tidymodels</code> and <code>tidyverse</code> packages thoroughly, majority of machine learning and data analysis tasks can be done through these packages only.</p>
+</div>
+</div>
 <hr>
 </section>
-<section id="data-preprocessing-machine-learning-cycle-inferential-statistics" class="level2" data-number="5.3">
-<h2 data-number="5.3" class="anchored" data-anchor-id="data-preprocessing-machine-learning-cycle-inferential-statistics"><span class="header-section-number">5.3</span> Data Preprocessing, Machine Learning Cycle &amp; Inferential Statistics</h2>
+<section id="data-preprocessing-machine-learning-cycle-inferential-statistics" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="data-preprocessing-machine-learning-cycle-inferential-statistics"><span class="header-section-number">5.4</span> Data Preprocessing, Machine Learning Cycle &amp; Inferential Statistics</h2>
+<p><img src="mlcycle.jpg" class="img-fluid"></p>
 <p><strong>Data Transformations and Preprocessing</strong></p>
+<p>When organisations collect data, they do it for their administrative purposes not for using machine learning tasks and advance level data analysis. In machine learning, various model building algorithms are used. Machine learning model uses the data in specific formats.</p>
+<p>There are various machine learning algorithms in supervised machine learning. Superwised machine learning algorithms are used either to predict the future values or classify an obervation from tow or more categories.</p>
+<p>For example, a company wants to know what will the next month sales based on last five years sales. This is an estimation problem. Machine learning algorithms which can bsed used to create model are linear regression, lasso regression, ElasticNet regression,random forest, decision tree, XGBoost, Support Vector Machine, k-Nearest Neighbours, Multi Layer Perceptron, Recurrent Neural Net, etc.</p>
+<p>To classify an observations in given catgories, we use classification machine learning algorithms. To mention a few; decision tree, logistic regression, random forest, naive Bayes, k-NN, Support Vector Machine, XGBoost, Multi Layer Perceptron, Convolutional neural Network, etc.</p>
+<p>You can notice that some of the algorithm works in both types of tasks.</p>
+<p>Data preprocessing is the step to prepare the data for machine learning tasks so that all data is in ht right format. Following are steps in data preprocessing:</p>
 <ul>
 <li><strong>Normalization (Min-Max Scaling):</strong> Rescaling feature values to a constrained range between 0 and 1.</li>
+</ul>
+<p>Sometimes, we need to scale the data so that comparison of the variables is possible. For example, we can not compare height in inches with weight in kilogram because both carry different units.</p>
+<p>To get them on same scale, we normalize the data by doing Min-Max scaling.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb205"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb205-1"><a href="#cb205-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalization (Min-Max Scaling) Formula:</span></span>
+<span id="cb205-2"><a href="#cb205-2" aria-hidden="true" tabindex="-1"></a><span class="co"># x_scaled = (x - min(x)) / (max(x) - min(x))</span></span>
+<span id="cb205-3"><a href="#cb205-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb205-4"><a href="#cb205-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Base R Approach</span></span>
+<span id="cb205-5"><a href="#cb205-5" aria-hidden="true" tabindex="-1"></a>normalize_base <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb205-6"><a href="#cb205-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>((x <span class="sc">-</span> <span class="fu">min</span>(x)) <span class="sc">/</span> (<span class="fu">max</span>(x) <span class="sc">-</span> <span class="fu">min</span>(x)))</span>
+<span id="cb205-7"><a href="#cb205-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb205-8"><a href="#cb205-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb205-9"><a href="#cb205-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Example numeric vector</span></span>
+<span id="cb205-10"><a href="#cb205-10" aria-hidden="true" tabindex="-1"></a>data_vector <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">40</span>, <span class="dv">50</span>)</span>
+<span id="cb205-11"><a href="#cb205-11" aria-hidden="true" tabindex="-1"></a>normalized_vector <span class="ot">&lt;-</span> <span class="fu">normalize_base</span>(data_vector)</span>
+<span id="cb205-12"><a href="#cb205-12" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(normalized_vector)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.00 0.25 0.50 0.75 1.00</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb207"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb207-1"><a href="#cb207-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Output: 0.00 0.25 0.50 0.75 1.00</span></span>
+<span id="cb207-2"><a href="#cb207-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb207-3"><a href="#cb207-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb207-4"><a href="#cb207-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Tidyverse Approach (For entire data frames using caret or recipes)</span></span>
+<span id="cb207-5"><a href="#cb207-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(recipes)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'recipes' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'recipes'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:stringr':
+
+    fixed</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:stats':
+
+    step</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb212"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb212-1"><a href="#cb212-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sample dataset</span></span>
+<span id="cb212-2"><a href="#cb212-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb212-3"><a href="#cb212-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">income =</span> <span class="fu">c</span>(<span class="dv">25000</span>, <span class="dv">48000</span>, <span class="dv">110000</span>, <span class="dv">85000</span>),</span>
+<span id="cb212-4"><a href="#cb212-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">c</span>(<span class="dv">21</span>, <span class="dv">34</span>, <span class="dv">56</span>, <span class="dv">42</span>)</span>
+<span id="cb212-5"><a href="#cb212-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb212-6"><a href="#cb212-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb212-7"><a href="#cb212-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Create and run a preprocessing recipe</span></span>
+<span id="cb212-8"><a href="#cb212-8" aria-hidden="true" tabindex="-1"></a>min_max_recipe <span class="ot">&lt;-</span> <span class="fu">recipe</span>(<span class="sc">~</span> ., <span class="at">data =</span> df) <span class="sc">%&gt;%</span></span>
+<span id="cb212-9"><a href="#cb212-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_range</span>(<span class="fu">all_numeric_predictors</span>(), <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb212-10"><a href="#cb212-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>()</span>
+<span id="cb212-11"><a href="#cb212-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb212-12"><a href="#cb212-12" aria-hidden="true" tabindex="-1"></a>normalized_df <span class="ot">&lt;-</span> <span class="fu">bake</span>(min_max_recipe, <span class="at">new_data =</span> df)</span>
+<span id="cb212-13"><a href="#cb212-13" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(normalized_df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 2
+  income   age
+   &lt;dbl&gt; &lt;dbl&gt;
+1  0     0    
+2  0.271 0.371
+3  1     1    
+4  0.706 0.6  </code></pre>
+</div>
+</div>
+<ul>
 <li><strong>Standardization (Z-Score Scaling):</strong> Transforming features to have a mean of 0 and a standard deviation of 1.</li>
+</ul>
+<p>Another way to scale different variables on the same scale is Z-Score scaling in which comparing variables are re-culculated by keeping mean zero and standar deviation 1. See this concept from following image:</p>
+<p><img src="zscore.jpg" class="img-fluid"></p>
+<ul>
 <li><strong>Missing Values Imputation:</strong> Evaluating strategies for handling incomplete data, including listwise deletion, mean/median substitution, and predictive imputation using <code>mice</code> or <code>missMDA</code>.</li>
 <li><strong>Dummy Variables (One-Hot Encoding):</strong> Converting categorical string values into numerical binary vectors (<code>0</code> or <code>1</code>) for machine learning models.</li>
 </ul>
