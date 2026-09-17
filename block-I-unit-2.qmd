@@ -1502,17 +1502,334 @@ There are numerous other metrices we use to check evaluate machine learning mode
 
 - **Deployment & Monitoring:** Packaging analytical cycles into reproducible code pipelines or production environments.
 
+Once ML model is built, the model should be hosted in the cloud server so that model can be accessed through a web application. With `shiny` framework, we can create web app using the ML model. Afterwards, the app is hosted in the cloud with proper subscriptions and authorization. There are various cloud storage options available like shinyapps.io, R Posit Connect, etc. 
+
+Once web app is successfully hosted in the cloud, a web link is generated that can be shared to the users. 
+
+![](deploy.jfif)
+
+---
+
 **Descriptive Analytics Case Study (Covering Data Manipulation)**
 
 - **Measures of Central Tendency:** Computing and interpreting the Median, Mean, and Mode for varying structural distributions.
-- **Measures of Dispersion:** Quantifying variability across variables via Range, Variance, Standard Deviation, and Interquartile Range (IQR).
-- **Measures of Distribution:** Analysing the structural shapes of data spreads using Skewness (asymmetry) and Kurtosis (tailedness).
-- **Measures of Association:** Computing Covariance and Correlation matrices (Pearson vs. Spearman) to evaluate linear and rank dependencies between numerical features.
+
+1. The Core Functions (Base R & Tidyverse)
+
+```{r}
+library(dplyr)
+
+# Custom function to find the statistical Mode
+get_mode <- function(x) {
+  unique_x <- unique(x)
+  unique_x[which.max(tabulate(match(x, unique_x)))]
+}
+
+# Create a sample numeric vector
+data_vector <- c(10, 20, 20, 30, 40, 50, 90)
+
+# Base R Approach
+mean_val   <- mean(data_vector)
+median_val <- median(data_vector)
+mode_val   <- get_mode(data_vector)
+
+print(paste("Mean:", mean_val, "| Median:", median_val, "| Mode:", mode_val))
+# Output: "Mean: 37.14 | Median: 30 | Mode: 20"
+
+```
+
+
+2. Computing Central Tendency Across Different Distributions
+
+The position of these three metrics tells you exactly how your data is distributed. Let's create three different structural scenarios to see how they change.
+
+```{r}
+
+# Set seed for reproducible random numbers
+set.seed(123)
+
+# Generate 3 different structural distributions
+distributions_df <- data.frame(
+  # 1. Symmetric (Normal Distribution)
+  Symmetric = rnorm(1000, mean = 50, sd = 10),
+  
+  # 2. Right-Skewed (Log-Normal Distribution - e.g., Income, Wealth)
+  Right_Skewed = rlnorm(1000, meanlog = 3.5, sdlog = 0.5),
+  
+  # 3. Left-Skewed (Beta Distribution scaled - e.g., Age of Retirement)
+  Left_Skewed = rbeta(1000, shape1 = 5, shape2 = 2) * 100
+)
+
+# Compute Mean and Median for all distributions simultaneously using dplyr
+summary_table <- distributions_df %>%
+  summarise(across(everything(), list(
+    Mean = ~ mean(.),
+    Median = ~ median(.)
+  ), .names = "{.col}_{.fn}"))
+
+print(t(summary_table)) # Transpose for cleaner reading
+
+```
+
+
+3. How to Interpret the Metrics Based on Data Structure
+
+When analyzing data shapes in machine learning, remember these rules of thumb:
+
+| Distribution Shape | Visual Behavior | Mathematical Relationship | Best Metric to Use |
+|---|---|---|---|
+| Symmetric | Perfectly balanced bell curve. | Mean $\approx$ Median $\approx$ Mode | Mean (Utilizes all data points efficiently). |
+| Right-Skewed (Positive) | Long tail pulls out to the high/right side. | Mean $>$ Median $>$ Mode | Median (The Mean is falsely dragged upward by high outliers). |
+| Left-Skewed (Negative) | Long tail pulls out to the low/left side. | Mean $<$ Median $<$ Mode | Median (The Mean is falsely dragged downward by low outliers). |
+
+Quick example of how outliers ruin the Mean but don't affect the Median
+
+```{r}
+
+house_prices <- c(250000, 275000, 300000, 310000, 320000)
+print(mean(house_prices)) # Output: 291000
+
+# Add a multi-million dollar mansion outlier
+house_prices_with_outlier <- c(250000, 275000, 300000, 310000, 320000, 5000000)
+
+print(mean(house_prices_with_outlier))   # Output: 1,075,833 (Terrible representation of the neighborhood)
+print(median(house_prices_with_outlier)) # Output: 305,000 (Robust and accurate representation)
+
+```
+
+
+Setup: Carrying Forward the Distributions
+
+```{r}
+
+library(dplyr)
+library(tidyr)
+
+# Carry forward the exact same distributions from the previous step
+set.seed(123)
+distributions_df <- data.frame(
+  Symmetric = rnorm(1000, mean = 50, sd = 10),
+  Right_Skewed = rlnorm(1000, meanlog = 3.5, sdlog = 0.5),
+  Left_Skewed = rbeta(1000, shape1 = 5, shape2 = 2) * 100
+)
+
+```
+
+
+1. Measures of Dispersion
+
+These metrics quantify how spread out or variable your data points are around their central tendency.
+
+```{r}
+
+# Function to calculate the range spread (Max - Min)
+get_range <- function(x) { max(x) - min(x) }
+
+# Compute Dispersion metrics across all columns
+dispersion_summary <- distributions_df %>%
+  summarise(across(everything(), list(
+    Range = ~ get_range(.),
+    Variance = ~ var(.),
+    Std_Dev = ~ sd(.),
+    IQR = ~ IQR(.)
+  ), .names = "{.col}_{.fn}"))
+
+# Pivot for a clean, readable overview matrix
+dispersion_summary %>% 
+  pivot_longer(cols = everything(), names_to = c("Variable", "Metric"), names_sep = "_") %>% 
+  pivot_wider(names_from = Metric, values_from = value)
+
+```
+
+
+2. Measures of Distribution (Shape)
+
+To calculate Skewness (asymmetry) and Kurtosis (thickness of the tails), we use the industry-standard moments package.
+
+```{r}
+
+# Install package if needed: install.packages("moments")
+library(moments)
+
+shape_summary <- distributions_df %>%
+  summarise(across(everything(), list(
+    Skewness = ~ skewness(.),
+    Kurtosis = ~ kurtosis(.)
+  ), .names = "{.col}_{.fn}"))
+
+shape_summary %>% 
+  pivot_longer(cols = everything(), names_to = c("Variable", "Metric"), names_sep = "_") %>% 
+  pivot_wider(names_from = Metric, values_from = value)
+
+```
+
+How to Interpret the Shape Metrics:
+
+* Skewness: A symmetric distribution scores around 0. The Right_Skewed data returns a high positive score (long right tail), while the Left_Skewed data returns a negative score (long left tail).
+
+* Kurtosis: A standard normal distribution has a kurtosis of 3. Scores higher than 3 indicate heavy tails with extreme outlier peaks (Leptokurtic), typical of our log-normal Right_Skewed dataset.
+
+3. Measures of Association
+
+To evaluate how variables move together, we will calculate Covariance and compare Pearson Correlation (linear relationships) vs. Spearman Correlation (rank/monotonic relationships).
+
+```{r}
+
+# A. Covariance Matrix
+cov_matrix <- cov(distributions_df)
+print("Covariance Matrix:")
+print(round(cov_matrix, 3))
+
+```
+
+
+```{r}
+
+# B. Pearson Correlation Matrix (Best for linear, normally distributed features)
+pearson_matrix <- cor(distributions_df, method = "pearson")
+print("Pearson Correlation Matrix:")
+print(round(pearson_matrix, 3))
+
+```
+
+
+```{r}
+
+# C. Spearman Rank Correlation Matrix (Best for skewed features or non-linear trends)
+spearman_matrix <- cor(distributions_df, method = "spearman")
+print("Spearman Correlation Matrix:")
+print(round(spearman_matrix, 3))
+
+```
+
+
+Why comparing Pearson vs. Spearman matters in Data Preprocessing:
+
+If you compare the correlation metrics between Symmetric and Right_Skewed variables, you will notice their Spearman score is often more robust than their Pearson score. Because Pearson relies on strict linearity, highly skewed variables distort the coefficient. Spearman bypasses this limitation by ranking the data points first, making it a critical choice during feature selection loops.
+
+Now that you have the statistical summaries ready, would you like to:
+
+* Generate a ggplot2 correlation heatmap matrix to easily visualize these feature associations? (Check the ggplot gallery)
 
 **Hypothesis Testing & Statistical Modeling Framework**
 
-- **Student’s t-Test:** Performing Independent, Paired, and One-sample t-tests to evaluate differences between continuous group means.
-- **F-Test:** Testing for equality of variances between two independent populations.
-- **Analysis of Variance (ANOVA):** Implementing One-Way and Two-Way ANOVA models to analyze variance across three or more unique treatment groups.
-- **Chi-Square Test:** Running Test of Independence and Goodness-of-Fit procedures using contingency tables for categorical attributes.
-- **Basic Statistical Modeling Framework:** Foundational setup for Generalized Linear Models (GLMs), defining response variables, predictor metrics, and interpreting residual summaries.
+1. Student’s t-Test & F-Test
+
+We use the t-test to compare means between continuous groups, while the F-test checks if the variances of those two groups are equal (a critical prerequisite for certain t-tests).
+
+```{r}
+
+set.seed(42)
+# Setup sample groups (e.g., test scores from two different teaching methods)
+method_A <- rnorm(30, mean = 75, sd = 10)
+method_B <- rnorm(30, mean = 82, sd = 12)
+baseline_target <- 70 # Historical average score
+
+# A. F-Test (Equality of Variances)
+# H0: Variances are equal vs H1: Variances are different
+f_test_result <- var.test(method_A, method_B)
+print(f_test_result$p.value) # If p > 0.05, assume equal variances
+
+# B. Independent Two-Sample t-Test
+# If variances were unequal, you would set var.equal = FALSE (Welch's t-test)
+ind_t_test <- t.test(method_A, method_B, var.equal = TRUE)
+
+# C. One-Sample t-Test (Comparing a single group against a population benchmark)
+one_sample_t <- t.test(method_A, mu = baseline_target)
+
+# D. Paired t-Test (Same subjects measured before and after a treatment)
+before_scores <- c(65, 70, 72, 68, 80)
+after_scores  <- c(70, 75, 71, 74, 85)
+paired_t_test <- t.test(before_scores, after_scores, paired = TRUE)
+
+```
+
+
+2. Analysis of Variance (ANOVA)
+
+ANOVA evaluates whether the means of three or more unique treatment groups are statistically different from each other.
+
+```{r}
+
+# Setup data frame for 3 treatment levels and 2 blocks (gender)
+anova_data <- data.frame(
+  Score = c(rnorm(15, 70, 5), rnorm(15, 85, 6), rnorm(15, 78, 5)),
+  Treatment = rep(c("Control", "Drug_X", "Drug_Y"), each = 15),
+  Gender = rep(c("Male", "Female"), length.out = 45)
+)
+
+# A. One-Way ANOVA
+one_way_model <- aov(Score ~ Treatment, data = anova_data)
+summary(one_way_model)
+
+# Post-Hoc Test (If ANOVA is significant, find out WHICH groups differ)
+TukeyHSD(one_way_model)
+
+# B. Two-Way ANOVA (Evaluating two categorical factors and their interaction)
+two_way_model <- aov(Score ~ Treatment * Gender, data = anova_data)
+summary(two_way_model)
+
+```
+
+
+3. Chi-Square Test
+
+Used strictly for categorical attributes to evaluate frequencies and dependencies.
+
+```{r}
+
+# Setup categorical data (e.g., Survey responses across age groups)
+survey_matrix <- matrix(c(20, 30, 15,  # Young: Agree, Neutral, Disagree
+                          40, 15, 10), # Old: Agree, Neutral, Disagree
+                        nrow = 2, byrow = TRUE)
+colnames(survey_matrix) <- c("Agree", "Neutral", "Disagree")
+rownames(survey_matrix) <- c("Young", "Old")
+
+# Convert to a contingency table
+contingency_table <- as.table(survey_matrix)
+
+# A. Chi-Square Test of Independence (Are age group and opinion related?)
+chi_sq_independence <- chisq.test(contingency_table)
+print(chi_sq_independence)
+
+# B. Chi-Square Goodness-of-Fit Test 
+# (Testing if observed counts match a theoretical proportion, e.g., 50/30/20)
+observed_counts <- c(55, 25, 20)
+expected_probs  <- c(0.50, 0.30, 0.20)
+chi_sq_gof <- chisq.test(observed_counts, p = expected_probs)
+
+```
+
+
+4. Basic Statistical Modeling Framework (GLMs)
+
+Generalized Linear Models (GLMs) allow you to predict responses that do not follow a normal distribution by utilizing a link function (e.g., Logistic Regression for binary classification).
+
+```{r}
+
+# Setup a classification dataset
+model_df <- data.frame(
+  Purchased = c(0, 0, 0, 1, 1, 0, 1, 1, 1, 0), # Binary response variable
+  Age = c(22, 25, 47, 52, 46, 36, 55, 60, 41, 28),
+  Income = c(30, 45, 55, 90, 110, 60, 85, 120, 95, 35) # in thousands
+)
+
+# Fit a Logistic Regression GLM (Binomial family with a logit link function)
+glm_model <- glm(Purchased ~ Age + Income, data = model_df, family = binomial(link = "logit"))
+
+# A. Interpreting the Summary Model
+# Look at the 'Coefficients' table for p-values to determine feature significance
+summary(glm_model)
+
+# B. Evaluating Residual Summaries
+# In GLMs, we look at deviance residuals to assess model goodness-of-fit
+residuals_summary <- summary(glm_model)$deviance.resid
+print(residuals_summary)
+
+# C. Making Predictions
+new_customer <- data.frame(Age = 35, Income = 75)
+predicted_probability <- predict(glm_model, newdata = new_customer, type = "response")
+print(paste("Probability of purchase:", round(predicted_probability, 3)))
+
+```
+

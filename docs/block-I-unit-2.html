@@ -108,6 +108,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -2217,21 +2246,460 @@ ind.sup, : Stopped after 1000 iterations</code></pre>
 <ul>
 <li><strong>Deployment &amp; Monitoring:</strong> Packaging analytical cycles into reproducible code pipelines or production environments.</li>
 </ul>
+<p>Once ML model is built, the model should be hosted in the cloud server so that model can be accessed through a web application. With <code>shiny</code> framework, we can create web app using the ML model. Afterwards, the app is hosted in the cloud with proper subscriptions and authorization. There are various cloud storage options available like shinyapps.io, R Posit Connect, etc.</p>
+<p>Once web app is successfully hosted in the cloud, a web link is generated that can be shared to the users.</p>
+<p><img src="deploy.jfif" class="img-fluid"></p>
+<hr>
 <p><strong>Descriptive Analytics Case Study (Covering Data Manipulation)</strong></p>
 <ul>
 <li><strong>Measures of Central Tendency:</strong> Computing and interpreting the Median, Mean, and Mode for varying structural distributions.</li>
-<li><strong>Measures of Dispersion:</strong> Quantifying variability across variables via Range, Variance, Standard Deviation, and Interquartile Range (IQR).</li>
-<li><strong>Measures of Distribution:</strong> Analysing the structural shapes of data spreads using Skewness (asymmetry) and Kurtosis (tailedness).</li>
-<li><strong>Measures of Association:</strong> Computing Covariance and Correlation matrices (Pearson vs.&nbsp;Spearman) to evaluate linear and rank dependencies between numerical features.</li>
+</ul>
+<ol type="1">
+<li>The Core Functions (Base R &amp; Tidyverse)</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb252"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb252-1"><a href="#cb252-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb252-2"><a href="#cb252-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb252-3"><a href="#cb252-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Custom function to find the statistical Mode</span></span>
+<span id="cb252-4"><a href="#cb252-4" aria-hidden="true" tabindex="-1"></a>get_mode <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb252-5"><a href="#cb252-5" aria-hidden="true" tabindex="-1"></a>  unique_x <span class="ot">&lt;-</span> <span class="fu">unique</span>(x)</span>
+<span id="cb252-6"><a href="#cb252-6" aria-hidden="true" tabindex="-1"></a>  unique_x[<span class="fu">which.max</span>(<span class="fu">tabulate</span>(<span class="fu">match</span>(x, unique_x)))]</span>
+<span id="cb252-7"><a href="#cb252-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb252-8"><a href="#cb252-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb252-9"><a href="#cb252-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a sample numeric vector</span></span>
+<span id="cb252-10"><a href="#cb252-10" aria-hidden="true" tabindex="-1"></a>data_vector <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">40</span>, <span class="dv">50</span>, <span class="dv">90</span>)</span>
+<span id="cb252-11"><a href="#cb252-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb252-12"><a href="#cb252-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Base R Approach</span></span>
+<span id="cb252-13"><a href="#cb252-13" aria-hidden="true" tabindex="-1"></a>mean_val   <span class="ot">&lt;-</span> <span class="fu">mean</span>(data_vector)</span>
+<span id="cb252-14"><a href="#cb252-14" aria-hidden="true" tabindex="-1"></a>median_val <span class="ot">&lt;-</span> <span class="fu">median</span>(data_vector)</span>
+<span id="cb252-15"><a href="#cb252-15" aria-hidden="true" tabindex="-1"></a>mode_val   <span class="ot">&lt;-</span> <span class="fu">get_mode</span>(data_vector)</span>
+<span id="cb252-16"><a href="#cb252-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb252-17"><a href="#cb252-17" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Mean:"</span>, mean_val, <span class="st">"| Median:"</span>, median_val, <span class="st">"| Mode:"</span>, mode_val))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Mean: 37.1428571428571 | Median: 30 | Mode: 20"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb254"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb254-1"><a href="#cb254-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Output: "Mean: 37.14 | Median: 30 | Mode: 20"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ol start="2" type="1">
+<li>Computing Central Tendency Across Different Distributions</li>
+</ol>
+<p>The position of these three metrics tells you exactly how your data is distributed. Let’s create three different structural scenarios to see how they change.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb255"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb255-1"><a href="#cb255-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set seed for reproducible random numbers</span></span>
+<span id="cb255-2"><a href="#cb255-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb255-3"><a href="#cb255-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb255-4"><a href="#cb255-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate 3 different structural distributions</span></span>
+<span id="cb255-5"><a href="#cb255-5" aria-hidden="true" tabindex="-1"></a>distributions_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb255-6"><a href="#cb255-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 1. Symmetric (Normal Distribution)</span></span>
+<span id="cb255-7"><a href="#cb255-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">Symmetric =</span> <span class="fu">rnorm</span>(<span class="dv">1000</span>, <span class="at">mean =</span> <span class="dv">50</span>, <span class="at">sd =</span> <span class="dv">10</span>),</span>
+<span id="cb255-8"><a href="#cb255-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb255-9"><a href="#cb255-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 2. Right-Skewed (Log-Normal Distribution - e.g., Income, Wealth)</span></span>
+<span id="cb255-10"><a href="#cb255-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">Right_Skewed =</span> <span class="fu">rlnorm</span>(<span class="dv">1000</span>, <span class="at">meanlog =</span> <span class="fl">3.5</span>, <span class="at">sdlog =</span> <span class="fl">0.5</span>),</span>
+<span id="cb255-11"><a href="#cb255-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb255-12"><a href="#cb255-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 3. Left-Skewed (Beta Distribution scaled - e.g., Age of Retirement)</span></span>
+<span id="cb255-13"><a href="#cb255-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">Left_Skewed =</span> <span class="fu">rbeta</span>(<span class="dv">1000</span>, <span class="at">shape1 =</span> <span class="dv">5</span>, <span class="at">shape2 =</span> <span class="dv">2</span>) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb255-14"><a href="#cb255-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb255-15"><a href="#cb255-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb255-16"><a href="#cb255-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute Mean and Median for all distributions simultaneously using dplyr</span></span>
+<span id="cb255-17"><a href="#cb255-17" aria-hidden="true" tabindex="-1"></a>summary_table <span class="ot">&lt;-</span> distributions_df <span class="sc">%&gt;%</span></span>
+<span id="cb255-18"><a href="#cb255-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="fu">list</span>(</span>
+<span id="cb255-19"><a href="#cb255-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean =</span> <span class="sc">~</span> <span class="fu">mean</span>(.),</span>
+<span id="cb255-20"><a href="#cb255-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">Median =</span> <span class="sc">~</span> <span class="fu">median</span>(.)</span>
+<span id="cb255-21"><a href="#cb255-21" aria-hidden="true" tabindex="-1"></a>  ), <span class="at">.names =</span> <span class="st">"{.col}_{.fn}"</span>))</span>
+<span id="cb255-22"><a href="#cb255-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb255-23"><a href="#cb255-23" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">t</span>(summary_table)) <span class="co"># Transpose for cleaner reading</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                        [,1]
+Symmetric_Mean      50.16128
+Symmetric_Median    50.09210
+Right_Skewed_Mean   38.40815
+Right_Skewed_Median 34.03625
+Left_Skewed_Mean    72.05197
+Left_Skewed_Median  74.52077</code></pre>
+</div>
+</div>
+<ol start="3" type="1">
+<li>How to Interpret the Metrics Based on Data Structure</li>
+</ol>
+<p>When analyzing data shapes in machine learning, remember these rules of thumb:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Distribution Shape</th>
+<th>Visual Behavior</th>
+<th>Mathematical Relationship</th>
+<th>Best Metric to Use</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Symmetric</td>
+<td>Perfectly balanced bell curve.</td>
+<td>Mean <span class="math inline">\(\approx\)</span> Median <span class="math inline">\(\approx\)</span> Mode</td>
+<td>Mean (Utilizes all data points efficiently).</td>
+</tr>
+<tr class="even">
+<td>Right-Skewed (Positive)</td>
+<td>Long tail pulls out to the high/right side.</td>
+<td>Mean <span class="math inline">\(&gt;\)</span> Median <span class="math inline">\(&gt;\)</span> Mode</td>
+<td>Median (The Mean is falsely dragged upward by high outliers).</td>
+</tr>
+<tr class="odd">
+<td>Left-Skewed (Negative)</td>
+<td>Long tail pulls out to the low/left side.</td>
+<td>Mean <span class="math inline">\(&lt;\)</span> Median <span class="math inline">\(&lt;\)</span> Mode</td>
+<td>Median (The Mean is falsely dragged downward by low outliers).</td>
+</tr>
+</tbody>
+</table>
+<p>Quick example of how outliers ruin the Mean but don’t affect the Median</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb257"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb257-1"><a href="#cb257-1" aria-hidden="true" tabindex="-1"></a>house_prices <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">250000</span>, <span class="dv">275000</span>, <span class="dv">300000</span>, <span class="dv">310000</span>, <span class="dv">320000</span>)</span>
+<span id="cb257-2"><a href="#cb257-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">mean</span>(house_prices)) <span class="co"># Output: 291000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 291000</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb259"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb259-1"><a href="#cb259-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a multi-million dollar mansion outlier</span></span>
+<span id="cb259-2"><a href="#cb259-2" aria-hidden="true" tabindex="-1"></a>house_prices_with_outlier <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">250000</span>, <span class="dv">275000</span>, <span class="dv">300000</span>, <span class="dv">310000</span>, <span class="dv">320000</span>, <span class="dv">5000000</span>)</span>
+<span id="cb259-3"><a href="#cb259-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb259-4"><a href="#cb259-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">mean</span>(house_prices_with_outlier))   <span class="co"># Output: 1,075,833 (Terrible representation of the neighborhood)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1075833</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb261"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb261-1"><a href="#cb261-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">median</span>(house_prices_with_outlier)) <span class="co"># Output: 305,000 (Robust and accurate representation)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 305000</code></pre>
+</div>
+</div>
+<p>Setup: Carrying Forward the Distributions</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb263"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb263-1"><a href="#cb263-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb263-2"><a href="#cb263-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb263-3"><a href="#cb263-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb263-4"><a href="#cb263-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Carry forward the exact same distributions from the previous step</span></span>
+<span id="cb263-5"><a href="#cb263-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb263-6"><a href="#cb263-6" aria-hidden="true" tabindex="-1"></a>distributions_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb263-7"><a href="#cb263-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">Symmetric =</span> <span class="fu">rnorm</span>(<span class="dv">1000</span>, <span class="at">mean =</span> <span class="dv">50</span>, <span class="at">sd =</span> <span class="dv">10</span>),</span>
+<span id="cb263-8"><a href="#cb263-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">Right_Skewed =</span> <span class="fu">rlnorm</span>(<span class="dv">1000</span>, <span class="at">meanlog =</span> <span class="fl">3.5</span>, <span class="at">sdlog =</span> <span class="fl">0.5</span>),</span>
+<span id="cb263-9"><a href="#cb263-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">Left_Skewed =</span> <span class="fu">rbeta</span>(<span class="dv">1000</span>, <span class="at">shape1 =</span> <span class="dv">5</span>, <span class="at">shape2 =</span> <span class="dv">2</span>) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb263-10"><a href="#cb263-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ol type="1">
+<li>Measures of Dispersion</li>
+</ol>
+<p>These metrics quantify how spread out or variable your data points are around their central tendency.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb264"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb264-1"><a href="#cb264-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to calculate the range spread (Max - Min)</span></span>
+<span id="cb264-2"><a href="#cb264-2" aria-hidden="true" tabindex="-1"></a>get_range <span class="ot">&lt;-</span> <span class="cf">function</span>(x) { <span class="fu">max</span>(x) <span class="sc">-</span> <span class="fu">min</span>(x) }</span>
+<span id="cb264-3"><a href="#cb264-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb264-4"><a href="#cb264-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute Dispersion metrics across all columns</span></span>
+<span id="cb264-5"><a href="#cb264-5" aria-hidden="true" tabindex="-1"></a>dispersion_summary <span class="ot">&lt;-</span> distributions_df <span class="sc">%&gt;%</span></span>
+<span id="cb264-6"><a href="#cb264-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="fu">list</span>(</span>
+<span id="cb264-7"><a href="#cb264-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">Range =</span> <span class="sc">~</span> <span class="fu">get_range</span>(.),</span>
+<span id="cb264-8"><a href="#cb264-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">Variance =</span> <span class="sc">~</span> <span class="fu">var</span>(.),</span>
+<span id="cb264-9"><a href="#cb264-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">Std_Dev =</span> <span class="sc">~</span> <span class="fu">sd</span>(.),</span>
+<span id="cb264-10"><a href="#cb264-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">IQR =</span> <span class="sc">~</span> <span class="fu">IQR</span>(.)</span>
+<span id="cb264-11"><a href="#cb264-11" aria-hidden="true" tabindex="-1"></a>  ), <span class="at">.names =</span> <span class="st">"{.col}_{.fn}"</span>))</span>
+<span id="cb264-12"><a href="#cb264-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb264-13"><a href="#cb264-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Pivot for a clean, readable overview matrix</span></span>
+<span id="cb264-14"><a href="#cb264-14" aria-hidden="true" tabindex="-1"></a>dispersion_summary <span class="sc">%&gt;%</span> </span>
+<span id="cb264-15"><a href="#cb264-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"Variable"</span>, <span class="st">"Metric"</span>), <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb264-16"><a href="#cb264-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> Metric, <span class="at">values_from =</span> value)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expected 2 pieces. Additional pieces discarded in 9 rows [3, 5, 6, 7, 8, 9, 10,
+11, 12].</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Values from `value` are not uniquely identified; output will contain list-cols.
+• Use `values_fn = list` to suppress this warning.
+• Use `values_fn = {summary_fun}` to summarise duplicates.
+• Use the following dplyr code to identify duplicates.
+  {data} |&gt;
+  dplyr::summarise(n = dplyr::n(), .by = c(Variable, Metric)) |&gt;
+  dplyr::filter(n &gt; 1L)</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 6
+  Variable  Range     Variance  Std       IQR       Skewed   
+  &lt;chr&gt;     &lt;list&gt;    &lt;list&gt;    &lt;list&gt;    &lt;list&gt;    &lt;list&gt;   
+1 Symmetric &lt;dbl [1]&gt; &lt;dbl [1]&gt; &lt;dbl [1]&gt; &lt;dbl [1]&gt; &lt;NULL&gt;   
+2 Right     &lt;NULL&gt;    &lt;NULL&gt;    &lt;NULL&gt;    &lt;NULL&gt;    &lt;dbl [4]&gt;
+3 Left      &lt;NULL&gt;    &lt;NULL&gt;    &lt;NULL&gt;    &lt;NULL&gt;    &lt;dbl [4]&gt;</code></pre>
+</div>
+</div>
+<ol start="2" type="1">
+<li>Measures of Distribution (Shape)</li>
+</ol>
+<p>To calculate Skewness (asymmetry) and Kurtosis (thickness of the tails), we use the industry-standard moments package.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb268"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb268-1"><a href="#cb268-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install package if needed: install.packages("moments")</span></span>
+<span id="cb268-2"><a href="#cb268-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(moments)</span>
+<span id="cb268-3"><a href="#cb268-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb268-4"><a href="#cb268-4" aria-hidden="true" tabindex="-1"></a>shape_summary <span class="ot">&lt;-</span> distributions_df <span class="sc">%&gt;%</span></span>
+<span id="cb268-5"><a href="#cb268-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="fu">list</span>(</span>
+<span id="cb268-6"><a href="#cb268-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">Skewness =</span> <span class="sc">~</span> <span class="fu">skewness</span>(.),</span>
+<span id="cb268-7"><a href="#cb268-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">Kurtosis =</span> <span class="sc">~</span> <span class="fu">kurtosis</span>(.)</span>
+<span id="cb268-8"><a href="#cb268-8" aria-hidden="true" tabindex="-1"></a>  ), <span class="at">.names =</span> <span class="st">"{.col}_{.fn}"</span>))</span>
+<span id="cb268-9"><a href="#cb268-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb268-10"><a href="#cb268-10" aria-hidden="true" tabindex="-1"></a>shape_summary <span class="sc">%&gt;%</span> </span>
+<span id="cb268-11"><a href="#cb268-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"Variable"</span>, <span class="st">"Metric"</span>), <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb268-12"><a href="#cb268-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> Metric, <span class="at">values_from =</span> value)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expected 2 pieces. Additional pieces discarded in 4 rows [3, 4, 5, 6].</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Values from `value` are not uniquely identified; output will contain list-cols.
+• Use `values_fn = list` to suppress this warning.
+• Use `values_fn = {summary_fun}` to summarise duplicates.
+• Use the following dplyr code to identify duplicates.
+  {data} |&gt;
+  dplyr::summarise(n = dplyr::n(), .by = c(Variable, Metric)) |&gt;
+  dplyr::filter(n &gt; 1L)</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 4
+  Variable  Skewness  Kurtosis  Skewed   
+  &lt;chr&gt;     &lt;list&gt;    &lt;list&gt;    &lt;list&gt;   
+1 Symmetric &lt;dbl [1]&gt; &lt;dbl [1]&gt; &lt;NULL&gt;   
+2 Right     &lt;NULL&gt;    &lt;NULL&gt;    &lt;dbl [2]&gt;
+3 Left      &lt;NULL&gt;    &lt;NULL&gt;    &lt;dbl [2]&gt;</code></pre>
+</div>
+</div>
+<p>How to Interpret the Shape Metrics:</p>
+<ul>
+<li><p>Skewness: A symmetric distribution scores around 0. The Right_Skewed data returns a high positive score (long right tail), while the Left_Skewed data returns a negative score (long left tail).</p></li>
+<li><p>Kurtosis: A standard normal distribution has a kurtosis of 3. Scores higher than 3 indicate heavy tails with extreme outlier peaks (Leptokurtic), typical of our log-normal Right_Skewed dataset.</p></li>
+</ul>
+<ol start="3" type="1">
+<li>Measures of Association</li>
+</ol>
+<p>To evaluate how variables move together, we will calculate Covariance and compare Pearson Correlation (linear relationships) vs.&nbsp;Spearman Correlation (rank/monotonic relationships).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb272"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb272-1"><a href="#cb272-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A. Covariance Matrix</span></span>
+<span id="cb272-2"><a href="#cb272-2" aria-hidden="true" tabindex="-1"></a>cov_matrix <span class="ot">&lt;-</span> <span class="fu">cov</span>(distributions_df)</span>
+<span id="cb272-3"><a href="#cb272-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Covariance Matrix:"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Covariance Matrix:"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb274"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb274-1"><a href="#cb274-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">round</span>(cov_matrix, <span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             Symmetric Right_Skewed Left_Skewed
+Symmetric       98.346       16.281      -6.834
+Right_Skewed    16.281      428.075      -7.258
+Left_Skewed     -6.834       -7.258     246.130</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb276"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb276-1"><a href="#cb276-1" aria-hidden="true" tabindex="-1"></a><span class="co"># B. Pearson Correlation Matrix (Best for linear, normally distributed features)</span></span>
+<span id="cb276-2"><a href="#cb276-2" aria-hidden="true" tabindex="-1"></a>pearson_matrix <span class="ot">&lt;-</span> <span class="fu">cor</span>(distributions_df, <span class="at">method =</span> <span class="st">"pearson"</span>)</span>
+<span id="cb276-3"><a href="#cb276-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Pearson Correlation Matrix:"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Pearson Correlation Matrix:"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb278"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb278-1"><a href="#cb278-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">round</span>(pearson_matrix, <span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             Symmetric Right_Skewed Left_Skewed
+Symmetric        1.000        0.079      -0.044
+Right_Skewed     0.079        1.000      -0.022
+Left_Skewed     -0.044       -0.022       1.000</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb280"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb280-1"><a href="#cb280-1" aria-hidden="true" tabindex="-1"></a><span class="co"># C. Spearman Rank Correlation Matrix (Best for skewed features or non-linear trends)</span></span>
+<span id="cb280-2"><a href="#cb280-2" aria-hidden="true" tabindex="-1"></a>spearman_matrix <span class="ot">&lt;-</span> <span class="fu">cor</span>(distributions_df, <span class="at">method =</span> <span class="st">"spearman"</span>)</span>
+<span id="cb280-3"><a href="#cb280-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Spearman Correlation Matrix:"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Spearman Correlation Matrix:"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb282"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb282-1"><a href="#cb282-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">round</span>(spearman_matrix, <span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             Symmetric Right_Skewed Left_Skewed
+Symmetric        1.000        0.081      -0.044
+Right_Skewed     0.081        1.000      -0.025
+Left_Skewed     -0.044       -0.025       1.000</code></pre>
+</div>
+</div>
+<p>Why comparing Pearson vs.&nbsp;Spearman matters in Data Preprocessing:</p>
+<p>If you compare the correlation metrics between Symmetric and Right_Skewed variables, you will notice their Spearman score is often more robust than their Pearson score. Because Pearson relies on strict linearity, highly skewed variables distort the coefficient. Spearman bypasses this limitation by ranking the data points first, making it a critical choice during feature selection loops.</p>
+<p>Now that you have the statistical summaries ready, would you like to:</p>
+<ul>
+<li>Generate a ggplot2 correlation heatmap matrix to easily visualize these feature associations? (Check the ggplot gallery)</li>
 </ul>
 <p><strong>Hypothesis Testing &amp; Statistical Modeling Framework</strong></p>
-<ul>
-<li><strong>Student’s t-Test:</strong> Performing Independent, Paired, and One-sample t-tests to evaluate differences between continuous group means.</li>
-<li><strong>F-Test:</strong> Testing for equality of variances between two independent populations.</li>
-<li><strong>Analysis of Variance (ANOVA):</strong> Implementing One-Way and Two-Way ANOVA models to analyze variance across three or more unique treatment groups.</li>
-<li><strong>Chi-Square Test:</strong> Running Test of Independence and Goodness-of-Fit procedures using contingency tables for categorical attributes.</li>
-<li><strong>Basic Statistical Modeling Framework:</strong> Foundational setup for Generalized Linear Models (GLMs), defining response variables, predictor metrics, and interpreting residual summaries.</li>
-</ul>
+<ol type="1">
+<li>Student’s t-Test &amp; F-Test</li>
+</ol>
+<p>We use the t-test to compare means between continuous groups, while the F-test checks if the variances of those two groups are equal (a critical prerequisite for certain t-tests).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb284"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb284-1"><a href="#cb284-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb284-2"><a href="#cb284-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Setup sample groups (e.g., test scores from two different teaching methods)</span></span>
+<span id="cb284-3"><a href="#cb284-3" aria-hidden="true" tabindex="-1"></a>method_A <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">30</span>, <span class="at">mean =</span> <span class="dv">75</span>, <span class="at">sd =</span> <span class="dv">10</span>)</span>
+<span id="cb284-4"><a href="#cb284-4" aria-hidden="true" tabindex="-1"></a>method_B <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">30</span>, <span class="at">mean =</span> <span class="dv">82</span>, <span class="at">sd =</span> <span class="dv">12</span>)</span>
+<span id="cb284-5"><a href="#cb284-5" aria-hidden="true" tabindex="-1"></a>baseline_target <span class="ot">&lt;-</span> <span class="dv">70</span> <span class="co"># Historical average score</span></span>
+<span id="cb284-6"><a href="#cb284-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb284-7"><a href="#cb284-7" aria-hidden="true" tabindex="-1"></a><span class="co"># A. F-Test (Equality of Variances)</span></span>
+<span id="cb284-8"><a href="#cb284-8" aria-hidden="true" tabindex="-1"></a><span class="co"># H0: Variances are equal vs H1: Variances are different</span></span>
+<span id="cb284-9"><a href="#cb284-9" aria-hidden="true" tabindex="-1"></a>f_test_result <span class="ot">&lt;-</span> <span class="fu">var.test</span>(method_A, method_B)</span>
+<span id="cb284-10"><a href="#cb284-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(f_test_result<span class="sc">$</span>p.value) <span class="co"># If p &gt; 0.05, assume equal variances</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9829299</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb286"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb286-1"><a href="#cb286-1" aria-hidden="true" tabindex="-1"></a><span class="co"># B. Independent Two-Sample t-Test</span></span>
+<span id="cb286-2"><a href="#cb286-2" aria-hidden="true" tabindex="-1"></a><span class="co"># If variances were unequal, you would set var.equal = FALSE (Welch's t-test)</span></span>
+<span id="cb286-3"><a href="#cb286-3" aria-hidden="true" tabindex="-1"></a>ind_t_test <span class="ot">&lt;-</span> <span class="fu">t.test</span>(method_A, method_B, <span class="at">var.equal =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb286-4"><a href="#cb286-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb286-5"><a href="#cb286-5" aria-hidden="true" tabindex="-1"></a><span class="co"># C. One-Sample t-Test (Comparing a single group against a population benchmark)</span></span>
+<span id="cb286-6"><a href="#cb286-6" aria-hidden="true" tabindex="-1"></a>one_sample_t <span class="ot">&lt;-</span> <span class="fu">t.test</span>(method_A, <span class="at">mu =</span> baseline_target)</span>
+<span id="cb286-7"><a href="#cb286-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb286-8"><a href="#cb286-8" aria-hidden="true" tabindex="-1"></a><span class="co"># D. Paired t-Test (Same subjects measured before and after a treatment)</span></span>
+<span id="cb286-9"><a href="#cb286-9" aria-hidden="true" tabindex="-1"></a>before_scores <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">65</span>, <span class="dv">70</span>, <span class="dv">72</span>, <span class="dv">68</span>, <span class="dv">80</span>)</span>
+<span id="cb286-10"><a href="#cb286-10" aria-hidden="true" tabindex="-1"></a>after_scores  <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">70</span>, <span class="dv">75</span>, <span class="dv">71</span>, <span class="dv">74</span>, <span class="dv">85</span>)</span>
+<span id="cb286-11"><a href="#cb286-11" aria-hidden="true" tabindex="-1"></a>paired_t_test <span class="ot">&lt;-</span> <span class="fu">t.test</span>(before_scores, after_scores, <span class="at">paired =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ol start="2" type="1">
+<li>Analysis of Variance (ANOVA)</li>
+</ol>
+<p>ANOVA evaluates whether the means of three or more unique treatment groups are statistically different from each other.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb287"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb287-1"><a href="#cb287-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Setup data frame for 3 treatment levels and 2 blocks (gender)</span></span>
+<span id="cb287-2"><a href="#cb287-2" aria-hidden="true" tabindex="-1"></a>anova_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb287-3"><a href="#cb287-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Score =</span> <span class="fu">c</span>(<span class="fu">rnorm</span>(<span class="dv">15</span>, <span class="dv">70</span>, <span class="dv">5</span>), <span class="fu">rnorm</span>(<span class="dv">15</span>, <span class="dv">85</span>, <span class="dv">6</span>), <span class="fu">rnorm</span>(<span class="dv">15</span>, <span class="dv">78</span>, <span class="dv">5</span>)),</span>
+<span id="cb287-4"><a href="#cb287-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Treatment =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"Control"</span>, <span class="st">"Drug_X"</span>, <span class="st">"Drug_Y"</span>), <span class="at">each =</span> <span class="dv">15</span>),</span>
+<span id="cb287-5"><a href="#cb287-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Gender =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"Male"</span>, <span class="st">"Female"</span>), <span class="at">length.out =</span> <span class="dv">45</span>)</span>
+<span id="cb287-6"><a href="#cb287-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb287-7"><a href="#cb287-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb287-8"><a href="#cb287-8" aria-hidden="true" tabindex="-1"></a><span class="co"># A. One-Way ANOVA</span></span>
+<span id="cb287-9"><a href="#cb287-9" aria-hidden="true" tabindex="-1"></a>one_way_model <span class="ot">&lt;-</span> <span class="fu">aov</span>(Score <span class="sc">~</span> Treatment, <span class="at">data =</span> anova_data)</span>
+<span id="cb287-10"><a href="#cb287-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(one_way_model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+Treatment    2 1644.4   822.2   35.32 1.01e-09 ***
+Residuals   42  977.7    23.3                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb289"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb289-1"><a href="#cb289-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Post-Hoc Test (If ANOVA is significant, find out WHICH groups differ)</span></span>
+<span id="cb289-2"><a href="#cb289-2" aria-hidden="true" tabindex="-1"></a><span class="fu">TukeyHSD</span>(one_way_model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Tukey multiple comparisons of means
+    95% family-wise confidence level
+
+Fit: aov(formula = Score ~ Treatment, data = anova_data)
+
+$Treatment
+                    diff        lwr       upr     p adj
+Drug_X-Control 14.807170  10.526870 19.087470 0.0000000
+Drug_Y-Control  7.389214   3.108914 11.669514 0.0003997
+Drug_Y-Drug_X  -7.417956 -11.698256 -3.137656 0.0003802</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb291"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb291-1"><a href="#cb291-1" aria-hidden="true" tabindex="-1"></a><span class="co"># B. Two-Way ANOVA (Evaluating two categorical factors and their interaction)</span></span>
+<span id="cb291-2"><a href="#cb291-2" aria-hidden="true" tabindex="-1"></a>two_way_model <span class="ot">&lt;-</span> <span class="fu">aov</span>(Score <span class="sc">~</span> Treatment <span class="sc">*</span> Gender, <span class="at">data =</span> anova_data)</span>
+<span id="cb291-3"><a href="#cb291-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(two_way_model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+Treatment         2 1644.4   822.2  34.229 2.61e-09 ***
+Gender            1   28.0    28.0   1.167    0.287    
+Treatment:Gender  2   12.9     6.5   0.269    0.766    
+Residuals        39  936.8    24.0                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<ol start="3" type="1">
+<li>Chi-Square Test</li>
+</ol>
+<p>Used strictly for categorical attributes to evaluate frequencies and dependencies.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb293"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb293-1"><a href="#cb293-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Setup categorical data (e.g., Survey responses across age groups)</span></span>
+<span id="cb293-2"><a href="#cb293-2" aria-hidden="true" tabindex="-1"></a>survey_matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">15</span>,  <span class="co"># Young: Agree, Neutral, Disagree</span></span>
+<span id="cb293-3"><a href="#cb293-3" aria-hidden="true" tabindex="-1"></a>                          <span class="dv">40</span>, <span class="dv">15</span>, <span class="dv">10</span>), <span class="co"># Old: Agree, Neutral, Disagree</span></span>
+<span id="cb293-4"><a href="#cb293-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb293-5"><a href="#cb293-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(survey_matrix) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Agree"</span>, <span class="st">"Neutral"</span>, <span class="st">"Disagree"</span>)</span>
+<span id="cb293-6"><a href="#cb293-6" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(survey_matrix) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Young"</span>, <span class="st">"Old"</span>)</span>
+<span id="cb293-7"><a href="#cb293-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb293-8"><a href="#cb293-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to a contingency table</span></span>
+<span id="cb293-9"><a href="#cb293-9" aria-hidden="true" tabindex="-1"></a>contingency_table <span class="ot">&lt;-</span> <span class="fu">as.table</span>(survey_matrix)</span>
+<span id="cb293-10"><a href="#cb293-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb293-11"><a href="#cb293-11" aria-hidden="true" tabindex="-1"></a><span class="co"># A. Chi-Square Test of Independence (Are age group and opinion related?)</span></span>
+<span id="cb293-12"><a href="#cb293-12" aria-hidden="true" tabindex="-1"></a>chi_sq_independence <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(contingency_table)</span>
+<span id="cb293-13"><a href="#cb293-13" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(chi_sq_independence)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's Chi-squared test
+
+data:  contingency_table
+X-squared = 12.667, df = 2, p-value = 0.001776</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb295"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb295-1"><a href="#cb295-1" aria-hidden="true" tabindex="-1"></a><span class="co"># B. Chi-Square Goodness-of-Fit Test </span></span>
+<span id="cb295-2"><a href="#cb295-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (Testing if observed counts match a theoretical proportion, e.g., 50/30/20)</span></span>
+<span id="cb295-3"><a href="#cb295-3" aria-hidden="true" tabindex="-1"></a>observed_counts <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">55</span>, <span class="dv">25</span>, <span class="dv">20</span>)</span>
+<span id="cb295-4"><a href="#cb295-4" aria-hidden="true" tabindex="-1"></a>expected_probs  <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.50</span>, <span class="fl">0.30</span>, <span class="fl">0.20</span>)</span>
+<span id="cb295-5"><a href="#cb295-5" aria-hidden="true" tabindex="-1"></a>chi_sq_gof <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(observed_counts, <span class="at">p =</span> expected_probs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ol start="4" type="1">
+<li>Basic Statistical Modeling Framework (GLMs)</li>
+</ol>
+<p>Generalized Linear Models (GLMs) allow you to predict responses that do not follow a normal distribution by utilizing a link function (e.g., Logistic Regression for binary classification).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb296"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb296-1"><a href="#cb296-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Setup a classification dataset</span></span>
+<span id="cb296-2"><a href="#cb296-2" aria-hidden="true" tabindex="-1"></a>model_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb296-3"><a href="#cb296-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Purchased =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>), <span class="co"># Binary response variable</span></span>
+<span id="cb296-4"><a href="#cb296-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Age =</span> <span class="fu">c</span>(<span class="dv">22</span>, <span class="dv">25</span>, <span class="dv">47</span>, <span class="dv">52</span>, <span class="dv">46</span>, <span class="dv">36</span>, <span class="dv">55</span>, <span class="dv">60</span>, <span class="dv">41</span>, <span class="dv">28</span>),</span>
+<span id="cb296-5"><a href="#cb296-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Income =</span> <span class="fu">c</span>(<span class="dv">30</span>, <span class="dv">45</span>, <span class="dv">55</span>, <span class="dv">90</span>, <span class="dv">110</span>, <span class="dv">60</span>, <span class="dv">85</span>, <span class="dv">120</span>, <span class="dv">95</span>, <span class="dv">35</span>) <span class="co"># in thousands</span></span>
+<span id="cb296-6"><a href="#cb296-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb296-7"><a href="#cb296-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb296-8"><a href="#cb296-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit a Logistic Regression GLM (Binomial family with a logit link function)</span></span>
+<span id="cb296-9"><a href="#cb296-9" aria-hidden="true" tabindex="-1"></a>glm_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(Purchased <span class="sc">~</span> Age <span class="sc">+</span> Income, <span class="at">data =</span> model_df, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb298"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb298-1"><a href="#cb298-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A. Interpreting the Summary Model</span></span>
+<span id="cb298-2"><a href="#cb298-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Look at the 'Coefficients' table for p-values to determine feature significance</span></span>
+<span id="cb298-3"><a href="#cb298-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(glm_model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Purchased ~ Age + Income, family = binomial(link = "logit"), 
+    data = model_df)
+
+Coefficients:
+              Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept) -1.298e+02  2.822e+05       0        1
+Age          6.898e-01  8.282e+03       0        1
+Income       1.350e+00  3.861e+03       0        1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 1.3863e+01  on 9  degrees of freedom
+Residual deviance: 4.9699e-10  on 7  degrees of freedom
+AIC: 6
+
+Number of Fisher Scoring iterations: 24</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb300"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb300-1"><a href="#cb300-1" aria-hidden="true" tabindex="-1"></a><span class="co"># B. Evaluating Residual Summaries</span></span>
+<span id="cb300-2"><a href="#cb300-2" aria-hidden="true" tabindex="-1"></a><span class="co"># In GLMs, we look at deviance residuals to assess model goodness-of-fit</span></span>
+<span id="cb300-3"><a href="#cb300-3" aria-hidden="true" tabindex="-1"></a>residuals_summary <span class="ot">&lt;-</span> <span class="fu">summary</span>(glm_model)<span class="sc">$</span>deviance.resid</span>
+<span id="cb300-4"><a href="#cb300-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(residuals_summary)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            1             2             3             4             5 
+-2.107342e-08 -2.107342e-08 -1.331997e-05  1.479949e-06  2.107342e-08 
+            6             7             8             9            10 
+-8.751613e-06  1.535301e-05  2.107342e-08  2.252492e-06 -2.107342e-08 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb302"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb302-1"><a href="#cb302-1" aria-hidden="true" tabindex="-1"></a><span class="co"># C. Making Predictions</span></span>
+<span id="cb302-2"><a href="#cb302-2" aria-hidden="true" tabindex="-1"></a>new_customer <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Age =</span> <span class="dv">35</span>, <span class="at">Income =</span> <span class="dv">75</span>)</span>
+<span id="cb302-3"><a href="#cb302-3" aria-hidden="true" tabindex="-1"></a>predicted_probability <span class="ot">&lt;-</span> <span class="fu">predict</span>(glm_model, <span class="at">newdata =</span> new_customer, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb302-4"><a href="#cb302-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Probability of purchase:"</span>, <span class="fu">round</span>(predicted_probability, <span class="dv">3</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Probability of purchase: 0.012"</code></pre>
+</div>
+</div>
 
 
 </section>
