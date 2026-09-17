@@ -1117,13 +1117,480 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Use any inbuilt dataset in R and create 5 different visuals using <code>ggplot2</code> package. (Visit GGplot Gallery for the help).</p>
 </div>
 </div>
+<hr>
 <p><strong>Programming Fundamentals in R</strong></p>
 <ul>
 <li><strong>Conditional Logic:</strong> Writing <code>if</code>, <code>else if</code>, and <code>else</code> statements.</li>
+</ul>
+<p><em>Basic Syntax</em></p>
+<p>if (condition) { # code if TRUE } else if (another_condition) { # code if that’s TRUE } else { # code if none are TRUE }</p>
+<p>Example 1: Simple <code>if</code></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb128"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a>age <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb128-2"><a href="#cb128-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb128-3"><a href="#cb128-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (age <span class="sc">&gt;=</span> <span class="dv">18</span>) {</span>
+<span id="cb128-4"><a href="#cb128-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"You are an adult"</span>)</span>
+<span id="cb128-5"><a href="#cb128-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "You are an adult"</code></pre>
+</div>
+</div>
+<p>Try changing age value 15, 17.5 and 21 and check if else statement is properly working or not.</p>
+<p>Example 2: <code>if</code> / <code>else</code></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb130"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb130-1"><a href="#cb130-1" aria-hidden="true" tabindex="-1"></a>marks <span class="ot">&lt;-</span> <span class="dv">45</span></span>
+<span id="cb130-2"><a href="#cb130-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb130-3"><a href="#cb130-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (marks <span class="sc">&gt;=</span> <span class="dv">40</span>) {</span>
+<span id="cb130-4"><a href="#cb130-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"Pass"</span>)</span>
+<span id="cb130-5"><a href="#cb130-5" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb130-6"><a href="#cb130-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"Fail"</span>)</span>
+<span id="cb130-7"><a href="#cb130-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Pass"</code></pre>
+</div>
+</div>
+<p>Check the if lese statement command for marks 35 and 50.</p>
+<p>Example 3: <code>if</code> / <code>else if</code> / <code>else</code> (grading system)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb132"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb132-1"><a href="#cb132-1" aria-hidden="true" tabindex="-1"></a>marks <span class="ot">&lt;-</span> <span class="dv">78</span></span>
+<span id="cb132-2"><a href="#cb132-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb132-3"><a href="#cb132-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (marks <span class="sc">&gt;=</span> <span class="dv">90</span>) {</span>
+<span id="cb132-4"><a href="#cb132-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"Grade: A"</span>)</span>
+<span id="cb132-5"><a href="#cb132-5" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> <span class="cf">if</span> (marks <span class="sc">&gt;=</span> <span class="dv">75</span>) {</span>
+<span id="cb132-6"><a href="#cb132-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"Grade: B"</span>)</span>
+<span id="cb132-7"><a href="#cb132-7" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> <span class="cf">if</span> (marks <span class="sc">&gt;=</span> <span class="dv">60</span>) {</span>
+<span id="cb132-8"><a href="#cb132-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"Grade: C"</span>)</span>
+<span id="cb132-9"><a href="#cb132-9" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> <span class="cf">if</span> (marks <span class="sc">&gt;=</span> <span class="dv">40</span>) {</span>
+<span id="cb132-10"><a href="#cb132-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"Grade: D"</span>)</span>
+<span id="cb132-11"><a href="#cb132-11" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb132-12"><a href="#cb132-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"Grade: F"</span>)</span>
+<span id="cb132-13"><a href="#cb132-13" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Grade: B"</code></pre>
+</div>
+</div>
+<p>Check the Grade for Marks 40, 70, and 90.</p>
+<p>Example 4: Using it inside a function (practical, real-world style)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb134"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb134-1"><a href="#cb134-1" aria-hidden="true" tabindex="-1"></a>check_bmi <span class="ot">&lt;-</span> <span class="cf">function</span>(bmi) {</span>
+<span id="cb134-2"><a href="#cb134-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (bmi <span class="sc">&lt;</span> <span class="fl">18.5</span>) {</span>
+<span id="cb134-3"><a href="#cb134-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Underweight"</span>)</span>
+<span id="cb134-4"><a href="#cb134-4" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (bmi <span class="sc">&lt;</span> <span class="dv">25</span>) {</span>
+<span id="cb134-5"><a href="#cb134-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Normal"</span>)</span>
+<span id="cb134-6"><a href="#cb134-6" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (bmi <span class="sc">&lt;</span> <span class="dv">30</span>) {</span>
+<span id="cb134-7"><a href="#cb134-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Overweight"</span>)</span>
+<span id="cb134-8"><a href="#cb134-8" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb134-9"><a href="#cb134-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Obese"</span>)</span>
+<span id="cb134-10"><a href="#cb134-10" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb134-11"><a href="#cb134-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb134-12"><a href="#cb134-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb134-13"><a href="#cb134-13" aria-hidden="true" tabindex="-1"></a><span class="fu">check_bmi</span>(<span class="dv">27</span>)   <span class="co"># "Overweight"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Overweight"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb136"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb136-1"><a href="#cb136-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_bmi</span>(<span class="dv">21</span>)   <span class="co"># "Normal"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Normal"</code></pre>
+</div>
+</div>
+<p>Example 5: Vectorized alternative — <code>ifelse()</code></p>
+<p>Regular <code>if</code> only checks <strong>one value at a time</strong>. When you need to apply a condition across an entire column/vector (very common with sales/data work), use <code>ifelse()</code> instead:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb138"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb138-1"><a href="#cb138-1" aria-hidden="true" tabindex="-1"></a>scores <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">45</span>, <span class="dv">88</span>, <span class="dv">62</span>, <span class="dv">30</span>, <span class="dv">95</span>)</span>
+<span id="cb138-2"><a href="#cb138-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb138-3"><a href="#cb138-3" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(scores <span class="sc">&gt;=</span> <span class="dv">50</span>, <span class="st">"Pass"</span>, <span class="st">"Fail"</span>)</span>
+<span id="cb138-4"><a href="#cb138-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(result)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Fail" "Pass" "Pass" "Fail" "Pass"</code></pre>
+</div>
+</div>
+<p>Common Mistake to Warn Students About</p>
+<p><code>else</code> <strong>must</strong> be on the same line as the closing <code>}</code> of the <code>if</code> block — otherwise R throws an error (especially when running line-by-line in a script).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb140"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb140-1"><a href="#cb140-1" aria-hidden="true" tabindex="-1"></a><span class="co"># # WRONG (in a script run line-by-line)</span></span>
+<span id="cb140-2"><a href="#cb140-2" aria-hidden="true" tabindex="-1"></a><span class="co"># if (age &gt;= 18) {</span></span>
+<span id="cb140-3"><a href="#cb140-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   print("Adult")</span></span>
+<span id="cb140-4"><a href="#cb140-4" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
+<span id="cb140-5"><a href="#cb140-5" aria-hidden="true" tabindex="-1"></a><span class="co"># else {</span></span>
+<span id="cb140-6"><a href="#cb140-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   print("Minor")</span></span>
+<span id="cb140-7"><a href="#cb140-7" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
+<span id="cb140-8"><a href="#cb140-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb140-9"><a href="#cb140-9" aria-hidden="true" tabindex="-1"></a><span class="co"># CORRECT</span></span>
+<span id="cb140-10"><a href="#cb140-10" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (age <span class="sc">&gt;=</span> <span class="dv">18</span>) {</span>
+<span id="cb140-11"><a href="#cb140-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"Adult"</span>)</span>
+<span id="cb140-12"><a href="#cb140-12" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb140-13"><a href="#cb140-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"Minor"</span>)</span>
+<span id="cb140-14"><a href="#cb140-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Adult"</code></pre>
+</div>
+</div>
+<p><strong>Quick Exercise</strong></p>
+<p>Write a function <code>classify_diamond(price)</code> that returns <code>"Budget"</code> if price &lt; 1000, <code>"Mid-range"</code> if price &lt; 5000, and <code>"Luxury"</code> otherwise — then test it using values pulled from the <code>diamonds$price</code> column.</p>
+<hr>
+<ul>
 <li><strong>Vectorized Operations:</strong> Leveraging R’s native speed instead of traditional loops.</li>
+</ul>
+<p><em>The Core Idea</em></p>
+<p>R is built to operate on entire vectors at once, not element-by-element like traditional loops. Vectorized code is faster, shorter, and more “R-like.”</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb142"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb142-1"><a href="#cb142-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>)</span>
+<span id="cb142-2"><a href="#cb142-2" aria-hidden="true" tabindex="-1"></a>x <span class="sc">*</span> <span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  2  4  6  8 10</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb144"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb144-1"><a href="#cb144-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2 4 6 8 10   — every element multiplied, no loop needed</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Example 1: Loop vs.&nbsp;Vectorized (the classic comparison)</p>
+<p><strong>Slow, traditional way (loop):</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb145"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb145-1"><a href="#cb145-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">1000000</span></span>
+<span id="cb145-2"><a href="#cb145-2" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="fu">length</span>(x))</span>
+<span id="cb145-3"><a href="#cb145-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb145-4"><a href="#cb145-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(x)) {</span>
+<span id="cb145-5"><a href="#cb145-5" aria-hidden="true" tabindex="-1"></a>  result[i] <span class="ot">&lt;-</span> x[i] <span class="sc">*</span> <span class="dv">2</span></span>
+<span id="cb145-6"><a href="#cb145-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><strong>Fast, vectorized way:</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb146"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb146-1"><a href="#cb146-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">1000000</span></span>
+<span id="cb146-2"><a href="#cb146-2" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> x <span class="sc">*</span> <span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Same output — but the vectorized version runs dramatically faster because R’s internal C code handles the looping, not R itself.</p>
+<p>Example 2: Conditional Logic — <code>ifelse()</code> Instead of a Loop</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb147"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb147-1"><a href="#cb147-1" aria-hidden="true" tabindex="-1"></a>scores <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">45</span>, <span class="dv">88</span>, <span class="dv">62</span>, <span class="dv">30</span>, <span class="dv">95</span>)</span>
+<span id="cb147-2"><a href="#cb147-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb147-3"><a href="#cb147-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Loop way (avoid this)</span></span>
+<span id="cb147-4"><a href="#cb147-4" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">character</span>(<span class="fu">length</span>(scores))</span>
+<span id="cb147-5"><a href="#cb147-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(scores)) {</span>
+<span id="cb147-6"><a href="#cb147-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (scores[i] <span class="sc">&gt;=</span> <span class="dv">50</span>) result[i] <span class="ot">&lt;-</span> <span class="st">"Pass"</span> <span class="cf">else</span> result[i] <span class="ot">&lt;-</span> <span class="st">"Fail"</span></span>
+<span id="cb147-7"><a href="#cb147-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb147-8"><a href="#cb147-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb147-9"><a href="#cb147-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Vectorized way (do this)</span></span>
+<span id="cb147-10"><a href="#cb147-10" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(scores <span class="sc">&gt;=</span> <span class="dv">50</span>, <span class="st">"Pass"</span>, <span class="st">"Fail"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Example 3: Applying a Function Across a Vector</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb148"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb148-1"><a href="#cb148-1" aria-hidden="true" tabindex="-1"></a>prices <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1200</span>, <span class="dv">450</span>, <span class="dv">3400</span>, <span class="dv">800</span>, <span class="dv">5200</span>)</span>
+<span id="cb148-2"><a href="#cb148-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb148-3"><a href="#cb148-3" aria-hidden="true" tabindex="-1"></a><span class="co"># No loop needed — sqrt() is already vectorized</span></span>
+<span id="cb148-4"><a href="#cb148-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(prices)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 34.64102 21.21320 58.30952 28.28427 72.11103</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb150"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb150-1"><a href="#cb150-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Custom logic without a loop, using ifelse()</span></span>
+<span id="cb150-2"><a href="#cb150-2" aria-hidden="true" tabindex="-1"></a>category <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(prices <span class="sc">&lt;</span> <span class="dv">1000</span>, <span class="st">"Budget"</span>,</span>
+<span id="cb150-3"><a href="#cb150-3" aria-hidden="true" tabindex="-1"></a>             <span class="fu">ifelse</span>(prices <span class="sc">&lt;</span> <span class="dv">5000</span>, <span class="st">"Mid-range"</span>, <span class="st">"Luxury"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Example 4: Vectorized Math on Data Frame Columns</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb151"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb151-1"><a href="#cb151-1" aria-hidden="true" tabindex="-1"></a>diamonds<span class="sc">$</span>price_per_carat <span class="ot">&lt;-</span> diamonds<span class="sc">$</span>price <span class="sc">/</span> diamonds<span class="sc">$</span>carat</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>No loop, no <code>apply()</code> — one line operates on all ~54,000 rows simultaneously.</p>
+<p>Example 5: Logical Indexing (a vectorized filter)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb152"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb152-1"><a href="#cb152-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">25</span>, <span class="dv">3</span>, <span class="dv">47</span>, <span class="dv">8</span>, <span class="dv">62</span>)</span>
+<span id="cb152-2"><a href="#cb152-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb152-3"><a href="#cb152-3" aria-hidden="true" tabindex="-1"></a>x[x <span class="sc">&gt;</span> <span class="dv">20</span>]        <span class="co"># 25 47 62 — pulls all elements matching the condition</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 25 47 62</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb154"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb154-1"><a href="#cb154-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(x <span class="sc">&gt;</span> <span class="dv">20</span>)      <span class="co"># 3 — counts how many meet the condition</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3</code></pre>
+</div>
+</div>
+<p>When You <em>Do</em> Still Need a Loop</p>
+<p>Vectorization doesn’t cover everything — use loops when each step depends on the <em>previous</em> result (e.g., simulations, recursive calculations):</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb156"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb156-1"><a href="#cb156-1" aria-hidden="true" tabindex="-1"></a>balance <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="dv">10</span>)</span>
+<span id="cb156-2"><a href="#cb156-2" aria-hidden="true" tabindex="-1"></a>balance[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb156-3"><a href="#cb156-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">10</span>) {</span>
+<span id="cb156-4"><a href="#cb156-4" aria-hidden="true" tabindex="-1"></a>  balance[i] <span class="ot">&lt;-</span> balance[i<span class="dv">-1</span>] <span class="sc">*</span> <span class="fl">1.05</span>   <span class="co"># depends on prior value</span></span>
+<span id="cb156-5"><a href="#cb156-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The Rule of Thumb to Teach</p>
+<p><strong>If you’re writing a <code>for</code> loop to do simple math or apply a condition to a whole column — stop. There’s almost always a vectorized way.</strong></p>
+<p><strong>Quick Exercise</strong></p>
+<p>Here is the 20 chick weights:</p>
+<p>60, 120, 221, 175, 80, 280, 305, 155, 98, 103, 200, 190, 352, 75, 180, 210, 198, 98, 98, 170</p>
+<p>Classify each chick as <code>"Low"</code>, <code>"Medium"</code>, or <code>"High"</code> using nested <code>ifelse()</code> — then time it against a loop-based version using <code>system.time()</code> to see the speed difference themselves.</p>
+<ul>
 <li><strong>Basic Loops:</strong> Understanding <code>for</code> and <code>while</code> loops for repetitive tasks.</li>
+</ul>
+<p><em><code>for</code> Loop — When You Know How Many Times to Repeat</em></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb157"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb157-1"><a href="#cb157-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) {</span>
+<span id="cb157-2"><a href="#cb157-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(i)</span>
+<span id="cb157-3"><a href="#cb157-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1
+[1] 2
+[1] 3
+[1] 4
+[1] 5</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb159"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb159-1"><a href="#cb159-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1 2 3 4 5</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Example 1: Looping Over a Vector</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb160"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb160-1"><a href="#cb160-1" aria-hidden="true" tabindex="-1"></a>fruits <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Apple"</span>, <span class="st">"Banana"</span>, <span class="st">"Mango"</span>)</span>
+<span id="cb160-2"><a href="#cb160-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb160-3"><a href="#cb160-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (f <span class="cf">in</span> fruits) {</span>
+<span id="cb160-4"><a href="#cb160-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"I like"</span>, f))</span>
+<span id="cb160-5"><a href="#cb160-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "I like Apple"
+[1] "I like Banana"
+[1] "I like Mango"</code></pre>
+</div>
+</div>
+<p>Example 2: Looping With an Index (common in data work)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb162"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb162-1"><a href="#cb162-1" aria-hidden="true" tabindex="-1"></a>prices <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">250</span>, <span class="dv">400</span>)</span>
+<span id="cb162-2"><a href="#cb162-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb162-3"><a href="#cb162-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(prices)) {</span>
+<span id="cb162-4"><a href="#cb162-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"Item"</span>, i, <span class="st">"costs Rs."</span>, prices[i], <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb162-5"><a href="#cb162-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Item 1 costs Rs. 100 
+Item 2 costs Rs. 250 
+Item 3 costs Rs. 400 </code></pre>
+</div>
+</div>
+<p><strong>Tip:</strong> prefer <code>seq_along(prices)</code> over <code>1:length(prices)</code> — it safely handles an empty vector (<code>1:0</code> gives <code>1, 0</code>, which breaks the loop).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb164"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb164-1"><a href="#cb164-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(prices)) {</span>
+<span id="cb164-2"><a href="#cb164-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"Item"</span>, i, <span class="st">"costs Rs."</span>, prices[i], <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb164-3"><a href="#cb164-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Item 1 costs Rs. 100 
+Item 2 costs Rs. 250 
+Item 3 costs Rs. 400 </code></pre>
+</div>
+</div>
+<p>Example 3: Accumulating a Result</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb166"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb166-1"><a href="#cb166-1" aria-hidden="true" tabindex="-1"></a>total <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb166-2"><a href="#cb166-2" aria-hidden="true" tabindex="-1"></a>sales <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1200</span>, <span class="dv">450</span>, <span class="dv">3400</span>, <span class="dv">800</span>)</span>
+<span id="cb166-3"><a href="#cb166-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb166-4"><a href="#cb166-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (s <span class="cf">in</span> sales) {</span>
+<span id="cb166-5"><a href="#cb166-5" aria-hidden="true" tabindex="-1"></a>  total <span class="ot">&lt;-</span> total <span class="sc">+</span> s</span>
+<span id="cb166-6"><a href="#cb166-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb166-7"><a href="#cb166-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(total)   <span class="co"># 5850</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 5850</code></pre>
+</div>
+</div>
+<p>(Note: <code>sum(sales)</code> does this in one vectorized line — loops are for teaching the <em>concept</em>, but real code should prefer vectorization once understood.)</p>
+<p><em><code>while</code> Loop — When You Don’t Know the Number of Iterations in Advance</em></p>
+<p>Repeats <strong>as long as a condition stays TRUE</strong>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb168"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb168-1"><a href="#cb168-1" aria-hidden="true" tabindex="-1"></a>count <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb168-2"><a href="#cb168-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb168-3"><a href="#cb168-3" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> (count <span class="sc">&lt;=</span> <span class="dv">5</span>) {</span>
+<span id="cb168-4"><a href="#cb168-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(count)</span>
+<span id="cb168-5"><a href="#cb168-5" aria-hidden="true" tabindex="-1"></a>  count <span class="ot">&lt;-</span> count <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb168-6"><a href="#cb168-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1
+[1] 2
+[1] 3
+[1] 4
+[1] 5</code></pre>
+</div>
+</div>
+<p>Example 4: <code>while</code> Loop — Practical Case (compounding until a target is hit)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb170"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb170-1"><a href="#cb170-1" aria-hidden="true" tabindex="-1"></a>balance <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb170-2"><a href="#cb170-2" aria-hidden="true" tabindex="-1"></a>years <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb170-3"><a href="#cb170-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb170-4"><a href="#cb170-4" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> (balance <span class="sc">&lt;</span> <span class="dv">2000</span>) {</span>
+<span id="cb170-5"><a href="#cb170-5" aria-hidden="true" tabindex="-1"></a>  balance <span class="ot">&lt;-</span> balance <span class="sc">*</span> <span class="fl">1.08</span>   <span class="co"># 8% annual growth</span></span>
+<span id="cb170-6"><a href="#cb170-6" aria-hidden="true" tabindex="-1"></a>  years <span class="ot">&lt;-</span> years <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb170-7"><a href="#cb170-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb170-8"><a href="#cb170-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb170-9"><a href="#cb170-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"It took"</span>, years, <span class="st">"years to double the balance.</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>It took 10 years to double the balance.</code></pre>
+</div>
+</div>
+<p>This is the kind of problem <code>while</code> is made for — you genuinely don’t know the iteration count upfront.</p>
+<p><em><code>break</code> and <code>next</code> — Controlling Loop Flow</em></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb172"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb172-1"><a href="#cb172-1" aria-hidden="true" tabindex="-1"></a><span class="co"># break — stop the loop early</span></span>
+<span id="cb172-2"><a href="#cb172-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>) {</span>
+<span id="cb172-3"><a href="#cb172-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (i <span class="sc">==</span> <span class="dv">5</span>) <span class="cf">break</span></span>
+<span id="cb172-4"><a href="#cb172-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(i)</span>
+<span id="cb172-5"><a href="#cb172-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1
+[1] 2
+[1] 3
+[1] 4</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb174"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb174-1"><a href="#cb174-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1 2 3 4</span></span>
+<span id="cb174-2"><a href="#cb174-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb174-3"><a href="#cb174-3" aria-hidden="true" tabindex="-1"></a><span class="co"># next — skip this iteration, continue looping</span></span>
+<span id="cb174-4"><a href="#cb174-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>) {</span>
+<span id="cb174-5"><a href="#cb174-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (i <span class="sc">%%</span> <span class="dv">2</span> <span class="sc">==</span> <span class="dv">0</span>) <span class="cf">next</span>   <span class="co"># skip even numbers</span></span>
+<span id="cb174-6"><a href="#cb174-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(i)</span>
+<span id="cb174-7"><a href="#cb174-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1
+[1] 3
+[1] 5
+[1] 7
+[1] 9</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb176"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb176-1"><a href="#cb176-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1 3 5 7 9</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><em>Common Mistake to Warn Students About</em></p>
+<p>Forgetting to update the counter in a <code>while</code> loop causes an <strong>infinite loop</strong>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb177"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb177-1"><a href="#cb177-1" aria-hidden="true" tabindex="-1"></a><span class="co"># WRONG — never stops</span></span>
+<span id="cb177-2"><a href="#cb177-2" aria-hidden="true" tabindex="-1"></a><span class="co">#count &lt;- 1</span></span>
+<span id="cb177-3"><a href="#cb177-3" aria-hidden="true" tabindex="-1"></a><span class="co">#while (count &lt;= 5) {</span></span>
+<span id="cb177-4"><a href="#cb177-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  print(count)</span></span>
+<span id="cb177-5"><a href="#cb177-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># forgot: count &lt;- count + 1</span></span>
+<span id="cb177-6"><a href="#cb177-6" aria-hidden="true" tabindex="-1"></a><span class="co">#}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>If this happens in RStudio, hit the <strong>red stop icon</strong> (or <code>Esc</code>) to break out.</p>
+<p><em><code>for</code> vs <code>while</code> — Quick Rule of Thumb</em></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Use <code>for</code> when…</th>
+<th>Use <code>while</code> when…</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>You know the number of iterations</td>
+<td>You don’t know how many iterations you’ll need</td>
+</tr>
+<tr class="even">
+<td>Looping over a fixed vector/list</td>
+<td>Looping until a condition is met</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Quick Exercise</strong></p>
+<p>Using a <code>while</code> loop, find how many months it takes an LIC premium of ₹5,000 growing at 0.5% monthly interest to cross ₹6,000 — then solve the same problem with a <code>for</code> loop capped at 50 iterations using <code>break</code> once the target is hit.</p>
+<hr>
+<ul>
 <li><strong>Writing Custom Functions:</strong> Building reusable code blocks with inputs and outputs.</li>
 </ul>
+<p><em>Basic Syntax</em></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb178"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb178-1"><a href="#cb178-1" aria-hidden="true" tabindex="-1"></a>function_name <span class="ot">&lt;-</span> <span class="cf">function</span>(arg1, arg2) {</span>
+<span id="cb178-2"><a href="#cb178-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># code using arg1, arg2</span></span>
+<span id="cb178-3"><a href="#cb178-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(result)</span>
+<span id="cb178-4"><a href="#cb178-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Example 1: Simple Function</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb179"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb179-1"><a href="#cb179-1" aria-hidden="true" tabindex="-1"></a>square <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb179-2"><a href="#cb179-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(x<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb179-3"><a href="#cb179-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb179-4"><a href="#cb179-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb179-5"><a href="#cb179-5" aria-hidden="true" tabindex="-1"></a><span class="fu">square</span>(<span class="dv">5</span>)   <span class="co"># 25</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 25</code></pre>
+</div>
+</div>
+<p>Example 2: Multiple Arguments</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb181"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb181-1"><a href="#cb181-1" aria-hidden="true" tabindex="-1"></a>calculate_bmi <span class="ot">&lt;-</span> <span class="cf">function</span>(weight, height) {</span>
+<span id="cb181-2"><a href="#cb181-2" aria-hidden="true" tabindex="-1"></a>  bmi <span class="ot">&lt;-</span> weight <span class="sc">/</span> (height<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb181-3"><a href="#cb181-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(bmi)</span>
+<span id="cb181-4"><a href="#cb181-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb181-5"><a href="#cb181-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb181-6"><a href="#cb181-6" aria-hidden="true" tabindex="-1"></a><span class="fu">calculate_bmi</span>(<span class="dv">70</span>, <span class="fl">1.75</span>)   <span class="co"># 22.86</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 22.85714</code></pre>
+</div>
+</div>
+<p>Example 3: Default Argument Values</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb183"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb183-1"><a href="#cb183-1" aria-hidden="true" tabindex="-1"></a>greet <span class="ot">&lt;-</span> <span class="cf">function</span>(name, <span class="at">greeting =</span> <span class="st">"Hello"</span>) {</span>
+<span id="cb183-2"><a href="#cb183-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste</span>(greeting, name)</span>
+<span id="cb183-3"><a href="#cb183-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb183-4"><a href="#cb183-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb183-5"><a href="#cb183-5" aria-hidden="true" tabindex="-1"></a><span class="fu">greet</span>(<span class="st">"Amita"</span>)                    <span class="co"># "Hello Arun"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Hello Amita"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb185"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb185-1"><a href="#cb185-1" aria-hidden="true" tabindex="-1"></a><span class="fu">greet</span>(<span class="st">"Amita"</span>, <span class="st">"Good morning"</span>)    <span class="co"># "Good morning Arun"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Good morning Amita"</code></pre>
+</div>
+</div>
+<p>Example 4: Combining a Function With <code>if</code>/<code>else</code> (very common pattern)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb187"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb187-1"><a href="#cb187-1" aria-hidden="true" tabindex="-1"></a>classify_diamond <span class="ot">&lt;-</span> <span class="cf">function</span>(price) {</span>
+<span id="cb187-2"><a href="#cb187-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (price <span class="sc">&lt;</span> <span class="dv">1000</span>) {</span>
+<span id="cb187-3"><a href="#cb187-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Budget"</span>)</span>
+<span id="cb187-4"><a href="#cb187-4" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (price <span class="sc">&lt;</span> <span class="dv">5000</span>) {</span>
+<span id="cb187-5"><a href="#cb187-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Mid-range"</span>)</span>
+<span id="cb187-6"><a href="#cb187-6" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb187-7"><a href="#cb187-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="st">"Luxury"</span>)</span>
+<span id="cb187-8"><a href="#cb187-8" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb187-9"><a href="#cb187-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb187-10"><a href="#cb187-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb187-11"><a href="#cb187-11" aria-hidden="true" tabindex="-1"></a><span class="fu">classify_diamond</span>(<span class="dv">3200</span>)   <span class="co"># "Mid-range"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Mid-range"</code></pre>
+</div>
+</div>
+<p>Example 5: Function That Returns Multiple Values (via a list)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb189"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb189-1"><a href="#cb189-1" aria-hidden="true" tabindex="-1"></a>sales_summary <span class="ot">&lt;-</span> <span class="cf">function</span>(sales) {</span>
+<span id="cb189-2"><a href="#cb189-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb189-3"><a href="#cb189-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">total =</span> <span class="fu">sum</span>(sales),</span>
+<span id="cb189-4"><a href="#cb189-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">average =</span> <span class="fu">mean</span>(sales),</span>
+<span id="cb189-5"><a href="#cb189-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">highest =</span> <span class="fu">max</span>(sales)</span>
+<span id="cb189-6"><a href="#cb189-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb189-7"><a href="#cb189-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb189-8"><a href="#cb189-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb189-9"><a href="#cb189-9" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">sales_summary</span>(<span class="fu">c</span>(<span class="dv">1200</span>, <span class="dv">450</span>, <span class="dv">3400</span>, <span class="dv">800</span>))</span>
+<span id="cb189-10"><a href="#cb189-10" aria-hidden="true" tabindex="-1"></a>result<span class="sc">$</span>total      <span class="co"># 5850</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 5850</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb191"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb191-1"><a href="#cb191-1" aria-hidden="true" tabindex="-1"></a>result<span class="sc">$</span>average    <span class="co"># 1462.5</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1462.5</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb193"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb193-1"><a href="#cb193-1" aria-hidden="true" tabindex="-1"></a>result<span class="sc">$</span>highest    <span class="co"># 3400</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3400</code></pre>
+</div>
+</div>
+<p>Example 6: A Vectorized Custom Function (works on a whole column, no loop)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb195"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb195-1"><a href="#cb195-1" aria-hidden="true" tabindex="-1"></a>premium_with_gst <span class="ot">&lt;-</span> <span class="cf">function</span>(base_premium, <span class="at">gst_rate =</span> <span class="fl">0.18</span>) {</span>
+<span id="cb195-2"><a href="#cb195-2" aria-hidden="true" tabindex="-1"></a>  base_premium <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">+</span> gst_rate)</span>
+<span id="cb195-3"><a href="#cb195-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb195-4"><a href="#cb195-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb195-5"><a href="#cb195-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Works on a single value</span></span>
+<span id="cb195-6"><a href="#cb195-6" aria-hidden="true" tabindex="-1"></a><span class="fu">premium_with_gst</span>(<span class="dv">5000</span>)          <span class="co"># 5900</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 5900</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb197"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb197-1"><a href="#cb197-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Also works on an entire vector at once — no loop needed</span></span>
+<span id="cb197-2"><a href="#cb197-2" aria-hidden="true" tabindex="-1"></a>premiums <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">5000</span>, <span class="dv">8000</span>, <span class="dv">12000</span>)</span>
+<span id="cb197-3"><a href="#cb197-3" aria-hidden="true" tabindex="-1"></a><span class="fu">premium_with_gst</span>(premiums)      <span class="co"># 5900  9440  14160</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  5900  9440 14160</code></pre>
+</div>
+</div>
+<p><strong>Quick Exercise</strong></p>
+<p>Write a function <code>lic_maturity(premium, years, rate = 0.06)</code> that calculates simple maturity value as <code>premium * years * (1 + rate)</code>, then apply it to a vector of different premium amounts to show it working without a loop.</p>
+<hr>
 <p><strong>Introduction to Git &amp; GitHub</strong></p>
 <ul>
 <li><strong>Version Control Concepts:</strong> Understanding repositories, commits, branching, and remote hosting.</li>

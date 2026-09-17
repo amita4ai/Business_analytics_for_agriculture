@@ -573,14 +573,461 @@ Use any inbuilt dataset in R and create 5 different visuals using `ggplot2` pack
 
 :::
 
-
+---
 
 **Programming Fundamentals in R**
 
 - **Conditional Logic:** Writing `if`, `else if`, and `else` statements.
+
+_Basic Syntax_
+
+
+if (condition) {
+  # code if TRUE
+} else if (another_condition) {
+  # code if that's TRUE
+} else {
+  # code if none are TRUE
+}
+
+
+Example 1: Simple `if`
+
+```{r}
+age <- 20
+
+if (age >= 18) {
+  print("You are an adult")
+}
+```
+
+Try changing age value 15, 17.5 and 21 and check if else statement is properly working or not.
+
+Example 2: `if` / `else`
+
+```{r}
+marks <- 45
+
+if (marks >= 40) {
+  print("Pass")
+} else {
+  print("Fail")
+}
+```
+
+Check the if lese statement command for marks 35 and 50.
+
+Example 3: `if` / `else if` / `else` (grading system)
+
+```{r}
+marks <- 78
+
+if (marks >= 90) {
+  print("Grade: A")
+} else if (marks >= 75) {
+  print("Grade: B")
+} else if (marks >= 60) {
+  print("Grade: C")
+} else if (marks >= 40) {
+  print("Grade: D")
+} else {
+  print("Grade: F")
+}
+```
+
+Check the Grade for Marks 40, 70, and 90.
+
+Example 4: Using it inside a function (practical, real-world style)
+
+```{r}
+check_bmi <- function(bmi) {
+  if (bmi < 18.5) {
+    return("Underweight")
+  } else if (bmi < 25) {
+    return("Normal")
+  } else if (bmi < 30) {
+    return("Overweight")
+  } else {
+    return("Obese")
+  }
+}
+
+check_bmi(27)   # "Overweight"
+check_bmi(21)   # "Normal"
+```
+
+Example 5: Vectorized alternative — `ifelse()`
+
+Regular `if` only checks **one value at a time**. When you need to apply a condition across an entire column/vector (very common with sales/data work), use `ifelse()` instead:
+
+```{r}
+scores <- c(45, 88, 62, 30, 95)
+
+result <- ifelse(scores >= 50, "Pass", "Fail")
+print(result)
+
+```
+
+Common Mistake to Warn Students About
+
+`else` **must** be on the same line as the closing `}` of the `if` block — otherwise R throws an error (especially when running line-by-line in a script).
+
+```{r}
+# # WRONG (in a script run line-by-line)
+# if (age >= 18) {
+#   print("Adult")
+# }
+# else {
+#   print("Minor")
+# }
+
+# CORRECT
+if (age >= 18) {
+  print("Adult")
+} else {
+  print("Minor")
+}
+```
+
+**Quick Exercise**
+
+Write a function `classify_diamond(price)` that returns `"Budget"` if price < 1000, `"Mid-range"` if price < 5000, and `"Luxury"` otherwise — then test it using values pulled from the `diamonds$price` column.
+
+---
+
 - **Vectorized Operations:** Leveraging R's native speed instead of traditional loops.
+
+_The Core Idea_
+
+R is built to operate on entire vectors at once, not element-by-element like traditional loops. Vectorized code is faster, shorter, and more "R-like."
+
+```{r}
+x <- c(1, 2, 3, 4, 5)
+x * 2
+# 2 4 6 8 10   — every element multiplied, no loop needed
+```
+
+Example 1: Loop vs. Vectorized (the classic comparison)
+
+**Slow, traditional way (loop):**
+
+```{r}
+x <- 1:1000000
+result <- numeric(length(x))
+
+for (i in seq_along(x)) {
+  result[i] <- x[i] * 2
+}
+```
+
+**Fast, vectorized way:**
+```{r}
+x <- 1:1000000
+result <- x * 2
+```
+
+Same output — but the vectorized version runs dramatically faster because R's internal C code handles the looping, not R itself.
+
+Example 2: Conditional Logic — `ifelse()` Instead of a Loop
+
+```{r}
+scores <- c(45, 88, 62, 30, 95)
+
+# Loop way (avoid this)
+result <- character(length(scores))
+for (i in seq_along(scores)) {
+  if (scores[i] >= 50) result[i] <- "Pass" else result[i] <- "Fail"
+}
+
+# Vectorized way (do this)
+result <- ifelse(scores >= 50, "Pass", "Fail")
+```
+
+Example 3: Applying a Function Across a Vector
+
+```{r}
+prices <- c(1200, 450, 3400, 800, 5200)
+
+# No loop needed — sqrt() is already vectorized
+sqrt(prices)
+
+# Custom logic without a loop, using ifelse()
+category <- ifelse(prices < 1000, "Budget",
+             ifelse(prices < 5000, "Mid-range", "Luxury"))
+```
+
+Example 4: Vectorized Math on Data Frame Columns
+
+```{r}
+diamonds$price_per_carat <- diamonds$price / diamonds$carat
+```
+
+No loop, no `apply()` — one line operates on all ~54,000 rows simultaneously.
+
+Example 5: Logical Indexing (a vectorized filter)
+
+```{r}
+x <- c(10, 25, 3, 47, 8, 62)
+
+x[x > 20]        # 25 47 62 — pulls all elements matching the condition
+sum(x > 20)      # 3 — counts how many meet the condition
+```
+
+When You *Do* Still Need a Loop
+
+Vectorization doesn't cover everything — use loops when each step depends on the *previous* result (e.g., simulations, recursive calculations):
+
+```{r}
+balance <- numeric(10)
+balance[1] <- 1000
+for (i in 2:10) {
+  balance[i] <- balance[i-1] * 1.05   # depends on prior value
+}
+```
+
+The Rule of Thumb to Teach
+
+**If you're writing a `for` loop to do simple math or apply a condition to a whole column — stop. There's almost always a vectorized way.**
+
+**Quick Exercise**
+
+Here is the 20 chick weights:
+
+60, 120, 221, 175, 80,
+280, 305, 155, 98, 103,
+200, 190, 352, 75, 180,
+210, 198, 98, 98, 170
+
+Classify each chick as `"Low"`, `"Medium"`, or `"High"` using nested `ifelse()` — then time it against a loop-based version using `system.time()` to see the speed difference themselves.
+
+
 - **Basic Loops:** Understanding `for` and `while` loops for repetitive tasks.
+
+_`for` Loop — When You Know How Many Times to Repeat_
+
+```{r}
+for (i in 1:5) {
+  print(i)
+}
+# 1 2 3 4 5
+```
+
+Example 1: Looping Over a Vector
+
+```{r}
+fruits <- c("Apple", "Banana", "Mango")
+
+for (f in fruits) {
+  print(paste("I like", f))
+}
+```
+
+Example 2: Looping With an Index (common in data work)
+
+```{r}
+prices <- c(100, 250, 400)
+
+for (i in 1:length(prices)) {
+  cat("Item", i, "costs Rs.", prices[i], "\n")
+}
+```
+
+**Tip:** prefer `seq_along(prices)` over `1:length(prices)` — it safely handles an empty vector (`1:0` gives `1, 0`, which breaks the loop).
+
+```{r}
+for (i in seq_along(prices)) {
+  cat("Item", i, "costs Rs.", prices[i], "\n")
+}
+```
+
+Example 3: Accumulating a Result
+
+```{r}
+total <- 0
+sales <- c(1200, 450, 3400, 800)
+
+for (s in sales) {
+  total <- total + s
+}
+print(total)   # 5850
+```
+
+(Note: `sum(sales)` does this in one vectorized line — loops are for teaching the *concept*, but real code should prefer vectorization once understood.)
+
+_`while` Loop — When You Don't Know the Number of Iterations in Advance_
+
+Repeats **as long as a condition stays TRUE**.
+
+```{r}
+count <- 1
+
+while (count <= 5) {
+  print(count)
+  count <- count + 1
+}
+```
+
+
+Example 4: `while` Loop — Practical Case (compounding until a target is hit)
+
+```{r}
+balance <- 1000
+years <- 0
+
+while (balance < 2000) {
+  balance <- balance * 1.08   # 8% annual growth
+  years <- years + 1
+}
+
+cat("It took", years, "years to double the balance.\n")
+```
+
+This is the kind of problem `while` is made for — you genuinely don't know the iteration count upfront.
+
+_`break` and `next` — Controlling Loop Flow_
+
+```{r}
+# break — stop the loop early
+for (i in 1:10) {
+  if (i == 5) break
+  print(i)
+}
+# 1 2 3 4
+
+# next — skip this iteration, continue looping
+for (i in 1:10) {
+  if (i %% 2 == 0) next   # skip even numbers
+  print(i)
+}
+# 1 3 5 7 9
+```
+
+_Common Mistake to Warn Students About_
+
+Forgetting to update the counter in a `while` loop causes an **infinite loop**:
+
+```{r}
+# WRONG — never stops
+#count <- 1
+#while (count <= 5) {
+#  print(count)
+  # forgot: count <- count + 1
+#}
+```
+
+If this happens in RStudio, hit the **red stop icon** (or `Esc`) to break out.
+
+_`for` vs `while` — Quick Rule of Thumb_
+
+| Use `for` when... | Use `while` when... |
+|---|---|
+| You know the number of iterations | You don't know how many iterations you'll need |
+| Looping over a fixed vector/list | Looping until a condition is met |
+
+**Quick Exercise**
+
+Using a `while` loop,  find how many months it takes an LIC premium of ₹5,000 growing at 0.5% monthly interest to cross ₹6,000 — then solve the same problem with a `for` loop capped at 50 iterations using `break` once the target is hit.
+
+---
+
 - **Writing Custom Functions:** Building reusable code blocks with inputs and outputs.
+
+_Basic Syntax_
+
+```r
+function_name <- function(arg1, arg2) {
+  # code using arg1, arg2
+  return(result)
+}
+```
+
+Example 1: Simple Function
+
+```{r}
+square <- function(x) {
+  return(x^2)
+}
+
+square(5)   # 25
+```
+
+
+Example 2: Multiple Arguments
+
+```{r}
+calculate_bmi <- function(weight, height) {
+  bmi <- weight / (height^2)
+  return(bmi)
+}
+
+calculate_bmi(70, 1.75)   # 22.86
+```
+
+Example 3: Default Argument Values
+
+```{r}
+greet <- function(name, greeting = "Hello") {
+  paste(greeting, name)
+}
+
+greet("Amita")                    # "Hello Arun"
+greet("Amita", "Good morning")    # "Good morning Arun"
+```
+
+Example 4: Combining a Function With `if`/`else` (very common pattern)
+
+```{r}
+classify_diamond <- function(price) {
+  if (price < 1000) {
+    return("Budget")
+  } else if (price < 5000) {
+    return("Mid-range")
+  } else {
+    return("Luxury")
+  }
+}
+
+classify_diamond(3200)   # "Mid-range"
+```
+
+Example 5: Function That Returns Multiple Values (via a list)
+
+```{r}
+sales_summary <- function(sales) {
+  list(
+    total = sum(sales),
+    average = mean(sales),
+    highest = max(sales)
+  )
+}
+
+result <- sales_summary(c(1200, 450, 3400, 800))
+result$total      # 5850
+result$average    # 1462.5
+result$highest    # 3400
+```
+
+
+Example 6: A Vectorized Custom Function (works on a whole column, no loop)
+
+```{r}
+premium_with_gst <- function(base_premium, gst_rate = 0.18) {
+  base_premium * (1 + gst_rate)
+}
+
+# Works on a single value
+premium_with_gst(5000)          # 5900
+
+# Also works on an entire vector at once — no loop needed
+premiums <- c(5000, 8000, 12000)
+premium_with_gst(premiums)      # 5900  9440  14160
+```
+
+**Quick Exercise**
+
+Write a function `lic_maturity(premium, years, rate = 0.06)` that calculates simple maturity value as `premium * years * (1 + rate)`, then apply it to a vector of different premium amounts to show it working without a loop.
+
+---
 
 **Introduction to Git & GitHub**
 
