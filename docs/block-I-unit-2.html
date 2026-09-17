@@ -216,7 +216,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#fundamentals-of-r-and-rstudio" id="toc-fundamentals-of-r-and-rstudio" class="nav-link active" data-scroll-target="#fundamentals-of-r-and-rstudio"><span class="header-section-number">5.1</span> Fundamentals of R and RStudio</a></li>
-  <li><a href="#data-preprocessing-machine-learning-cycle-inferential-statistics" id="toc-data-preprocessing-machine-learning-cycle-inferential-statistics" class="nav-link" data-scroll-target="#data-preprocessing-machine-learning-cycle-inferential-statistics"><span class="header-section-number">5.2</span> Data Preprocessing, Machine Learning Cycle &amp; Inferential Statistics</a></li>
+  <li><a href="#quick-exercise" id="toc-quick-exercise" class="nav-link" data-scroll-target="#quick-exercise"><span class="header-section-number">5.2</span> Quick Exercise</a></li>
+  <li><a href="#data-preprocessing-machine-learning-cycle-inferential-statistics" id="toc-data-preprocessing-machine-learning-cycle-inferential-statistics" class="nav-link" data-scroll-target="#data-preprocessing-machine-learning-cycle-inferential-statistics"><span class="header-section-number">5.3</span> Data Preprocessing, Machine Learning Cycle &amp; Inferential Statistics</a></li>
   </ul>
 </nav>
     </div>
@@ -688,24 +689,434 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Data Importation and Exportation</strong></p>
 <ul>
 <li><strong>Working Directories:</strong> Setting and managing your file paths using R projects.</li>
-<li><strong>Importing Flat Files:</strong> Reading <code>.csv</code>, <code>.txt</code>, and <code>.tsv</code> files using base R and <code>readr</code>.</li>
-<li><strong>Importing Excel and Software Files:</strong> Introduction to <code>readxl</code> and <code>haven</code> for <code>SPSS, SAS, or Stata</code> data.</li>
-<li><strong>Exporting Data:</strong> Saving cleaned datasets back to your local environment.</li>
+</ul>
+<p><em>The Problem R Projects Solve</em></p>
+<p>New R users often write <code>setwd("C:/Users/Arun/Desktop/data")</code> at the top of every script. This breaks the moment the script moves to another computer, another folder, or another person’s laptop. R Projects fix this permanently.</p>
+<p><em>Setting It Up</em></p>
+<ol type="1">
+<li><p><strong>Create a Project</strong>: File → New Project → New Directory (or Existing Directory) → give it a name.</p></li>
+<li><p>This creates a <code>.Rproj</code> file in that folder — this file IS the anchor. Wherever this file sits, that becomes “home” whenever you open the project.</p></li>
+<li><p>Double-click the <code>.Rproj</code> file (or open via RStudio’s Project menu) to launch — RStudio automatically sets the working directory to that folder. <strong>No <code>setwd()</code> needed, ever.</strong></p></li>
+</ol>
+<p><em>The One Rule to Teach</em></p>
+<p><strong>Never use <code>setwd()</code> with absolute paths. Always use paths relative to the project root.</strong></p>
+<p>Instead of:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="co">#data &lt;- read.csv("C:/Users/Arun/Desktop/MyProject/data/sales.csv")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Write:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="co">#data &lt;- read.csv("data/sales.csv")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><em>Recommended Folder Structure</em></p>
+<p>Have students create this inside every new project:</p>
+<p>MyProject/ ├── MyProject.Rproj ├── data/ (raw data, never edited manually) ├── scripts/ (.R or .qmd files) ├── output/ (plots, results, reports) └── README.md</p>
+<p><em>The <code>here</code> Package (strongly recommend)</em></p>
+<p>Even relative paths can break if a script is sourced from a subfolder. The <code>here</code> package solves this:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("here")</span></span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'here' was built under R version 4.4.2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>here() starts at F:/After 28 June 2026/Business_analytics_for_agriculture</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="co">#data &lt;- read.csv(here("data", "sales.csv"))</span></span>
+<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a><span class="co">#ggsave(here("output", "plot1.png"))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>here()</code> always resolves from the project root, no matter which subfolder the script runs from. Make this a habit from day one — it saves enormous debugging pain later.</p>
+<p><em>Quick Checklist for Students</em></p>
+<ul class="task-list">
+<li><label><input type="checkbox">Every analysis lives inside its own <code>.Rproj</code></label></li>
+<li><label><input type="checkbox">Never hardcode a personal folder path</label></li>
+<li><label><input type="checkbox">Use <code>data/</code>, <code>scripts/</code>, <code>output/</code> subfolders</label></li>
+<li><label><input type="checkbox">Use <code>here::here()</code> instead of raw relative strings</label></li>
+<li><label><input type="checkbox">Check working directory anytime with <code>getwd()</code> — should always show the project folder</label></li>
 </ul>
 <p><strong>Data Manipulation (Introduction to the Tidyverse)</strong></p>
-<ul>
-<li><strong>The Pipe Operator:</strong> Using <code>%&gt;%</code> or <code>|&gt;</code> to write clean, readable code.</li>
-<li><strong>Filtering and Selecting:</strong> Isolating specific rows <code>(filter())</code> and columns <code>(select())</code>.</li>
-<li><strong>Sorting and Mutating:</strong> Arranging data <code>(arrange())</code> and creating new variables <code>(mutate())</code>.</li>
-<li><strong>Summarizing Data:</strong> Grouping data <code>(group_by())</code> and calculating summary statistics <code>(summarize())</code>.</li>
-</ul>
+<p><em>Setup</em></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'tidyverse' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'ggplot2' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'tidyr' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'purrr' was built under R version 4.4.2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'dplyr' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'stringr' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'lubridate' was built under R version 4.4.2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.1     ✔ purrr     1.0.4
+✔ forcats   1.0.0     ✔ readr     2.1.5
+✔ ggplot2   3.5.2     ✔ stringr   1.6.0
+✔ lubridate 1.9.4     ✔ tidyr     1.3.2
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(diamonds)  <span class="co"># already loaded, ~54,000 rows</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 10
+  carat cut       color clarity depth table price     x     y     z
+  &lt;dbl&gt; &lt;ord&gt;     &lt;ord&gt; &lt;ord&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1  0.23 Ideal     E     SI2      61.5    55   326  3.95  3.98  2.43
+2  0.21 Premium   E     SI1      59.8    61   326  3.89  3.84  2.31
+3  0.23 Good      E     VS1      56.9    65   327  4.05  4.07  2.31
+4  0.29 Premium   I     VS2      62.4    58   334  4.2   4.23  2.63
+5  0.31 Good      J     SI2      63.3    58   335  4.34  4.35  2.75
+6  0.24 Very Good J     VVS2     62.8    57   336  3.94  3.96  2.48</code></pre>
+</div>
+</div>
+<ol type="1">
+<li>The Pipe Operator</li>
+</ol>
+<p>Both <code>%&gt;%</code> and <code>|&gt;</code> do the same thing — pass the object on the left into the function on the right.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb103"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Native pipe (R 4.1+) - recommended for students today</span></span>
+<span id="cb103-2"><a href="#cb103-2" aria-hidden="true" tabindex="-1"></a>diamonds <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 10
+  carat cut       color clarity depth table price     x     y     z
+  &lt;dbl&gt; &lt;ord&gt;     &lt;ord&gt; &lt;ord&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1  0.23 Ideal     E     SI2      61.5    55   326  3.95  3.98  2.43
+2  0.21 Premium   E     SI1      59.8    61   326  3.89  3.84  2.31
+3  0.23 Good      E     VS1      56.9    65   327  4.05  4.07  2.31
+4  0.29 Premium   I     VS2      62.4    58   334  4.2   4.23  2.63
+5  0.31 Good      J     SI2      63.3    58   335  4.34  4.35  2.75
+6  0.24 Very Good J     VVS2     62.8    57   336  3.94  3.96  2.48</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb105"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a><span class="co"># magrittr pipe - older, still common in tutorials/code online</span></span>
+<span id="cb105-2"><a href="#cb105-2" aria-hidden="true" tabindex="-1"></a>diamonds <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 10
+  carat cut       color clarity depth table price     x     y     z
+  &lt;dbl&gt; &lt;ord&gt;     &lt;ord&gt; &lt;ord&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1  0.23 Ideal     E     SI2      61.5    55   326  3.95  3.98  2.43
+2  0.21 Premium   E     SI1      59.8    61   326  3.89  3.84  2.31
+3  0.23 Good      E     VS1      56.9    65   327  4.05  4.07  2.31
+4  0.29 Premium   I     VS2      62.4    58   334  4.2   4.23  2.63
+5  0.31 Good      J     SI2      63.3    58   335  4.34  4.35  2.75
+6  0.24 Very Good J     VVS2     62.8    57   336  3.94  3.96  2.48</code></pre>
+</div>
+</div>
+<ol start="2" type="1">
+<li>Filtering and Selecting</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a>diamonds <span class="sc">|&gt;</span></span>
+<span id="cb107-2"><a href="#cb107-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(cut <span class="sc">==</span> <span class="st">"Ideal"</span>, price <span class="sc">&gt;</span> <span class="dv">5000</span>) <span class="sc">|&gt;</span>   <span class="co"># rows: only Ideal cut, expensive</span></span>
+<span id="cb107-3"><a href="#cb107-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(carat, cut, price, color)           <span class="co"># columns: keep only these</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4,985 × 4
+   carat cut   price color
+   &lt;dbl&gt; &lt;ord&gt; &lt;int&gt; &lt;ord&gt;
+ 1  1.16 Ideal  5001 E    
+ 2  1.16 Ideal  5001 E    
+ 3  1.07 Ideal  5002 I    
+ 4  1.1  Ideal  5002 H    
+ 5  1.2  Ideal  5002 J    
+ 6  1.14 Ideal  5003 H    
+ 7  1.11 Ideal  5004 E    
+ 8  1.03 Ideal  5005 H    
+ 9  1.14 Ideal  5005 E    
+10  0.72 Ideal  5006 F    
+# ℹ 4,975 more rows</code></pre>
+</div>
+</div>
+<ol start="3" type="1">
+<li>Sorting and Mutating</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb109"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a>diamonds <span class="sc">|&gt;</span></span>
+<span id="cb109-2"><a href="#cb109-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">price_per_carat =</span> price <span class="sc">/</span> carat) <span class="sc">|&gt;</span>   <span class="co"># new variable</span></span>
+<span id="cb109-3"><a href="#cb109-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(price_per_carat)) <span class="sc">|&gt;</span>            <span class="co"># sort, highest first</span></span>
+<span id="cb109-4"><a href="#cb109-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(carat, price, price_per_carat)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 53,940 × 3
+   carat price price_per_carat
+   &lt;dbl&gt; &lt;int&gt;           &lt;dbl&gt;
+ 1  1.04 18542          17829.
+ 2  1.07 18279          17083.
+ 3  1.03 17590          17078.
+ 4  1.07 18114          16929.
+ 5  1.02 17100          16765.
+ 6  1.07 17909          16737.
+ 7  1.09 18231          16726.
+ 8  1    16469          16469 
+ 9  1.01 16234          16073.
+10  1    16073          16073 
+# ℹ 53,930 more rows</code></pre>
+</div>
+</div>
+<ol start="4" type="1">
+<li>Summarizing Data</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb111"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a>diamonds <span class="sc">|&gt;</span></span>
+<span id="cb111-2"><a href="#cb111-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(cut) <span class="sc">|&gt;</span></span>
+<span id="cb111-3"><a href="#cb111-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb111-4"><a href="#cb111-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_price =</span> <span class="fu">mean</span>(price),</span>
+<span id="cb111-5"><a href="#cb111-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_sales =</span> <span class="fu">sum</span>(price),</span>
+<span id="cb111-6"><a href="#cb111-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">count =</span> <span class="fu">n</span>()</span>
+<span id="cb111-7"><a href="#cb111-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb111-8"><a href="#cb111-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(total_sales))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 4
+  cut       avg_price total_sales count
+  &lt;ord&gt;         &lt;dbl&gt;       &lt;int&gt; &lt;int&gt;
+1 Ideal         3458.    74513487 21551
+2 Premium       4584.    63221498 13791
+3 Very Good     3982.    48107623 12082
+4 Good          3929.    19275009  4906
+5 Fair          4359.     7017600  1610</code></pre>
+</div>
+</div>
+<p>This is the exercise that shows <em>why</em> the pipe matters — one readable chain instead of nested function calls:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb113"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a>diamonds <span class="sc">|&gt;</span></span>
+<span id="cb113-2"><a href="#cb113-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(price <span class="sc">&gt;</span> <span class="dv">1000</span>) <span class="sc">|&gt;</span></span>
+<span id="cb113-3"><a href="#cb113-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">price_per_carat =</span> price <span class="sc">/</span> carat) <span class="sc">|&gt;</span></span>
+<span id="cb113-4"><a href="#cb113-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(color) <span class="sc">|&gt;</span></span>
+<span id="cb113-5"><a href="#cb113-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb113-6"><a href="#cb113-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_price =</span> <span class="fu">mean</span>(price),</span>
+<span id="cb113-7"><a href="#cb113-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_ppc =</span> <span class="fu">mean</span>(price_per_carat),</span>
+<span id="cb113-8"><a href="#cb113-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">n</span>()</span>
+<span id="cb113-9"><a href="#cb113-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb113-10"><a href="#cb113-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(avg_price))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 7 × 4
+  color avg_price avg_ppc     n
+  &lt;ord&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;int&gt;
+1 I         6404.   4644.  4191
+2 J         6254.   4263.  2345
+3 H         5785.   4695.  6201
+4 G         5277.   4939.  8118
+5 F         4769.   4798.  7071
+6 D         4215.   4699.  4743
+7 E         4137.   4513.  6747</code></pre>
+</div>
+</div>
+<p><strong>Pipe operators Reads left to right like a sentence:</strong> *“Take diamonds, filter for price above 1000, create price-per-carat, group by color, summarize, then sort by average price descending.”**</p>
+</section>
+<section id="quick-exercise" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="quick-exercise"><span class="header-section-number">5.2</span> Quick Exercise</h2>
+<p>Find: <em>“Which diamond <code>clarity</code> grade has the highest average price per carat, considering only diamonds under 2 carats?”</em></p>
+<p>HINT: <code>filter → mutate → group_by → summarize → arrange</code></p>
 <p><strong>Basic Data Visualization</strong></p>
 <ul>
 <li><strong>Base R Graphics:</strong> Creating quick plots using <code>plot()</code>, <code>hist()</code>, and <code>boxplot()</code>.</li>
-<li><strong>Introduction to ggplot2:</strong> Understanding the grammar of graphics (Data, Aesthetics, Geoms).</li>
-<li><strong>Essential Plot Types:</strong> Building scatter plots, bar charts, line graphs, and histograms.</li>
-<li><strong>Customizing Plots:</strong> Adding titles, changing axis labels, and applying basic themes.</li>
 </ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb115"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"trees"</span>)</span>
+<span id="cb115-2"><a href="#cb115-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb115-3"><a href="#cb115-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(trees<span class="sc">$</span>Girth, trees<span class="sc">$</span>Volume)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-I-unit-2_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb116"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(trees<span class="sc">$</span>Girth, <span class="at">n=</span><span class="dv">30</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-I-unit-2_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(trees<span class="sc">$</span>Girth, <span class="at">horizontal =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-I-unit-2_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li><strong>Introduction to ggplot2:</strong> Understanding the grammar of graphics (Data, Aesthetics, Geoms).</li>
+</ul>
+<p><img src="ggplot.png" class="img-fluid"></p>
+<p><code>ggplot2</code> is the most versatile package to create basic to the advance level graphics and plots. You can visit the <a href="https://r-graph-gallery.com/">GGPLOT gallery</a>, learn more about GGPLOT from this <a href="https://ggplot2.tidyverse.org/articles/ggplot2.html">LINK</a> to see what <code>ggplot2</code> package is capable of. Checkout the <a href="https://rstudio.github.io/cheatsheets/html/data-visualization.html">GGPLOT2 CHEATSHEET</a> and dedicated book <a href="https://r4ds.had.co.nz/data-visualisation.html">Data Visualization</a>.</p>
+<p>Some experts have used GGPLOT2 to create artistic plots and build career in data visualization and storytelling. Check following profiles of ggplot artists:</p>
+<ul>
+<li><p><a href="riffomonas.org">Riffomonas Project</a></p></li>
+<li><p><a href="https://www.youtube.com/@rappa753">Albert Rapp</a></p></li>
+<li><p><a href="https://www.youtube.com/@milos-makes-maps">Milo Makes Maps</a></p></li>
+<li><p><strong>Essential Plot Types:</strong> Building scatter plots, bar charts, line graphs, and histograms.</p></li>
+<li><p><strong>Customizing Plots:</strong> Adding titles, changing axis labels, and applying basic themes.</p></li>
+</ul>
+<p><em>Anatomy of a Plot</em></p>
+<p>A plot is made up of layers shown as following:</p>
+<p><img src="plotlayers.png" class="img-fluid"></p>
+<p><em>Components of a plot</em></p>
+<p>Therr are variety of components that make a plot. The following image shows the plot components and corresponding command from ggplot package to create that element:</p>
+<p><img src="plotcomps.png" class="img-fluid"> Source: <a href="https://share.google/vzISynxyvpx0seAnv">Author Isabella Benabaye</a></p>
+<p><em>Steps to create a basic ggplot</em></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb118"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Call the ggplot2 package from library</span></span>
+<span id="cb118-2"><a href="#cb118-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb118-3"><a href="#cb118-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb118-4"><a href="#cb118-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb118-5"><a href="#cb118-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Load data in ggplot</span></span>
+<span id="cb118-6"><a href="#cb118-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb118-7"><a href="#cb118-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ChickWeight)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-I-unit-2_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb119"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Add aesthetics (x and y axis)</span></span>
+<span id="cb119-2"><a href="#cb119-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb119-3"><a href="#cb119-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span> ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>weight))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-I-unit-2_files/figure-html/unnamed-chunk-27-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb120"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Add layers of type of plot, transformation or position adjustment using geoms</span></span>
+<span id="cb120-2"><a href="#cb120-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb120-3"><a href="#cb120-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>weight)) <span class="sc">+</span></span>
+<span id="cb120-4"><a href="#cb120-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span>                      <span class="co">#To create scatter plot</span></span>
+<span id="cb120-5"><a href="#cb120-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">formula =</span> y <span class="sc">~</span>x, <span class="at">method =</span> <span class="st">"lm"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-I-unit-2_files/figure-html/unnamed-chunk-27-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb121"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Adding Scales to differentiate the different segments</span></span>
+<span id="cb121-2"><a href="#cb121-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb121-3"><a href="#cb121-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>weight, <span class="at">colour =</span> <span class="fu">as.factor</span>(Diet))) <span class="sc">+</span></span>
+<span id="cb121-4"><a href="#cb121-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span>                      <span class="co">#To create scatter plot</span></span>
+<span id="cb121-5"><a href="#cb121-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">formula =</span> y <span class="sc">~</span>x, <span class="at">method =</span> <span class="st">"loess"</span>) <span class="sc">+</span> <span class="co"># Setting leoss rgression line</span></span>
+<span id="cb121-6"><a href="#cb121-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_viridis_d</span>()    <span class="co"># Scale</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-I-unit-2_files/figure-html/unnamed-chunk-27-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb122"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. Subsetting plot into facets if required</span></span>
+<span id="cb122-2"><a href="#cb122-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb122-3"><a href="#cb122-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>weight)) <span class="sc">+</span></span>
+<span id="cb122-4"><a href="#cb122-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span>                      <span class="co">#To create scatter plot</span></span>
+<span id="cb122-5"><a href="#cb122-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Diet)                  <span class="co"># To create facets</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-I-unit-2_files/figure-html/unnamed-chunk-27-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb123"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 7. Coordinates setting</span></span>
+<span id="cb123-2"><a href="#cb123-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb123-3"><a href="#cb123-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>weight)) <span class="sc">+</span></span>
+<span id="cb123-4"><a href="#cb123-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span>                      <span class="co">#To create scatter plot</span></span>
+<span id="cb123-5"><a href="#cb123-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_fixed</span>()                       <span class="co"># To set coordinates fixed ratio  as per scale</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-I-unit-2_files/figure-html/unnamed-chunk-27-6.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb124"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>weight)) <span class="sc">+</span></span>
+<span id="cb124-2"><a href="#cb124-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span>                      <span class="co">#To create scatter plot</span></span>
+<span id="cb124-3"><a href="#cb124-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_fixed</span>(<span class="fl">0.5</span>)                       <span class="co"># To set coordinates fixed ratio  as per choice</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-I-unit-2_files/figure-html/unnamed-chunk-27-7.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb125"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>weight)) <span class="sc">+</span></span>
+<span id="cb125-2"><a href="#cb125-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span>                      <span class="co">#To create scatter plot</span></span>
+<span id="cb125-3"><a href="#cb125-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_fixed</span>(<span class="fl">1.5</span>)                       <span class="co"># To set coordinates fixed ratio  as per choice</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-I-unit-2_files/figure-html/unnamed-chunk-27-8.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb126"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>weight)) <span class="sc">+</span></span>
+<span id="cb126-2"><a href="#cb126-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span>                      <span class="co">#To create scatter plot</span></span>
+<span id="cb126-3"><a href="#cb126-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_fixed</span>(<span class="fl">0.01</span>)                       <span class="co"># To set coordinates fixed ratio  as per choice</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-I-unit-2_files/figure-html/unnamed-chunk-27-9.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb127"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb127-1"><a href="#cb127-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 8. Adding theme to the plot (title, subtitle, axis label, plot background, graph background, caption, annotation, font size, font type, font formats, etc.)</span></span>
+<span id="cb127-2"><a href="#cb127-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb127-3"><a href="#cb127-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>weight, <span class="at">colour =</span> Diet)) <span class="sc">+</span></span>
+<span id="cb127-4"><a href="#cb127-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span>                      <span class="co">#To create scatter plot</span></span>
+<span id="cb127-5"><a href="#cb127-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_fixed</span>(<span class="fl">0.01</span>) <span class="sc">+</span>                 <span class="co"># To set coordinates</span></span>
+<span id="cb127-6"><a href="#cb127-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb127-7"><a href="#cb127-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Chick Development Analysis"</span>,</span>
+<span id="cb127-8"><a href="#cb127-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Outcomes of an experiment with 578 Chicks"</span>,</span>
+<span id="cb127-9"><a href="#cb127-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Study done by students of Agri MBA-2 Batch 2024-26 in May 2026 at IABM"</span>,</span>
+<span id="cb127-10"><a href="#cb127-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Time in Days"</span>,</span>
+<span id="cb127-11"><a href="#cb127-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Weight in gram"</span></span>
+<span id="cb127-12"><a href="#cb127-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb127-13"><a href="#cb127-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb127-14"><a href="#cb127-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb127-15"><a href="#cb127-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">9</span>, <span class="at">color=</span><span class="st">"grey70"</span>),</span>
+<span id="cb127-16"><a href="#cb127-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.title.y =</span> <span class="fu">element_text</span>(<span class="at">color =</span> <span class="st">"darkblue"</span>),</span>
+<span id="cb127-17"><a href="#cb127-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.title.x =</span> <span class="fu">element_text</span>(<span class="at">color =</span> <span class="st">"darkgreen"</span>)</span>
+<span id="cb127-18"><a href="#cb127-18" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-I-unit-2_files/figure-html/unnamed-chunk-27-10.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled" title="Assignment 2.1">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Assignment 2.1
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Use any inbuilt dataset in R and create 5 different visuals using <code>ggplot2</code> package. (Visit GGplot Gallery for the help).</p>
+</div>
+</div>
 <p><strong>Programming Fundamentals in R</strong></p>
 <ul>
 <li><strong>Conditional Logic:</strong> Writing <code>if</code>, <code>else if</code>, and <code>else</code> statements.</li>
@@ -743,8 +1154,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <hr>
 </section>
-<section id="data-preprocessing-machine-learning-cycle-inferential-statistics" class="level2" data-number="5.2">
-<h2 data-number="5.2" class="anchored" data-anchor-id="data-preprocessing-machine-learning-cycle-inferential-statistics"><span class="header-section-number">5.2</span> Data Preprocessing, Machine Learning Cycle &amp; Inferential Statistics</h2>
+<section id="data-preprocessing-machine-learning-cycle-inferential-statistics" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="data-preprocessing-machine-learning-cycle-inferential-statistics"><span class="header-section-number">5.3</span> Data Preprocessing, Machine Learning Cycle &amp; Inferential Statistics</h2>
 <p><strong>Data Transformations and Preprocessing</strong></p>
 <ul>
 <li><strong>Normalization (Min-Max Scaling):</strong> Rescaling feature values to a constrained range between 0 and 1.</li>

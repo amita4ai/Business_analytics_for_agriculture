@@ -6,20 +6,19 @@ Fundamentals of R and RStudio, fundamentals of packages of RStudio, data manipul
 
 :::
 
----
+------------------------------------------------------------------------
 
 ## Fundamentals of R and RStudio
 
-**Introduction to the R Ecosystem** 
+**Introduction to the R Ecosystem**
 
-* **What is R and RStudio?** 
-
+- **What is R and RStudio?**
 
 ![](rpro.jpg)
 
 ![](rstudio.png)
 
-The upper left part of Rstudio is script writing panel and used writing commands for the data science tasks. 
+The upper left part of Rstudio is script writing panel and used writing commands for the data science tasks.
 
 The upper right part is console where we can see the output of the comands and terminal to access the terminal commands.
 
@@ -27,36 +26,30 @@ The lower left part shows the history of the project, environment and tutorials.
 
 The lower right part contains the file structures of the projects, views the visual outputs like plots, presentations, web pages, etc. Help tab is useful to know about basics of the packages and commands.
 
----
+------------------------------------------------------------------------
 
-**Basic Workflow:** Creating projects, writing scripts, executing code in the console, and saving your work. 
+**Basic Workflow:** Creating projects, writing scripts, executing code in the console, and saving your work.
 
 ![](pro1.png)
 
 - Launch a Project by clicking on New Project
 - Managing Project
 
-
 ![](pro2.png)
 
----
+------------------------------------------------------------------------
 
+**Core Data Types and Operators**
 
+- **Basic Data Types:** Working with numerics, integers, characters, logicals (boolean), and factors.
 
-**Core Data Types and Operators** 
+------------------------------------------------------------------------
 
-* **Basic Data Types:** Working with numerics, integers, characters, logicals (boolean), and factors. 
+![](data.jfif)
 
----
+------------------------------------------------------------------------
 
- ![](data.jfif)
-
-
----
-
-
-* **Basic Operators:** Implementing arithmetic `(+, -, *, /)`, assignment `(<-)`, and logical operators `(==, !=, <, >, >=, <=, &, |)`. 
-
+- **Basic Operators:** Implementing arithmetic `(+, -, *, /)`, assignment `(<-)`, and logical operators `(==, !=, <, >, >=, <=, &, |)`.
 
 ```{r}
 
@@ -79,14 +72,12 @@ The lower right part contains the file structures of the projects, views the vis
 
 ```
 
-
 ```{r}
 
 2/5
 
 
 ```
-
 
 ```{r}
 
@@ -95,7 +86,6 @@ D <- 3 + 5
 D
 
 ```
-
 
 ```{r}
 
@@ -121,14 +111,13 @@ a | b    # Element-wise OR (At least one TRUE)  -> TRUE  TRUE FALSE
 
 ```
 
-
-* **Missing Data:** Understanding and identifying `NA`, `NaN`, and `NULL` values. 
+- **Missing Data:** Understanding and identifying `NA`, `NaN`, and `NULL` values.
 
 ![](na.png)
 
-**R Data Structures** 
+**R Data Structures**
 
-* **Vectors:** Creating, indexing, and manipulating atomic vectors (the building blocks of R). 
+- **Vectors:** Creating, indexing, and manipulating atomic vectors (the building blocks of R).
 
 ```{r}
 
@@ -145,7 +134,6 @@ logical_vec
 
 ```
 
-
 ```{r}
 
 # --- Creating Sequences ---
@@ -161,7 +149,6 @@ seq_len
 
 ```
 
-
 ```{r}
 
 # --- Creating Repeated Values ---
@@ -173,11 +160,9 @@ rep_each
 
 ```
 
+- **Lists:** Structuring heterogeneous data collections.
 
-* **Lists:** Structuring heterogeneous data collections. 
-
-List can contain any sort of data with varying length and formats. 
-
+List can contain any sort of data with varying length and formats.
 
 ```{r}
 
@@ -200,8 +185,7 @@ list_all
 
 ```
 
-
-* **Matrices and Arrays:** Working with two-dimensional and multi-dimensional numeric data. 
+- **Matrices and Arrays:** Working with two-dimensional and multi-dimensional numeric data.
 
 ```{r}
 
@@ -228,9 +212,7 @@ arr
 
 ```
 
-
-
-* **Data Frames:** Creating, subsetting, and managing tabular data (the standard format for datasets). 
+- **Data Frames:** Creating, subsetting, and managing tabular data (the standard format for datasets).
 
 ```{r}
 
@@ -260,7 +242,6 @@ tb
 
 ```
 
-
 ```{r}
 
 # --- Subsetting Columns (Variables) ---
@@ -280,7 +261,6 @@ df[df$salary > 70000, ]
 df[df$remote == TRUE & df$salary > 80000, ]
 
 ```
-
 
 ```{r}
 
@@ -316,94 +296,354 @@ df_clean <- na.omit(df)
 
 **Data Importation and Exportation**
 
-* **Working Directories:** Setting and managing your file paths using R projects. 
-* **Importing Flat Files:** Reading `.csv`, `.txt`, and `.tsv` files using base R and `readr`. 
-* **Importing Excel and Software Files:** Introduction to `readxl` and `haven` for `SPSS, SAS, or Stata` data. 
-* **Exporting Data:** Saving cleaned datasets back to your local environment. 
+- **Working Directories:** Setting and managing your file paths using R projects.
+
+_The Problem R Projects Solve_
+
+New R users often write `setwd("C:/Users/Arun/Desktop/data")` at the top of every script. This breaks the moment the script moves to another computer, another folder, or another person's laptop. R Projects fix this permanently.
+
+_Setting It Up_
+
+1. **Create a Project**: File → New Project → New Directory (or Existing Directory) → give it a name.
+
+2. This creates a `.Rproj` file in that folder — this file IS the anchor. Wherever this file sits, that becomes "home" whenever you open the project.
+
+3. Double-click the `.Rproj` file (or open via RStudio's Project menu) to launch — RStudio automatically sets the working directory to that folder. **No `setwd()` needed, ever.**
+
+_The One Rule to Teach_
+
+**Never use `setwd()` with absolute paths. Always use paths relative to the project root.**
+
+Instead of:
+
+```{r}
+#data <- read.csv("C:/Users/Arun/Desktop/MyProject/data/sales.csv")
+```
+
+Write:
+
+```{r}
+#data <- read.csv("data/sales.csv")
+```
+
+_Recommended Folder Structure_
+
+Have students create this inside every new project:
+
+MyProject/
+├── MyProject.Rproj
+├── data/          (raw data, never edited manually)
+├── scripts/        (.R or .qmd files)
+├── output/        (plots, results, reports)
+└── README.md
+
+_The `here` Package (strongly recommend)_
+
+Even relative paths can break if a script is sourced from a subfolder. The `here` package solves this:
+
+```{r}
+#install.packages("here")
+library(here)
+
+#data <- read.csv(here("data", "sales.csv"))
+#ggsave(here("output", "plot1.png"))
+```
+
+`here()` always resolves from the project root, no matter which subfolder the script runs from. Make this a habit from day one — it saves enormous debugging pain later.
+
+_Quick Checklist for Students_
+
+- [ ] Every analysis lives inside its own `.Rproj`
+- [ ] Never hardcode a personal folder path
+- [ ] Use `data/`, `scripts/`, `output/` subfolders
+- [ ] Use `here::here()` instead of raw relative strings
+- [ ] Check working directory anytime with `getwd()` — should always show the project folder
 
 **Data Manipulation (Introduction to the Tidyverse)**
 
-* **The Pipe Operator:** Using `%>%` or `|>` to write clean, readable code. 
-* **Filtering and Selecting:** Isolating specific rows `(filter())` and columns `(select())`. 
-* **Sorting and Mutating:** Arranging data `(arrange())` and creating new variables `(mutate())`. 
-* **Summarizing Data:** Grouping data `(group_by())` and calculating summary statistics `(summarize())`. 
+_Setup_
+
+```{r}
+library(tidyverse)
+head(diamonds)  # already loaded, ~54,000 rows
+```
+
+1. The Pipe Operator
+
+Both `%>%` and `|>` do the same thing — pass the object on the left into the function on the right.
+
+```{r}
+# Native pipe (R 4.1+) - recommended for students today
+diamonds |> head()
+
+# magrittr pipe - older, still common in tutorials/code online
+diamonds %>% head()
+```
+
+2. Filtering and Selecting
+
+```{r}
+diamonds |>
+  filter(cut == "Ideal", price > 5000) |>   # rows: only Ideal cut, expensive
+  select(carat, cut, price, color)           # columns: keep only these
+```
+
+3. Sorting and Mutating
+
+```{r}
+diamonds |>
+  mutate(price_per_carat = price / carat) |>   # new variable
+  arrange(desc(price_per_carat)) |>            # sort, highest first
+  select(carat, price, price_per_carat)
+```
+
+4. Summarizing Data
+
+```{r}
+diamonds |>
+  group_by(cut) |>
+  summarize(
+    avg_price = mean(price),
+    total_sales = sum(price),
+    count = n()
+  ) |>
+  arrange(desc(total_sales))
+```
+
+This is the exercise that shows *why* the pipe matters — one readable chain instead of nested function calls:
+
+```{r}
+diamonds |>
+  filter(price > 1000) |>
+  mutate(price_per_carat = price / carat) |>
+  group_by(color) |>
+  summarize(
+    avg_price = mean(price),
+    avg_ppc = mean(price_per_carat),
+    n = n()
+  ) |>
+  arrange(desc(avg_price))
+```
+
+**Pipe operators Reads left to right like a sentence:** *"Take diamonds, filter for price above 1000, create price-per-carat, group by color, summarize, then sort by average price descending."**
+
+## Quick Exercise
+
+Find: *"Which diamond `clarity` grade has the highest average price per carat, considering only diamonds under 2 carats?"*
+
+HINT: `filter → mutate → group_by → summarize → arrange`
+
 
 **Basic Data Visualization**
 
-* **Base R Graphics:** Creating quick plots using `plot()`, `hist()`, and `boxplot()`. 
-* **Introduction to ggplot2:** Understanding the grammar of graphics (Data, Aesthetics, Geoms). 
-* **Essential Plot Types:** Building scatter plots, bar charts, line graphs, and histograms. 
-* **Customizing Plots:** Adding titles, changing axis labels, and applying basic themes. 
+- **Base R Graphics:** Creating quick plots using `plot()`, `hist()`, and `boxplot()`.
+
+```{r}
+
+data("trees")
+
+plot(trees$Girth, trees$Volume)
+
+```
+
+
+```{r}
+
+hist(trees$Girth, n=30)
+
+```
+
+
+```{r}
+
+boxplot(trees$Girth, horizontal = TRUE)
+
+```
+
+
+- **Introduction to ggplot2:** Understanding the grammar of graphics (Data, Aesthetics, Geoms).
+
+![](ggplot.png)
+
+`ggplot2` is the most versatile package to create basic to the advance level graphics and plots. You can visit the  [GGPLOT gallery](https://r-graph-gallery.com/), learn more about GGPLOT from this [LINK](https://ggplot2.tidyverse.org/articles/ggplot2.html) to see what `ggplot2` package is capable of. Checkout the [GGPLOT2 CHEATSHEET](https://rstudio.github.io/cheatsheets/html/data-visualization.html) and dedicated book [Data Visualization](https://r4ds.had.co.nz/data-visualisation.html). 
+
+Some experts have used GGPLOT2 to create artistic plots and build career in data visualization and storytelling. Check following profiles of ggplot artists:
+
+- [Riffomonas Project](riffomonas.org)
+
+- [Albert Rapp](https://www.youtube.com/@rappa753)
+
+- [Milo Makes Maps](https://www.youtube.com/@milos-makes-maps)
+
+- **Essential Plot Types:** Building scatter plots, bar charts, line graphs, and histograms.
+- **Customizing Plots:** Adding titles, changing axis labels, and applying basic themes.
+
+_Anatomy of a Plot_
+
+A plot is made up of layers shown as following:
+
+![](plotlayers.png)
+
+_Components of a plot_
+
+Therr are variety of components that make a plot. The following image shows the plot components and corresponding command from ggplot package to create that element:
+
+![](plotcomps.png)
+Source: [Author Isabella Benabaye](https://share.google/vzISynxyvpx0seAnv)
+
+_Steps to create a basic ggplot_
+
+```{r}
+
+# 1. Call the ggplot2 package from library
+
+library(ggplot2)
+
+# 2. Load data in ggplot
+
+ggplot(data = ChickWeight)
+
+# 3. Add aesthetics (x and y axis)
+
+ggplot(data= ChickWeight, aes(x=Time, y=weight))
+
+# 4. Add layers of type of plot, transformation or position adjustment using geoms
+
+ggplot(data = ChickWeight, aes(x=Time, y=weight)) +
+  geom_point() +                      #To create scatter plot
+  geom_smooth(formula = y ~x, method = "lm")
+
+# 5. Adding Scales to differentiate the different segments
+
+ggplot(data = ChickWeight, aes(x=Time, y=weight, colour = as.factor(Diet))) +
+  geom_point() +                      #To create scatter plot
+  geom_smooth(formula = y ~x, method = "loess") + # Setting leoss rgression line
+  scale_colour_viridis_d()    # Scale
+
+# 6. Subsetting plot into facets if required
+
+ggplot(data = ChickWeight, aes(x=Time, y=weight)) +
+  geom_point() +                      #To create scatter plot
+  facet_wrap(~Diet)                  # To create facets
+
+# 7. Coordinates setting
+
+ggplot(data = ChickWeight, aes(x=Time, y=weight)) +
+  geom_point() +                      #To create scatter plot
+  coord_fixed()                       # To set coordinates fixed ratio  as per scale
+
+ggplot(data = ChickWeight, aes(x=Time, y=weight)) +
+  geom_point() +                      #To create scatter plot
+  coord_fixed(0.5)                       # To set coordinates fixed ratio  as per choice
+
+
+ggplot(data = ChickWeight, aes(x=Time, y=weight)) +
+  geom_point() +                      #To create scatter plot
+  coord_fixed(1.5)                       # To set coordinates fixed ratio  as per choice
+
+ggplot(data = ChickWeight, aes(x=Time, y=weight)) +
+  geom_point() +                      #To create scatter plot
+  coord_fixed(0.01)                       # To set coordinates fixed ratio  as per choice
+
+# 8. Adding theme to the plot (title, subtitle, axis label, plot background, graph background, caption, annotation, font size, font type, font formats, etc.)
+
+ggplot(data = ChickWeight, aes(x=Time, y=weight, colour = Diet)) +
+  geom_point() +                      #To create scatter plot
+  coord_fixed(0.01) +                 # To set coordinates
+  labs(
+    title = "Chick Development Analysis",
+    subtitle = "Outcomes of an experiment with 578 Chicks",
+    caption = "Study done by students of Agri MBA-2 Batch 2024-26 in May 2026 at IABM",
+    x = "Time in Days",
+    y = "Weight in gram"
+  ) +
+  theme(
+      plot.title = element_text(face = "bold", size = 14),
+      plot.subtitle = element_text(face = "bold", size = 9, color="grey70"),
+      axis.title.y = element_text(color = "darkblue"),
+      axis.title.x = element_text(color = "darkgreen")
+    )
+
+```
+
+
+:::{.callout-important title= "Assignment 2.1"}
+
+Use any inbuilt dataset in R and create 5 different visuals using `ggplot2` package. (Visit GGplot Gallery for the help).
+
+:::
+
+
 
 **Programming Fundamentals in R**
 
-* **Conditional Logic:** Writing `if`, `else if`, and `else` statements. 
-* **Vectorized Operations:** Leveraging R's native speed instead of traditional loops. 
-* **Basic Loops:** Understanding `for` and `while` loops for repetitive tasks. 
-* **Writing Custom Functions:** Building reusable code blocks with inputs and outputs. 
+- **Conditional Logic:** Writing `if`, `else if`, and `else` statements.
+- **Vectorized Operations:** Leveraging R's native speed instead of traditional loops.
+- **Basic Loops:** Understanding `for` and `while` loops for repetitive tasks.
+- **Writing Custom Functions:** Building reusable code blocks with inputs and outputs.
 
-**Introduction to Git & GitHub** 
+**Introduction to Git & GitHub**
 
-* **Version Control Concepts:** Understanding repositories, commits, branching, and remote hosting.
-* **RStudio Git Integration:** Setting up Git inside RStudio, staging changes, writing commit messages, and pushing/pulling code.
-* **Transitioning from R Markdown to Quarto:** Understanding the unified syntax of Quarto (`.qmd`) as the next-generation version of R Markdown (`.Rmd`).
-* **Quarto Document Anatomy:** Working with the YAML header, text formatting using markdown, and configuring executable R code chunks.
-* **Dynamic Document Generation:** Rendering a single source file into multiple output formats including HTML, PDF, and MS Word.
+- **Version Control Concepts:** Understanding repositories, commits, branching, and remote hosting.
+- **RStudio Git Integration:** Setting up Git inside RStudio, staging changes, writing commit messages, and pushing/pulling code.
+- **Transitioning from R Markdown to Quarto:** Understanding the unified syntax of Quarto (`.qmd`) as the next-generation version of R Markdown (`.Rmd`).
+- **Quarto Document Anatomy:** Working with the YAML header, text formatting using markdown, and configuring executable R code chunks.
+- **Dynamic Document Generation:** Rendering a single source file into multiple output formats including HTML, PDF, and MS Word.
 
 **Dashboards, Shiny Apps, eBooks and Reproducible Reports**
 
-* **Quarto Dashboards:** Building interactive, responsive grid layouts with rows, columns, tabs, and value boxes directly from markdown.
-* **Introduction to Shiny:** Understanding the foundational architecture of Shiny applications (User Interface `ui` vs. Server logic `server`).
-* **Reactive Programming:** Harnessing reactive values, expressions, and observers to update web app outputs dynamically based on user inputs.
-* **Publishing eBooks and Websites:** Structuring multi-file projects using `_quarto.yml` to compile complete books, documentation sites, or blogs.
-* **Reproducible Report Workflows:** Best practices for parameters (`params`), caching computational steps, and freezing execution for stable builds.
+- **Quarto Dashboards:** Building interactive, responsive grid layouts with rows, columns, tabs, and value boxes directly from markdown.
+- **Introduction to Shiny:** Understanding the foundational architecture of Shiny applications (User Interface `ui` vs. Server logic `server`).
+- **Reactive Programming:** Harnessing reactive values, expressions, and observers to update web app outputs dynamically based on user inputs.
+- **Publishing eBooks and Websites:** Structuring multi-file projects using `_quarto.yml` to compile complete books, documentation sites, or blogs.
+- **Reproducible Report Workflows:** Best practices for parameters (`params`), caching computational steps, and freezing execution for stable builds.
 
 **R/Posit Communities**
 
-* **Navigating the Ecosystem:** Utilizing official Posit community forums, package documentation, and standardized cheat sheets.
-* **Collaborative Learning Networks:** Engaging with regional R User Groups (RUGs), R-Ladies chapters, and the global `#rstats` community.
-* **Continuous Skill Building:** Leveraging open source initiatives like *TidyTuesday* to practice data manipulation and visualization safely.
+- **Navigating the Ecosystem:** Utilizing official Posit community forums, package documentation, and standardized cheat sheets.
+- **Collaborative Learning Networks:** Engaging with regional R User Groups (RUGs), R-Ladies chapters, and the global `#rstats` community.
+- **Continuous Skill Building:** Leveraging open source initiatives like *TidyTuesday* to practice data manipulation and visualization safely.
 
 **Other Parts of R Ecosystem**
 
-* **Package Management Lifecycle:** Installing, updating, and loading extensions safely using `install.packages()`, `library()`, and CRAN mirrors.
-* **Reproducible Environments:** Introduction to `renv` for locking down package versions to prevent project-breaking dependency updates.
-* **Specialised R Sub-Ecosystems:** A high-level overview of ecosystem expansions like `tidymodels` for machine learning and `sf` / `terra` for geospatial analysis.
+- **Package Management Lifecycle:** Installing, updating, and loading extensions safely using `install.packages()`, `library()`, and CRAN mirrors.
+- **Reproducible Environments:** Introduction to `renv` for locking down package versions to prevent project-breaking dependency updates.
+- **Specialised R Sub-Ecosystems:** A high-level overview of ecosystem expansions like `tidymodels` for machine learning and `sf` / `terra` for geospatial analysis.
 
----
+------------------------------------------------------------------------
 
 ## Data Preprocessing, Machine Learning Cycle & Inferential Statistics
 
 **Data Transformations and Preprocessing**
 
-* **Normalization (Min-Max Scaling):** Rescaling feature values to a constrained range between 0 and 1.
-* **Standardization (Z-Score Scaling):** Transforming features to have a mean of 0 and a standard deviation of 1.
-* **Missing Values Imputation:** Evaluating strategies for handling incomplete data, including listwise deletion, mean/median substitution, and predictive imputation using `mice` or `missMDA`.
-* **Dummy Variables (One-Hot Encoding):** Converting categorical string values into numerical binary vectors (`0` or `1`) for machine learning models.
+- **Normalization (Min-Max Scaling):** Rescaling feature values to a constrained range between 0 and 1.
+- **Standardization (Z-Score Scaling):** Transforming features to have a mean of 0 and a standard deviation of 1.
+- **Missing Values Imputation:** Evaluating strategies for handling incomplete data, including listwise deletion, mean/median substitution, and predictive imputation using `mice` or `missMDA`.
+- **Dummy Variables (One-Hot Encoding):** Converting categorical string values into numerical binary vectors (`0` or `1`) for machine learning models.
 
 **Advanced Data Visualization**
 
-* **Advanced 2D Visualizations:** Creating complex multilayered charts, faceting plots via `facet_wrap()`, and adding custom statistical annotations.
-* **Introduction to 3D Data Visualization:** Visualizing spatial, topographical, or surface metrics using interactive toolsets like `plotly` or `rayshader`.
+- **Advanced 2D Visualizations:** Creating complex multilayered charts, faceting plots via `facet_wrap()`, and adding custom statistical annotations.
+- **Introduction to 3D Data Visualization:** Visualizing spatial, topographical, or surface metrics using interactive toolsets like `plotly` or `rayshader`.
 
 **Basic Architecture of Machine Learning Analytical Cycle**
 
-* **Problem Formulation & Data Collection:** Defining predictive tasks (Classification vs. Regression) and gathering primary structural observations.
-* **Data Cleansing & Feature Engineering:** Formatting raw records, refining variables, and performing exploratory data analysis (EDA).
-* **Model Training & Evaluation:** Partitioning datasets into Train/Test splits, validating model performance with metrics (RMSE, Accuracy), and tuning hyperparameters.
-* **Deployment & Monitoring:** Packaging analytical cycles into reproducible code pipelines or production environments.
+- **Problem Formulation & Data Collection:** Defining predictive tasks (Classification vs. Regression) and gathering primary structural observations.
+- **Data Cleansing & Feature Engineering:** Formatting raw records, refining variables, and performing exploratory data analysis (EDA).
+- **Model Training & Evaluation:** Partitioning datasets into Train/Test splits, validating model performance with metrics (RMSE, Accuracy), and tuning hyperparameters.
+- **Deployment & Monitoring:** Packaging analytical cycles into reproducible code pipelines or production environments.
 
 **Descriptive Analytics Case Study (Covering Data Manipulation)**
 
-* **Measures of Central Tendency:** Computing and interpreting the Median, Mean, and Mode for varying structural distributions.
-* **Measures of Dispersion:** Quantifying variability across variables via Range, Variance, Standard Deviation, and Interquartile Range (IQR).
-* **Measures of Distribution:** Analysing the structural shapes of data spreads using Skewness (asymmetry) and Kurtosis (tailedness).
-* **Measures of Association:** Computing Covariance and Correlation matrices (Pearson vs. Spearman) to evaluate linear and rank dependencies between numerical features.
+- **Measures of Central Tendency:** Computing and interpreting the Median, Mean, and Mode for varying structural distributions.
+- **Measures of Dispersion:** Quantifying variability across variables via Range, Variance, Standard Deviation, and Interquartile Range (IQR).
+- **Measures of Distribution:** Analysing the structural shapes of data spreads using Skewness (asymmetry) and Kurtosis (tailedness).
+- **Measures of Association:** Computing Covariance and Correlation matrices (Pearson vs. Spearman) to evaluate linear and rank dependencies between numerical features.
 
 **Hypothesis Testing & Statistical Modeling Framework**
 
-* **Student’s t-Test:** Performing Independent, Paired, and One-sample t-tests to evaluate differences between continuous group means.
-* **F-Test:** Testing for equality of variances between two independent populations.
-* **Analysis of Variance (ANOVA):** Implementing One-Way and Two-Way ANOVA models to analyze variance across three or more unique treatment groups.
-* **Chi-Square Test:** Running Test of Independence and Goodness-of-Fit procedures using contingency tables for categorical attributes.
-* **Basic Statistical Modeling Framework:** Foundational setup for Generalized Linear Models (GLMs), defining response variables, predictor metrics, and interpreting residual summaries.
+- **Student’s t-Test:** Performing Independent, Paired, and One-sample t-tests to evaluate differences between continuous group means.
+- **F-Test:** Testing for equality of variances between two independent populations.
+- **Analysis of Variance (ANOVA):** Implementing One-Way and Two-Way ANOVA models to analyze variance across three or more unique treatment groups.
+- **Chi-Square Test:** Running Test of Independence and Goodness-of-Fit procedures using contingency tables for categorical attributes.
+- **Basic Statistical Modeling Framework:** Foundational setup for Generalized Linear Models (GLMs), defining response variables, predictor metrics, and interpreting residual summaries.
