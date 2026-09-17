@@ -1927,20 +1927,294 @@ Attaching package: 'recipes'</code></pre>
 </ul>
 <p>Another way to scale different variables on the same scale is Z-Score scaling in which comparing variables are re-culculated by keeping mean zero and standar deviation 1. See this concept from following image:</p>
 <p><img src="zscore.jpg" class="img-fluid"></p>
+<hr>
 <ul>
-<li><strong>Missing Values Imputation:</strong> Evaluating strategies for handling incomplete data, including listwise deletion, mean/median substitution, and predictive imputation using <code>mice</code> or <code>missMDA</code>.</li>
+<li><strong>Missing Values Imputation:</strong> Evaluating strategies for handling incomplete data, including listwise deletion, mean/median substitution, and predictive imputation using <code>mice</code> or <code>missMDA</code>. Let us understand by the example:</li>
+</ul>
+<p>Setup Sample Missing Dataset</p>
+<p>First, let’s create a small data frame containing missing values (NA) to test our strategies.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb214"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb214-1"><a href="#cb214-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a sample dataset with missing values</span></span>
+<span id="cb214-2"><a href="#cb214-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb214-3"><a href="#cb214-3" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb214-4"><a href="#cb214-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Age =</span> <span class="fu">c</span>(<span class="dv">25</span>, <span class="dv">30</span>, <span class="cn">NA</span>, <span class="dv">45</span>, <span class="dv">50</span>, <span class="cn">NA</span>, <span class="dv">35</span>, <span class="dv">40</span>),</span>
+<span id="cb214-5"><a href="#cb214-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Income =</span> <span class="fu">c</span>(<span class="dv">50000</span>, <span class="dv">60000</span>, <span class="dv">52000</span>, <span class="cn">NA</span>, <span class="dv">95000</span>, <span class="dv">105000</span>, <span class="cn">NA</span>, <span class="dv">82000</span>),</span>
+<span id="cb214-6"><a href="#cb214-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Score =</span> <span class="fu">c</span>(<span class="dv">85</span>, <span class="dv">88</span>, <span class="dv">72</span>, <span class="dv">90</span>, <span class="cn">NA</span>, <span class="dv">65</span>, <span class="dv">78</span>, <span class="dv">85</span>)</span>
+<span id="cb214-7"><a href="#cb214-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb214-8"><a href="#cb214-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb214-9"><a href="#cb214-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Original Data with NAs:"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Original Data with NAs:"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb216"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb216-1"><a href="#cb216-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Age Income Score
+1  25  50000    85
+2  30  60000    88
+3  NA  52000    72
+4  45     NA    90
+5  50  95000    NA
+6  NA 105000    65
+7  35     NA    78
+8  40  82000    85</code></pre>
+</div>
+</div>
+<ol type="1">
+<li>Listwise Deletion (Complete Case Analysis)</li>
+</ol>
+<p>This removes any row that contains at least one missing value. Use this only if data is missing completely at random (MCAR) and you have plenty of data left over.</p>
+<p>Method A: Base R</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb218"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb218-1"><a href="#cb218-1" aria-hidden="true" tabindex="-1"></a>clean_df_base <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Method B: Tidyverse</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb219"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb219-1"><a href="#cb219-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb219-2"><a href="#cb219-2" aria-hidden="true" tabindex="-1"></a>clean_df_tidy <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">drop_na</span>()</span>
+<span id="cb219-3"><a href="#cb219-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb219-4"><a href="#cb219-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"After Listwise Deletion:"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "After Listwise Deletion:"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb221"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb221-1"><a href="#cb221-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(clean_df_tidy)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Age Income Score
+1  25  50000    85
+2  30  60000    88
+3  40  82000    85</code></pre>
+</div>
+</div>
+<ol start="2" type="1">
+<li>Mean / Median Substitution</li>
+</ol>
+<p>This replaces missing values with the average or middle value of that specific column. It is simple but artificially reduces the variance of your data.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb223"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb223-1"><a href="#cb223-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb223-2"><a href="#cb223-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb223-3"><a href="#cb223-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Impute Age with Median and Income/Score with Mean</span></span>
+<span id="cb223-4"><a href="#cb223-4" aria-hidden="true" tabindex="-1"></a>imputed_simple <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb223-5"><a href="#cb223-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb223-6"><a href="#cb223-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">Age =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(Age), <span class="fu">median</span>(Age, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), Age),</span>
+<span id="cb223-7"><a href="#cb223-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">Income =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(Income), <span class="fu">mean</span>(Income, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), Income),</span>
+<span id="cb223-8"><a href="#cb223-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">Score =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(Score), <span class="fu">mean</span>(Score, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), Score)</span>
+<span id="cb223-9"><a href="#cb223-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb223-10"><a href="#cb223-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb223-11"><a href="#cb223-11" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"After Mean/Median Substitution:"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "After Mean/Median Substitution:"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb225"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb225-1"><a href="#cb225-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(imputed_simple)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Age Income    Score
+1 25.0  50000 85.00000
+2 30.0  60000 88.00000
+3 37.5  52000 72.00000
+4 45.0  74000 90.00000
+5 50.0  95000 80.42857
+6 37.5 105000 65.00000
+7 35.0  74000 78.00000
+8 40.0  82000 85.00000</code></pre>
+</div>
+</div>
+<ol start="3" type="1">
+<li>Predictive Imputation via mice (MICE Algorithm)</li>
+</ol>
+<p>Multivariate Imputation by Chained Equations (MICE) creates multiple plausible imputations by modeling each feature with missing values as a function of the other features in the data.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb227"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb227-1"><a href="#cb227-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install package if needed: install.packages("mice")</span></span>
+<span id="cb227-2"><a href="#cb227-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mice)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'mice' was built under R version 4.4.2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'mice'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:stats':
+
+    filter</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    cbind, rbind</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb232"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb232-1"><a href="#cb232-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the MICE algorithm (m=5 creates 5 imputed datasets; maxit=5 sets iterations)</span></span>
+<span id="cb232-2"><a href="#cb232-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 'pmm' stands for Predictive Mean Matching (great for numeric features)</span></span>
+<span id="cb232-3"><a href="#cb232-3" aria-hidden="true" tabindex="-1"></a>mice_imputed <span class="ot">&lt;-</span> <span class="fu">mice</span>(df, <span class="at">m =</span> <span class="dv">5</span>, <span class="at">maxit =</span> <span class="dv">5</span>, <span class="at">method =</span> <span class="st">'pmm'</span>, <span class="at">seed =</span> <span class="dv">42</span>, <span class="at">printFlag =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb232-4"><a href="#cb232-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb232-5"><a href="#cb232-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract one of the complete datasets (e.g., the 1st iteration)</span></span>
+<span id="cb232-6"><a href="#cb232-6" aria-hidden="true" tabindex="-1"></a>completed_df_mice <span class="ot">&lt;-</span> <span class="fu">complete</span>(mice_imputed, <span class="dv">1</span>)</span>
+<span id="cb232-7"><a href="#cb232-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb232-8"><a href="#cb232-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"After MICE Predictive Imputation:"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "After MICE Predictive Imputation:"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb234"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb234-1"><a href="#cb234-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(completed_df_mice)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Age Income Score
+1  25  50000    85
+2  30  60000    88
+3  35  52000    72
+4  45 105000    90
+5  50  95000    90
+6  30 105000    65
+7  35  95000    78
+8  40  82000    85</code></pre>
+</div>
+</div>
+<ol start="4" type="1">
+<li>Predictive Imputation via missMDA (PCA-based)</li>
+</ol>
+<p>The missMDA package handles missing data using Principal Component Analysis (PCA). It excels at keeping the dimensional structure and correlations between variables intact.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb236"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb236-1"><a href="#cb236-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install package if needed: install.packages("missMDA")</span></span>
+<span id="cb236-2"><a href="#cb236-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(missMDA)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'missMDA' was built under R version 4.4.3</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb238"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb238-1"><a href="#cb238-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: Estimate the number of dimensions/components to use for imputation</span></span>
+<span id="cb238-2"><a href="#cb238-2" aria-hidden="true" tabindex="-1"></a>num_components <span class="ot">&lt;-</span> <span class="fu">estim_ncpPCA</span>(df, <span class="at">ncp.max =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in impute(X, ncp = ncp, scale = scale, method = method, ind.sup =
+ind.sup, : Stopped after 1000 iterations</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb240"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb240-1"><a href="#cb240-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: Perform PCA imputation based on estimated dimensions</span></span>
+<span id="cb240-2"><a href="#cb240-2" aria-hidden="true" tabindex="-1"></a>pca_imputation <span class="ot">&lt;-</span> <span class="fu">imputePCA</span>(df, <span class="at">ncp =</span> num_components<span class="sc">$</span>ncp)</span>
+<span id="cb240-3"><a href="#cb240-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb240-4"><a href="#cb240-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3: Extract the completed dataset matrix and convert to data frame</span></span>
+<span id="cb240-5"><a href="#cb240-5" aria-hidden="true" tabindex="-1"></a>completed_df_pca <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(pca_imputation<span class="sc">$</span>completeObs)</span>
+<span id="cb240-6"><a href="#cb240-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb240-7"><a href="#cb240-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"After missMDA (PCA) Imputation:"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "After missMDA (PCA) Imputation:"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb242"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb242-1"><a href="#cb242-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(completed_df_pca)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Age Income    Score
+1 25.0  50000 85.00000
+2 30.0  60000 88.00000
+3 37.5  52000 72.00000
+4 45.0  74000 90.00000
+5 50.0  95000 80.42857
+6 37.5 105000 65.00000
+7 35.0  74000 78.00000
+8 40.0  82000 85.00000</code></pre>
+</div>
+</div>
+<p>Comparison of Methods</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Strategy</th>
+<th>When to Use</th>
+<th>Key Risk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Listwise Deletion</td>
+<td>Drop rate is &lt; 5% and data is missing completely at random.</td>
+<td>Loses valuable data and can introduce heavy bias.</td>
+</tr>
+<tr class="even">
+<td>Mean/Median</td>
+<td>Fast baseline calculations on simple datasets.</td>
+<td>Destroys correlations and artificially deflates standard deviation.</td>
+</tr>
+<tr class="odd">
+<td>mice (MICE)</td>
+<td>General tabular data; protects relationships between columns.</td>
+<td>Computationally intensive on very large datasets.</td>
+</tr>
+<tr class="even">
+<td>missMDA (PCA)</td>
+<td>Datasets with highly correlated variables or multi-collinearity.</td>
+<td>Assumes linear relationships across components.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<ul>
 <li><strong>Dummy Variables (One-Hot Encoding):</strong> Converting categorical string values into numerical binary vectors (<code>0</code> or <code>1</code>) for machine learning models.</li>
 </ul>
-<p><strong>Advanced Data Visualization</strong></p>
-<ul>
-<li><strong>Advanced 2D Visualizations:</strong> Creating complex multilayered charts, faceting plots via <code>facet_wrap()</code>, and adding custom statistical annotations.</li>
-<li><strong>Introduction to 3D Data Visualization:</strong> Visualizing spatial, topographical, or surface metrics using interactive toolsets like <code>plotly</code> or <code>rayshader</code>.</li>
-</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb244"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb244-1"><a href="#cb244-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a sample dataset with categorical text fields</span></span>
+<span id="cb244-2"><a href="#cb244-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb244-3"><a href="#cb244-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">CustomerID =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,</span>
+<span id="cb244-4"><a href="#cb244-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Region =</span> <span class="fu">c</span>(<span class="st">"North"</span>, <span class="st">"South"</span>, <span class="st">"East"</span>, <span class="st">"North"</span>, <span class="st">"South"</span>),</span>
+<span id="cb244-5"><a href="#cb244-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Device =</span> <span class="fu">c</span>(<span class="st">"Mobile"</span>, <span class="st">"Desktop"</span>, <span class="st">"Mobile"</span>, <span class="st">"Tablet"</span>, <span class="st">"Desktop"</span>)</span>
+<span id="cb244-6"><a href="#cb244-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb244-7"><a href="#cb244-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Original Data:"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Original Data:"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb246"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb246-1"><a href="#cb246-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  CustomerID Region  Device
+1          1  North  Mobile
+2          2  South Desktop
+3          3   East  Mobile
+4          4  North  Tablet
+5          5  South Desktop</code></pre>
+</div>
+</div>
+<p>Now, we convert categorical variable into dummy variables:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb248"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb248-1"><a href="#cb248-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install if needed: install.packages("recipes")</span></span>
+<span id="cb248-2"><a href="#cb248-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(recipes)</span>
+<span id="cb248-3"><a href="#cb248-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb248-4"><a href="#cb248-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the transformation recipe</span></span>
+<span id="cb248-5"><a href="#cb248-5" aria-hidden="true" tabindex="-1"></a>rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(<span class="sc">~</span> ., <span class="at">data =</span> df) <span class="sc">%&gt;%</span></span>
+<span id="cb248-6"><a href="#cb248-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>(), <span class="at">one_hot =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> <span class="co"># Convert text columns to dummies</span></span>
+<span id="cb248-7"><a href="#cb248-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>()</span>
+<span id="cb248-8"><a href="#cb248-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb248-9"><a href="#cb248-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply the transformation matrix to your data</span></span>
+<span id="cb248-10"><a href="#cb248-10" aria-hidden="true" tabindex="-1"></a>df_recipes_dummies <span class="ot">&lt;-</span> <span class="fu">bake</span>(rec, <span class="at">new_data =</span> df)</span>
+<span id="cb248-11"><a href="#cb248-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb248-12"><a href="#cb248-12" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"With Tidyverse Recipes:"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "With Tidyverse Recipes:"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb250"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb250-1"><a href="#cb250-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(df_recipes_dummies)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 7
+  CustomerID Region_East Region_North Region_South Device_Desktop Device_Mobile
+       &lt;int&gt;       &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;          &lt;dbl&gt;         &lt;dbl&gt;
+1          1           0            1            0              0             1
+2          2           0            0            1              1             0
+3          3           1            0            0              0             1
+4          4           0            1            0              0             0
+5          5           0            0            1              1             0
+# ℹ 1 more variable: Device_Tablet &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>Why we need to create dummy variable instead of original variable? Because many machine learning algorithms do not read categorical data and need only numeric form of data.</p>
+<hr>
 <p><strong>Basic Architecture of Machine Learning Analytical Cycle</strong></p>
 <ul>
-<li><strong>Problem Formulation &amp; Data Collection:</strong> Defining predictive tasks (Classification vs.&nbsp;Regression) and gathering primary structural observations.</li>
+<li><strong>Problem Formulation &amp; Data Collection:</strong> Defining predictive tasks (Classification vs.&nbsp;Estimation) and gathering primary structural observations.</li>
+</ul>
+<p>This s very important part of a machine learning project cycle. This sets the core purpose of the machine learning project. As there are two types of tasks - classification and estimation; this must be defined clearly.</p>
+<p>A business wants to predict the next month sales is an estimation tasks while tomorrow, there will be rain or not is a classification problem.</p>
+<p><img src="mlflow.jpg" class="img-fluid"></p>
+<ul>
 <li><strong>Data Cleansing &amp; Feature Engineering:</strong> Formatting raw records, refining variables, and performing exploratory data analysis (EDA).</li>
+</ul>
+<p>Before applying machine learning models, each variable, pairs of variables are analyzed through Exploratory Data Analysis. Exploratory data analysis(EDA) is useful in defining the pathway to select the machine learning tasks and model building process, though EDA is directly not involved in machine learning tasks and model building process. We will discuss this in more detail in the next units.</p>
+<ul>
 <li><strong>Model Training &amp; Evaluation:</strong> Partitioning datasets into Train/Test splits, validating model performance with metrics (RMSE, Accuracy), and tuning hyperparameters.</li>
+</ul>
+<p>Once data is preprocessed and EDA is done, data is split into training and testing. Model is trained on training data using appropriate machine learning algorithm and model is validated/tested for accuracy on testing data. This process is repeated again and again to improve the model by doing hyperparameter tuning.</p>
+<p>Once highest accuracy is achieved, model is ready for deployment and become available for real world use cases. For estimation tasks, we use Root Mean Squared Error and for classification tasks, we use confusion matrix to check accuracy of the model.</p>
+<p>There are numerous other metrices we use to check evaluate machine learning models.</p>
+<ul>
 <li><strong>Deployment &amp; Monitoring:</strong> Packaging analytical cycles into reproducible code pipelines or production environments.</li>
 </ul>
 <p><strong>Descriptive Analytics Case Study (Covering Data Manipulation)</strong></p>
