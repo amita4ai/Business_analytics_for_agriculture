@@ -2254,6 +2254,8 @@ ind.sup, : Stopped after 1000 iterations</code></pre>
 <ul>
 <li><strong>Measures of Central Tendency:</strong> Computing and interpreting the Median, Mean, and Mode for varying structural distributions.</li>
 </ul>
+<p><img src="mean.png" class="img-fluid"></p>
+<p>Credit: https://share.google/WB5HwdNnJvuM4im0X</p>
 <ol type="1">
 <li>The Core Functions (Base R &amp; Tidyverse)</li>
 </ol>
@@ -2393,6 +2395,7 @@ Left_Skewed_Median  74.52077</code></pre>
 <ol type="1">
 <li>Measures of Dispersion</li>
 </ol>
+<p><img src="disper.jfif" class="img-fluid"></p>
 <p>These metrics quantify how spread out or variable your data points are around their central tendency.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb264"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb264-1"><a href="#cb264-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to calculate the range spread (Max - Min)</span></span>
@@ -2698,6 +2701,159 @@ Number of Fisher Scoring iterations: 24</code></pre>
 <span id="cb302-4"><a href="#cb302-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Probability of purchase:"</span>, <span class="fu">round</span>(predicted_probability, <span class="dv">3</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Probability of purchase: 0.012"</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled" title="Block I Unit 2 Assignment">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Block I Unit 2 Assignment
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>🌾 Agribusiness Analytics Challenge: Precision Grain Quality Engineering at Ceres Agro-Industries</strong></p>
+<p>Dataset Reference: Based on the structural properties of the UCI Machine Learning Repository: Rice (Cammeo and Osmancik) Dataset</p>
+<p>📋 1. Business Context &amp; Case Scenario</p>
+<p>Ceres-Agro Industries is a leading global supplier of premium rice varieties, managing high-volume supply chains for Cammeo (long-grain) and Osmancik (short-grain) crops. The wholesale pricing, milling efficiency, and market placement of every batch depend heavily on morphological consistency, seed classification, and moisture metrics. Manual sorting is slow, prone to human error, and highly inefficient.</p>
+<p>To automate this process, Ceres has installed an inline, high-speed optical sorting system at its main milling facility. As the grain flows through the sorting machinery, IoT sensors capture real-world geometric data: Area, Perimeter, MajorAxisLength, MinorAxisLength, Eccentricity, and Milling_Efficiency_Pct. However, sensor dropouts, dusty environments, and varying measurement scales introduce real-world data flaws.</p>
+<p>As the Lead Analytics Team, your job is to guide this raw telemetry through a complete data engineering, descriptive discovery, inferential testing, and predictive modeling pipeline to build an automated quality-control framework.</p>
+<p>🏗️ Phase 1: Machine Learning Architecture &amp; Strategy</p>
+<p>Before writing code or running calculations, you must plan your operational blueprint.</p>
+<p>📝 Tasks &amp; Questions:</p>
+<ol type="1">
+<li><p>Sketch a flowchart mapping out the Machine Learning Analytical Cycle for this project. Start from the raw IoT optical sensor harvest and end with model deployment in the sorting machine.</p></li>
+<li><p>At which specific stage of your cycle should you handle data leakage concerns? Explain why this timing matters for model deployment.</p></li>
+</ol>
+<p>⚙️ Phase 2: Data Manipulation &amp; Structural Transformations</p>
+<p>The raw data file ceres_raw_sensor_feed.csv contains missing rows caused by camera calibration skips, unscaled pixel counts, and text-based categorical flags.</p>
+<p>📊 Dataset Context:</p>
+<ul>
+<li>Area ranges from 70,000 to 190,000 pixels.</li>
+<li>Eccentricity ranges from 0.70 to 0.96.</li>
+<li>Variety contains string labels: “Cammeo” and “Osmancik”.</li>
+<li>Milling_Efficiency_Pct is highly right-skewed.</li>
+</ul>
+<p>📝 Tasks &amp; Questions:</p>
+<ol type="1">
+<li>Missing Value Management:</li>
+</ol>
+<ul>
+<li>A small percentage of rows have missing values for Area and Facility_Zone (a categorical label).</li>
+<li>Which imputation techniques should you use for each feature? Explain why your choices make sense given the distributions of the data.</li>
+</ul>
+<ol start="2" type="1">
+<li>Feature Scaling Strategy:</li>
+</ol>
+<ul>
+<li>Explain the math and conceptual differences between Normalization (Min-Max Scaling) and Standardization (Z-score Normalization).</li>
+<li>If you plan to train a neural network vs.&nbsp;a regularized linear model, match each algorithm to its ideal scaling approach and justify your choice based on the feature ranges of Area and Eccentricity.</li>
+</ul>
+<ol start="3" type="1">
+<li>Categorical Processing:</li>
+</ol>
+<ul>
+<li>Convert the string column Variety into a dummy variable. Write down the explicit algebraic indicator equation for Is_Osmancik.</li>
+</ul>
+<ol start="4" type="1">
+<li>Variance Stabilization:</li>
+</ol>
+<ul>
+<li>The feature Milling_Efficiency_Pct shows a steep right skew. Suggest a specific mathematical transformation to fix this issue so the data satisfies classical linear assumptions.</li>
+</ul>
+<p>📊 Phase 3: Descriptive Analytics &amp; Exploratory Data Visualization</p>
+<p>The plant manager needs a clear summary of the grain geometries before updating any equipment settings.</p>
+<p>📝 Tasks &amp; Questions:</p>
+<ol type="1">
+<li>Central Tendency vs.&nbsp;Dispersion:</li>
+</ol>
+<ul>
+<li>For a batch with high outlier presence due to structural crop debris, evaluate whether the Mean or Median provides a more stable baseline for core grain size.</li>
+<li>Provide the mathematical definition of the Interquartile Range (IQR). Write out the standard mathematical equations used to detect lower and upper outliers using the IQR technique.</li>
+</ul>
+<ol start="2" type="1">
+<li>Distribution Topology:</li>
+</ol>
+<ul>
+<li>Describe what a leptokurtic distribution looks like for grain Perimeter. What does this tell a quality assurance manager about the consistency of a harvest?</li>
+</ul>
+<ol start="3" type="1">
+<li>Association Mapping:</li>
+</ol>
+<ul>
+<li>The correlation between Area and Perimeter yields a Pearson coefficient of r = 0.96, while the relationship between Eccentricity and Milling_Efficiency_Pct yields a Spearman Rank coefficient of ρ = -0.42. * Interpret what these two metrics mean in plain, non-technical business terms.</li>
+</ul>
+<ol start="4" type="1">
+<li>Dimensional Exploration:</li>
+</ol>
+<ul>
+<li>Designing an interactive analytics dashboard for the team requires both 2D and 3D visual anchors. * Detail exactly which features you would map onto a 2D Scatter Plot vs.&nbsp;a 3D Spatial Visualization to show clear visual separation between the two rice types before moving to automated classification.</li>
+</ul>
+<p>🧪 Phase 4: Inferential Statistics &amp; Hypothesis Testing</p>
+<p>Ceres cannot assume sample differences apply to the entire harvest without mathematical proof. You must run hypothesis tests to validate these geometric patterns.</p>
+<p>📝 Tasks &amp; Questions:</p>
+<p>Complete the missing parts of the analytics matrix below to determine which test fits each scenario.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Scenario</th>
+<th>Target Variables &amp; Types</th>
+<th>Applicable Statistical Test</th>
+<th>Null Hypothesis (H₀) Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Case A</td>
+<td>Independent Variable: Variety (2 groups) Dependent Variable: MajorAxisLength (Continuous)</td>
+<td>[Student to Identify]</td>
+<td>The true mean MajorAxisLength is identical across both rice varieties.</td>
+</tr>
+<tr class="even">
+<td>Case B</td>
+<td>Variety 1 Area Variance vs.&nbsp;Variety 2 Area Variance</td>
+<td>[Student to Identify]</td>
+<td>[Student to Write Formulaic/Text Null]</td>
+</tr>
+<tr class="odd">
+<td>Case C</td>
+<td>Independent Variable: Sorting_Line (Lines A, B, and C) Dependent Variable: MinorAxisLength (Continuous)</td>
+<td>[Student to Identify]</td>
+<td>The mean MinorAxisLength is equal across all three sorting production lines.</td>
+</tr>
+<tr class="even">
+<td>Case D</td>
+<td>Variable 1: Variety (Cammeo/Osmancik) Variable 2: Quality_Grade (Premium/Standard)</td>
+<td>[Student to Identify]</td>
+<td>[Student to Write Formulaic/Text Null]</td>
+</tr>
+</tbody>
+</table>
+<p>🤖 Phase 5: Predictive Modeling &amp; Advanced Framework Validation</p>
+<p>Your final task is to build a baseline Multiple Linear Regression Framework to predict the continuous performance metric Milling_Efficiency_Pct (Y).</p>
+<p>📝 Tasks &amp; Questions:</p>
+<ol type="1">
+<li>Model Specification:</li>
+</ol>
+<ul>
+<li>Using the independent features Area, Perimeter, Eccentricity, and your binary dummy variable Is_Osmancik, write out the complete, formal Multiple Linear Regression Equation. Be sure to include all structural coefficients (<span class="math inline">\(\beta_n\)</span>) and the stochastic error term (ε).</li>
+</ul>
+<ol start="2" type="1">
+<li>Assumption Auditing:</li>
+</ol>
+<ul>
+<li>Your initial model output yields high performance, but you must verify the structural assumptions before deployment.</li>
+<li>Match the following validation tests and charts to the specific regression assumption they audit, and explain how to identify a failing result:</li>
+<li>Durbin-Watson Test * Breusch-Pagan Test * Normal Quantile-Quantile (Q-Q) Plot</li>
+</ul>
+<p>**Share the assignment in the word format on email: amita@iabmbikaner.org with Subject: BA Block I Unit 2 Assignment Submission. In the body text, share name, batch and roll number.</p>
 </div>
 </div>
 

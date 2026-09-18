@@ -1514,6 +1514,10 @@ Once web app is successfully hosted in the cloud, a web link is generated that c
 
 - **Measures of Central Tendency:** Computing and interpreting the Median, Mean, and Mode for varying structural distributions.
 
+![](mean.png)
+
+Credit:  https://share.google/WB5HwdNnJvuM4im0X
+
 1. The Core Functions (Base R & Tidyverse)
 
 ```{r}
@@ -1617,6 +1621,8 @@ distributions_df <- data.frame(
 
 
 1. Measures of Dispersion
+
+![](disper.jfif)
 
 These metrics quantify how spread out or variable your data points are around their central tendency.
 
@@ -1833,3 +1839,122 @@ print(paste("Probability of purchase:", round(predicted_probability, 3)))
 
 ```
 
+
+:::{.callout-important title="Block I Unit 2 Assignment"}
+
+**🌾 Agribusiness Analytics Challenge: Precision Grain Quality Engineering at Ceres Agro-Industries**
+
+Dataset Reference: Based on the structural properties of the UCI Machine Learning Repository: Rice (Cammeo and Osmancik) Dataset
+
+📋 1. Business Context & Case Scenario
+
+Ceres-Agro Industries is a leading global supplier of premium rice varieties, managing high-volume supply chains for Cammeo (long-grain) and Osmancik (short-grain) crops. The wholesale pricing, milling efficiency, and market placement of every batch depend heavily on morphological consistency, seed classification, and moisture metrics. Manual sorting is slow, prone to human error, and highly inefficient.
+
+To automate this process, Ceres has installed an inline, high-speed optical sorting system at its main milling facility. As the grain flows through the sorting machinery, IoT sensors capture real-world geometric data: Area, Perimeter, MajorAxisLength, MinorAxisLength, Eccentricity, and Milling_Efficiency_Pct. However, sensor dropouts, dusty environments, and varying measurement scales introduce real-world data flaws.
+
+As the Lead Analytics Team, your job is to guide this raw telemetry through a complete data engineering, descriptive discovery, inferential testing, and predictive modeling pipeline to build an automated quality-control framework.
+
+🏗️ Phase 1: Machine Learning Architecture & Strategy
+
+Before writing code or running calculations, you must plan your operational blueprint.
+
+📝 Tasks & Questions:
+
+1. Sketch a flowchart mapping out the Machine Learning Analytical Cycle for this project. Start from the raw IoT optical sensor harvest and end with model deployment in the sorting machine.
+
+2. At which specific stage of your cycle should you handle data leakage concerns? Explain why this timing matters for model deployment.
+
+⚙️ Phase 2: Data Manipulation & Structural Transformations
+
+The raw data file ceres_raw_sensor_feed.csv contains missing rows caused by camera calibration skips, unscaled pixel counts, and text-based categorical flags.
+
+📊 Dataset Context:
+
+* Area ranges from 70,000 to 190,000 pixels.
+* Eccentricity ranges from 0.70 to 0.96.
+* Variety contains string labels: "Cammeo" and "Osmancik".
+* Milling_Efficiency_Pct is highly right-skewed.
+
+📝 Tasks & Questions:
+
+   1. Missing Value Management:
+   
+   * A small percentage of rows have missing values for Area and Facility_Zone (a categorical label).
+   * Which imputation techniques should you use for each feature? Explain why your choices make sense given the distributions of the data.
+   
+   2. Feature Scaling Strategy:
+   
+   * Explain the math and conceptual differences between Normalization (Min-Max Scaling) and Standardization (Z-score Normalization).
+   * If you plan to train a neural network vs. a regularized linear model, match each algorithm to its ideal scaling approach and justify your choice based on the feature ranges of Area and Eccentricity.
+   
+   3. Categorical Processing:
+   
+   * Convert the string column Variety into a dummy variable. Write down the explicit algebraic indicator equation for Is_Osmancik.
+   
+   4. Variance Stabilization:
+   
+   * The feature Milling_Efficiency_Pct shows a steep right skew. Suggest a specific mathematical transformation to fix this issue so the data satisfies classical linear assumptions.
+   
+
+📊 Phase 3: Descriptive Analytics & Exploratory Data Visualization
+
+The plant manager needs a clear summary of the grain geometries before updating any equipment settings.
+
+📝 Tasks & Questions:
+
+   1. Central Tendency vs. Dispersion:
+   
+   * For a batch with high outlier presence due to structural crop debris, evaluate whether the Mean or Median provides a more stable baseline for core grain size.
+   * Provide the mathematical definition of the Interquartile Range (IQR). Write out the standard mathematical equations used to detect lower and upper outliers using the IQR technique.
+   
+   2. Distribution Topology:
+   
+   * Describe what a leptokurtic distribution looks like for grain Perimeter. What does this tell a quality assurance manager about the consistency of a harvest?
+   
+   3. Association Mapping:
+   
+   * The correlation between Area and Perimeter yields a Pearson coefficient of r = 0.96, while the relationship between Eccentricity and Milling_Efficiency_Pct yields a Spearman Rank coefficient of ρ = -0.42.
+    * Interpret what these two metrics mean in plain, non-technical business terms.
+   
+   4. Dimensional Exploration:
+   
+   * Designing an interactive analytics dashboard for the team requires both 2D and 3D visual anchors.
+    * Detail exactly which features you would map onto a 2D Scatter Plot vs. a 3D Spatial Visualization to show clear visual separation between the two rice types before moving to automated classification.
+
+🧪 Phase 4: Inferential Statistics & Hypothesis Testing
+
+Ceres cannot assume sample differences apply to the entire harvest without mathematical proof. You must run hypothesis tests to validate these geometric patterns.
+
+📝 Tasks & Questions:
+
+Complete the missing parts of the analytics matrix below to determine which test fits each scenario.
+
+| Scenario | Target Variables & Types | Applicable Statistical Test | Null Hypothesis (H₀) Definition |
+|---|---|---|---|
+| Case A | Independent Variable: Variety (2 groups) Dependent Variable: MajorAxisLength (Continuous) | [Student to Identify] | The true mean MajorAxisLength is identical across both rice varieties. |
+| Case B | Variety 1 Area Variance vs. Variety 2 Area Variance | [Student to Identify] | [Student to Write Formulaic/Text Null] |
+| Case C | Independent Variable: Sorting_Line (Lines A, B, and C) Dependent Variable: MinorAxisLength (Continuous) | [Student to Identify] | The mean MinorAxisLength is equal across all three sorting production lines. |
+| Case D | Variable 1: Variety (Cammeo/Osmancik) Variable 2: Quality_Grade (Premium/Standard) | [Student to Identify] | [Student to Write Formulaic/Text Null] |
+
+🤖 Phase 5: Predictive Modeling & Advanced Framework Validation
+
+Your final task is to build a baseline Multiple Linear Regression Framework to predict the continuous performance metric Milling_Efficiency_Pct (Y).
+
+📝 Tasks & Questions:
+
+   1. Model Specification:
+
+   * Using the independent features Area, Perimeter, Eccentricity, and your binary dummy variable Is\_Osmancik, write out the complete, formal Multiple Linear Regression Equation. Be sure to include all structural coefficients ($\beta_n$) and the stochastic error term (ε).
+   
+   2. Assumption Auditing:
+   
+   * Your initial model output yields high performance, but you must verify the structural assumptions before deployment.
+   * Match the following validation tests and charts to the specific regression assumption they audit, and explain how to identify a failing result:
+   * Durbin-Watson Test
+         * Breusch-Pagan Test
+         * Normal Quantile-Quantile (Q-Q) Plot
+      
+
+**Share the assignment in the word format on email: amita@iabmbikaner.org with Subject: BA Block I Unit 2 Assignment Submission. In the body text, share name, batch and roll number. 
+
+:::
