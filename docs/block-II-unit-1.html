@@ -175,8 +175,18 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#supervised-machine-learning-basic-framework-regression-models-and-classification-models" id="toc-supervised-machine-learning-basic-framework-regression-models-and-classification-models" class="nav-link active" data-scroll-target="#supervised-machine-learning-basic-framework-regression-models-and-classification-models"><span class="header-section-number">6.1</span> Supervised machine learning: Basic framework, regression models and classification models</a></li>
+  <li><a href="#types-of-machine-learning" id="toc-types-of-machine-learning" class="nav-link" data-scroll-target="#types-of-machine-learning"><span class="header-section-number">6.2</span> Types of machine learning</a>
+  <ul class="collapse">
+  <li><a href="#supervised-learning" id="toc-supervised-learning" class="nav-link" data-scroll-target="#supervised-learning"><span class="header-section-number">6.2.1</span> Supervised learning</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -213,8 +223,28 @@ ul.task-list li input[type="checkbox"] {
 <p>Supervised machine learning: Basic framework, regression models and classification models. Linear regression, nonlinear regression, multiple regression, polynomial regression,lasso regression, ridge regression, stepwise regression, quantile regression, logistic regression.</p>
 </div>
 </div>
+<section id="supervised-machine-learning-basic-framework-regression-models-and-classification-models" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="supervised-machine-learning-basic-framework-regression-models-and-classification-models"><span class="header-section-number">6.1</span> Supervised machine learning: Basic framework, regression models and classification models</h2>
+<p>Let’s understand term machine learning. According to Dave Bergmann of IBM, Machine learning is a subset of AI where algorithms learn patterns from training data to make inferences about new data without explicit instructions. This pattern recognition ability enables machine learning models to make decisions or predictions without explicit, hard-coded instructions.</p>
+<p><img src="ml.jfif" class="img-fluid"></p>
+<p>Though “machine learning” and “artificial intelligence” are often used interchangeably, they are not quite synonymous. In short: all machine learning is AI, but not all AI is machine learning.</p>
+<p>Machine learning works through mathematical logic. The relevant characteristics (or “features”) of each data point must therefore be expressed numerically, so that the data itself can be fed into a mathematical algorithm that will “learn” to map a given input to the desired output. The (often manual) process of choosing which aspects of data to use in machine learning algorithms is called feature selection. Feature extraction techniques refine data down to only its most relevant, meaningful dimensions.</p>
+</section>
+<section id="types-of-machine-learning" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="types-of-machine-learning"><span class="header-section-number">6.2</span> Types of machine learning</h2>
+<p>All machine learning methods can be categorized as one of three distinct learning paradigms: supervised learning, unsupervised learning or reinforcement learning, based on the nature of their training objectives and (often but not always) by the type of training data they entail.</p>
+<p>Supervised learning trains a model to predict the “correct” output for a given input. It applies to tasks that require some degree of accuracy relative to some external “ground truth,” such as classification or regression. Unsupervised learning trains a model to discern intrinsic patterns, dependencies and correlations in data. Unlike in supervised learning, unsupervised learning tasks don’t involve any external ground truth against which its outputs should be compared.</p>
+<p>Reinforcement learning (RL) trains a model to evaluate its environment and take an action that will garner the greatest reward. RL scenarios don’t entail the existence of a singular ground truth, but they do entail the existence of “good” and “bad” (or neutral) actions.</p>
+<section id="supervised-learning" class="level3" data-number="6.2.1">
+<h3 data-number="6.2.1" class="anchored" data-anchor-id="supervised-learning"><span class="header-section-number">6.2.1</span> Supervised learning</h3>
+<p>Supervised learning algorithms train models for tasks requiring accuracy, such as classification or regression. Supervised machine learning powers both state-of-the-art deep learning models and a wide array of traditional ML models still widely employed across industries.</p>
+<p><em>Regression models</em> predict continuous values, such as price, duration, temperature or size. Examples of traditional regression algorithms include linear regression, polynomial regression and state space models.</p>
+<p><em>Classification models</em> predict discrete values, such as the category (or class) a data point belongs to, a binary decision or a specific action to be taken. Examples of traditional classification algorithms include support vector machines (SVMs), Naïve Bayes and logistic regression.</p>
+<p>Many supervised ML algorithms can be used for either task. For instance, the output of what’s nominally a regression algorithm can subsequently be used to inform a classification prediction.</p>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
