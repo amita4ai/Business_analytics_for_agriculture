@@ -284,7 +284,7 @@
     "href": "block-II-unit-1.html#data-pre-processing",
     "title": "6  Block II Unit 1",
     "section": "6.4 Data Pre-Processing",
-    "text": "6.4 Data Pre-Processing\nData pre-processing is necessary before building model. In Sea urchin case study we have a perfect data set hence we could straight away jump to model building however it is not the case everytime. You will get messy data most of the time. You need to process the messy data into a polished and organized before building any model. Package recipes is the R package we will use to process the data. So, let’s begin.\nThe package Recipes has inbuilt series of preprocessing steps, such as:\n\nConverting qualitative predictors to indicator variables (also known as dummy variables),\nTransforming data to be on a different scale (e.g., taking the logarithm of a variable),\nTransforming whole groups of predictors together,\nExtracting key features from raw variables (e.g., getting the day of the week out of a date variable),\n\nTo use code, you will need to install (use install.packages(\"packagename\") command) the following packages: mlbench, themis,here, kableExtra, lubridate, nycflights13, skimr, tidymodels, and timeDate.\n\nlibrary(tidymodels)      # for the recipes package, along with the rest of tidymodels\n\n# Helper packages\nlibrary(skimr) \nlibrary(mlbench)\n\nWarning: package 'mlbench' was built under R version 4.4.3\n\nlibrary(themis)\nlibrary(stringr)\n\nWarning: package 'stringr' was built under R version 4.4.3\n\n\n\nAttaching package: 'stringr'\n\n\nThe following object is masked from 'package:recipes':\n\n    fixed\n\n\nSoybean is the crop majorly grown in Western India and the crop is prone to 16 different types of diseases. We use following dataset to build a classification model to identify the class of disease:\n\ndata(\"Soybean\", package = \"mlbench\")\n\nsoy = as_tibble(Soybean)\n\nglimpse(soy)\n\nRows: 683\nColumns: 36\n$ Class           &lt;fct&gt; diaporthe-stem-canker, diaporthe-stem-canker, diaporth…\n$ date            &lt;fct&gt; 6, 4, 3, 3, 6, 5, 5, 4, 6, 4, 6, 4, 3, 6, 6, 5, 6, 4, …\n$ plant.stand     &lt;ord&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ precip          &lt;ord&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ temp            &lt;ord&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 1, …\n$ hail            &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, …\n$ crop.hist       &lt;fct&gt; 1, 2, 1, 1, 2, 3, 2, 1, 3, 2, 1, 1, 1, 3, 1, 3, 0, 2, …\n$ area.dam        &lt;fct&gt; 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 2, 3, 3, 3, 2, 2, …\n$ sever           &lt;fct&gt; 1, 2, 2, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, …\n$ seed.tmt        &lt;fct&gt; 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, …\n$ germ            &lt;ord&gt; 0, 1, 2, 1, 2, 1, 0, 2, 1, 2, 0, 1, 0, 0, 1, 2, 0, 1, …\n$ plant.growth    &lt;fct&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …\n$ leaves          &lt;fct&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …\n$ leaf.halo       &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ leaf.marg       &lt;fct&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, …\n$ leaf.size       &lt;ord&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, …\n$ leaf.shread     &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ leaf.malf       &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ leaf.mild       &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ stem            &lt;fct&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …\n$ lodging         &lt;fct&gt; 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, …\n$ stem.cankers    &lt;fct&gt; 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ canker.lesion   &lt;fct&gt; 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, …\n$ fruiting.bodies &lt;fct&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ ext.decay       &lt;fct&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ mycelium        &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ int.discolor    &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, …\n$ sclerotia       &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, …\n$ fruit.pods      &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ fruit.spots     &lt;fct&gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, …\n$ seed            &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ mold.growth     &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ seed.discolor   &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ seed.size       &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ shriveling      &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ roots           &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …\n\n\nIn the dataset, we have 683 rows and 36 variables. Let’s look at the missingness in the data:\n\n## Quick look at missingness and class balance\ncolSums(is.na(soy)) |&gt; \n  sort(decreasing = TRUE) |&gt; \n  head(10)\n\n           hail           sever        seed.tmt         lodging            germ \n            121             121             121             121             112 \n      leaf.mild fruiting.bodies     fruit.spots   seed.discolor      shriveling \n            108             106             106             106             106 \n\n\nLet’s also check class imbalance in the Class variable that is decision variable (y):\n\nsoy |&gt; \n  count(Class, sort = TRUE) |&gt; \n  print(n = 20)\n\n# A tibble: 19 × 2\n   Class                           n\n   &lt;fct&gt;                       &lt;int&gt;\n 1 brown-spot                     92\n 2 alternarialeaf-spot            91\n 3 frog-eye-leaf-spot             91\n 4 phytophthora-rot               88\n 5 anthracnose                    44\n 6 brown-stem-rot                 44\n 7 bacterial-blight               20\n 8 bacterial-pustule              20\n 9 charcoal-rot                   20\n10 diaporthe-stem-canker          20\n11 downy-mildew                   20\n12 phyllosticta-leaf-spot         20\n13 powdery-mildew                 20\n14 purple-seed-stain              20\n15 rhizoctonia-root-rot           20\n16 2-4-d-injury                   16\n17 diaporthe-pod-&-stem-blight    15\n18 cyst-nematode                  14\n19 herbicide-injury                8\n\n\nWe can clearly see class imbalance here. The disease class herbicide-injury has only 8 observations and disease class brown-spot has 92 observations. When we build model on such imbalanced data, the model will get more discriminant features from higher frequency class and very less discriminant features from the low freqquency class. Consequenly, model will be biased towards higher frequency class which will create a model that can not be reliable.\nTo sort out this, we need to balance the class frequencies to the equal proportions in the data. But, first we build a classification model with all data preprocessing needed:\n\n6.4.1 Data Split\nWe train the model on 80% of the data and keep 20% data to test the model. The data is split through stratified random sampling:\n\nset.seed(42)\nsplit      &lt;- initial_split(soy, prop = 0.8, strata = Class)\nsoy_train  &lt;- training(split)\nsoy_test   &lt;- testing(split)\n \nsoy_train\n\n# A tibble: 545 × 36\n   Class  date  plant.stand precip temp  hail  crop.hist area.dam sever seed.tmt\n   &lt;fct&gt;  &lt;fct&gt; &lt;ord&gt;       &lt;ord&gt;  &lt;ord&gt; &lt;fct&gt; &lt;fct&gt;     &lt;fct&gt;    &lt;fct&gt; &lt;fct&gt;   \n 1 diapo… 6     0           2      1     0     1         1        1     0       \n 2 diapo… 4     0           2      1     0     2         0        2     1       \n 3 diapo… 3     0           2      1     0     1         0        2     1       \n 4 diapo… 6     0           2      1     0     3         0        1     1       \n 5 charc… 6     0           0      2     0     1         3        1     1       \n 6 charc… 5     0           0      2     1     3         3        1     1       \n 7 rhizo… 0     1           2      0     0     0         1        1     1       \n 8 rhizo… 1     1           2      0     0     0         1        1     0       \n 9 rhizo… 1     1           2      0     0     1         1        2     0       \n10 rhizo… 2     1           2      0     0     1         1        2     0       \n# ℹ 535 more rows\n# ℹ 26 more variables: germ &lt;ord&gt;, plant.growth &lt;fct&gt;, leaves &lt;fct&gt;,\n#   leaf.halo &lt;fct&gt;, leaf.marg &lt;fct&gt;, leaf.size &lt;ord&gt;, leaf.shread &lt;fct&gt;,\n#   leaf.malf &lt;fct&gt;, leaf.mild &lt;fct&gt;, stem &lt;fct&gt;, lodging &lt;fct&gt;,\n#   stem.cankers &lt;fct&gt;, canker.lesion &lt;fct&gt;, fruiting.bodies &lt;fct&gt;,\n#   ext.decay &lt;fct&gt;, mycelium &lt;fct&gt;, int.discolor &lt;fct&gt;, sclerotia &lt;fct&gt;,\n#   fruit.pods &lt;fct&gt;, fruit.spots &lt;fct&gt;, seed &lt;fct&gt;, mold.growth &lt;fct&gt;, …\n\nsoy_test\n\n# A tibble: 138 × 36\n   Class  date  plant.stand precip temp  hail  crop.hist area.dam sever seed.tmt\n   &lt;fct&gt;  &lt;fct&gt; &lt;ord&gt;       &lt;ord&gt;  &lt;ord&gt; &lt;fct&gt; &lt;fct&gt;     &lt;fct&gt;    &lt;fct&gt; &lt;fct&gt;   \n 1 diapo… 3     0           2      1     0     1         0        2     0       \n 2 charc… 3     0           0      1     0     1         2        1     0       \n 3 charc… 4     0           0      1     0     2         2        1     0       \n 4 rhizo… 3     0           2      0     1     3         1        2     0       \n 5 rhizo… 0     1           2      0     0     1         1        2     1       \n 6 rhizo… 2     1           2      0     0     2         1        1     0       \n 7 phyto… 0     1           1      1     0     1         1        1     0       \n 8 phyto… 2     1           1      1     &lt;NA&gt;  0         1        &lt;NA&gt;  &lt;NA&gt;    \n 9 phyto… 2     1           2      0     0     1         1        2     0       \n10 phyto… 1     1           2      1     1     3         1        2     0       \n# ℹ 128 more rows\n# ℹ 26 more variables: germ &lt;ord&gt;, plant.growth &lt;fct&gt;, leaves &lt;fct&gt;,\n#   leaf.halo &lt;fct&gt;, leaf.marg &lt;fct&gt;, leaf.size &lt;ord&gt;, leaf.shread &lt;fct&gt;,\n#   leaf.malf &lt;fct&gt;, leaf.mild &lt;fct&gt;, stem &lt;fct&gt;, lodging &lt;fct&gt;,\n#   stem.cankers &lt;fct&gt;, canker.lesion &lt;fct&gt;, fruiting.bodies &lt;fct&gt;,\n#   ext.decay &lt;fct&gt;, mycelium &lt;fct&gt;, int.discolor &lt;fct&gt;, sclerotia &lt;fct&gt;,\n#   fruit.pods &lt;fct&gt;, fruit.spots &lt;fct&gt;, seed &lt;fct&gt;, mold.growth &lt;fct&gt;, …\n\n\nYou can see that out of 683 observations, soy_train dataset contains 80% observations i.e. 545 observations and soy_test dataset contains 20% observations i.e. 138 observations.\n\n\n6.4.2 Build the preprocessing recipe ————————\nThis is the core of the exercise: every cleaning/encoding Decision is captured as a recipe step, learned only on the training set, then reproducibly applied to any new data.\n\nsoy_recipe &lt;-\n  recipe(Class ~ ., data = soy_train) |&gt;\n \n  # (a) Drop predictors that are (near) constant -&gt; add no signal\n  step_nzv(all_predictors()) |&gt;\n \n  # (b) Handle missing values in categorical predictors\n  #     Bagged trees impute using the other predictors' patterns,\n  #     which works well for structured agronomic survey data.\n  step_impute_bag(all_nominal_predictors(), impute_with = imp_vars(all_predictors())) |&gt;\n \n  # (c) Collapse rarely-occurring factor levels into \"other\"\n  #     (prevents unstable dummy columns from very rare categories)\n  step_other(all_nominal_predictors(), threshold = 0.03, other = \"other_level\") |&gt;\n \n  # (d) Ensure factor levels seen in test/new data don't break the model\n  step_novel(all_nominal_predictors()) |&gt;\n \n  # (e) One-hot / dummy encode categorical predictors for models\n  #     that need numeric input\n  step_dummy(all_nominal_predictors(), one_hot = TRUE) |&gt;\n \n  # (f) Remove any dummy columns that are (still) near-zero variance\n  #     after encoding\n  step_nzv(all_predictors()) |&gt;\n \n  # (g) Remove highly correlated dummy columns (redundant info)\n  step_corr(all_numeric_predictors(), threshold = 0.9) |&gt;\n \n  # (h) Scale numeric predictors (harmless here, essential if you\n  #     later add real-valued agronomic measurements e.g. rainfall_mm)\n  step_normalize(all_numeric_predictors()) |&gt;\n \n  # (i) Address class imbalance (19 disease classes, some very rare)\n  #     using up-sampling on the TRAINING data only\n  step_upsample(Class, over_ratio = 0.5)\n\n\n\n6.4.3 Inspect the recipe without training a model\nprep() estimates all step parameters (imputation models, which levels to pool, correlation matrix, normalization mean/sd, etc.) using soy_train ONLY - no leakage from soy_test.\n\nsoy_prep &lt;- prep(soy_recipe, training = soy_train)\nsoy_prep\n\n\n\n\n── Recipe ──────────────────────────────────────────────────────────────────────\n\n\n\n\n\n── Inputs \n\n\nNumber of variables by role\n\n\noutcome:    1\npredictor: 35\n\n\n\n\n\n── Training information \n\n\nTraining data contained 545 data points and 95 incomplete rows.\n\n\n\n\n\n── Operations \n\n\n• Sparse, unbalanced variable filter removed: leaf.mild, ... | Trained\n\n\n• Bagged tree imputation for: date, plant.stand, precip, temp, ... | Trained\n\n\n• Collapsing factor levels for: leaf.marg ext.decay, ... | Trained\n\n\n• Novel factor level assignment for: date plant.stand, ... | Trained\n\n\n• Dummy variables from: date, plant.stand, precip, temp, hail, ... | Trained\n\n\n• Sparse, unbalanced variable filter removed: date_X0, ... | Trained\n\n\n• Correlation filter on: seed.tmt_X1 leaf.marg_X0, ... | Trained\n\n\n• Centering and scaling for: date_X1, date_X2, date_X3, ... | Trained\n\n\n• Up-sampling based on: Class | Trained\n\n\n\n\n6.4.4 Data Pransformation for Model\nbake() applies the learned transformations to produce the final model-ready data frame:\n\ntrain_baked &lt;- bake(soy_prep, new_data = NULL)   # transformed training data\ntest_baked  &lt;- bake(soy_prep, new_data = soy_test)  # test data, same transforms\n \ndim(train_baked)\n\n[1] 848  64\n\ndim(test_baked)\n\n[1] 138  64\n\nsum(is.na(train_baked))   # should be 0 - imputation worked\n\n[1] 0\n\n\n\n\n6.4.5 Plug the recipe into a modeling workflow\nWe use random forest algorithm to build the model.\n\nrf_spec &lt;- rand_forest(trees = 500) |&gt;\n  set_engine(\"ranger\") |&gt;\n  set_mode(\"classification\")\n \nsoy_workflow &lt;- workflow() |&gt;\n  add_recipe(soy_recipe) |&gt;\n  add_model(rf_spec)\n \nsoy_fit &lt;- fit(soy_workflow, data = soy_train)\n\n\n\n6.4.6 Evaluate on held-out test data\nIn the previous step, we have built a machine learning model named as soy_fit and to test the accuracy of the model, we use test data and create prediction of the diseases based on the predictors:\n\nsoy_preds &lt;- predict(soy_fit, new_data = soy_test) |&gt;\n  bind_cols(soy_test |&gt; select(Class))\n \naccuracy(soy_preds, truth = Class, estimate = .pred_class)\n\n# A tibble: 1 × 3\n  .metric  .estimator .estimate\n  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;\n1 accuracy multiclass     0.928\n\n\nWe can see that the accuracy of the model is 92.8% which means out of 100 attempts of classification, model is able to predict accurately is 92.8%.\nLet’s deep dive into classification accuracy using confusion matrix:\n\nsoy_preds |&gt; conf_mat(truth = Class, estimate = .pred_class) |&gt;\n  summary() |&gt;\n  filter(.metric %in% c(\"accuracy\", \"kap\"))\n\n# A tibble: 2 × 3\n  .metric  .estimator .estimate\n  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;\n1 accuracy multiclass     0.928\n2 kap      multiclass     0.921\n\n\nLet’s evaluate model accuracy for each class of disease in soybean:\n\nsoy_probs &lt;- predict(soy_fit, new_data = soy_test, type = \"prob\") |&gt;\n  bind_cols(soy_test |&gt; select(Class))\n \nsoy_probs |&gt; head()\n\n# A tibble: 6 × 20\n  `.pred_2-4-d-injury` `.pred_alternarialeaf-spot` .pred_anthracnose\n                 &lt;dbl&gt;                       &lt;dbl&gt;             &lt;dbl&gt;\n1             0.000211                           0           0.00344\n2             0.002                              0           0.002  \n3             0.002                              0           0.00222\n4             0.000413                           0           0.0065 \n5             0.000413                           0           0      \n6             0.000413                           0           0.00183\n# ℹ 17 more variables: `.pred_bacterial-blight` &lt;dbl&gt;,\n#   `.pred_bacterial-pustule` &lt;dbl&gt;, `.pred_brown-spot` &lt;dbl&gt;,\n#   `.pred_brown-stem-rot` &lt;dbl&gt;, `.pred_charcoal-rot` &lt;dbl&gt;,\n#   `.pred_cyst-nematode` &lt;dbl&gt;, `.pred_diaporthe-pod-&-stem-blight` &lt;dbl&gt;,\n#   `.pred_diaporthe-stem-canker` &lt;dbl&gt;, `.pred_downy-mildew` &lt;dbl&gt;,\n#   `.pred_frog-eye-leaf-spot` &lt;dbl&gt;, `.pred_herbicide-injury` &lt;dbl&gt;,\n#   `.pred_phyllosticta-leaf-spot` &lt;dbl&gt;, `.pred_phytophthora-rot` &lt;dbl&gt;, …\n\n## Columns look like: .pred_brown-spot, .pred_frog-eye-leaf-spot, ... , Class\n\n\n\n6.4.7 Multiclass ROC (one-vs-rest)\nThe roc_curve() automatically does one-vs-rest for a multi-level truth column when you pass all the .pred_* probability columns.\n\nprob_cols &lt;- names(soy_probs) |&gt; str_subset(\"^\\\\.pred_\")\n \nroc_data &lt;- roc_curve(\n  soy_probs,\n  truth = Class,\n  !!!syms(prob_cols)\n)\n \n## Per-class AUC (one-vs-rest)\n## a multiclass setting we loop over each class, re-code it as a\n## binary \"this class vs. all others\" problem, and score that.\nclass_levels &lt;- levels(soy_probs$Class)\n \nroc_auc_by_class &lt;- map_dfr(class_levels, function(cls) {\n  prob_col &lt;- paste0(\".pred_\", cls)\n \n  binary_truth &lt;- factor(\n    if_else(soy_probs$Class == cls, cls, \"other\"),\n    levels = c(cls, \"other\")   # cls = \"event\" / first level\n  )\n \n  bin_auc &lt;- roc_auc(\n    tibble(truth = binary_truth, prob = soy_probs[[prob_col]]),\n    truth = truth,\n    prob,\n    event_level = \"first\"\n  )\n \n  tibble(.level = cls, .estimate = bin_auc$.estimate)\n})\n \nprint(roc_auc_by_class, n = Inf)\n\n# A tibble: 19 × 2\n   .level                      .estimate\n   &lt;chr&gt;                           &lt;dbl&gt;\n 1 2-4-d-injury                    1    \n 2 alternarialeaf-spot             0.992\n 3 anthracnose                     1    \n 4 bacterial-blight                0.998\n 5 bacterial-pustule               0.998\n 6 brown-spot                      0.998\n 7 brown-stem-rot                  1    \n 8 charcoal-rot                    1    \n 9 cyst-nematode                   1    \n10 diaporthe-pod-&-stem-blight     1    \n11 diaporthe-stem-canker           1    \n12 downy-mildew                    1    \n13 frog-eye-leaf-spot              0.991\n14 herbicide-injury                1    \n15 phyllosticta-leaf-spot          1    \n16 phytophthora-rot                1    \n17 powdery-mildew                  1    \n18 purple-seed-stain               1    \n19 rhizoctonia-root-rot            1    \n\n## Overall macro-average AUC (what you'd usually report as \"the\" AUC)\nroc_auc_macro &lt;- roc_auc(\n  soy_probs,\n  truth = Class,\n  !!!syms(prob_cols)\n)\nprint(roc_auc_macro)\n\n# A tibble: 1 × 3\n  .metric .estimator .estimate\n  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;\n1 roc_auc hand_till      0.999\n\n## ---- 6a. Quick built-in plot: one ROC curve per class, faceted ----\nautoplot(roc_data) +\n  labs(title = \"One-vs-Rest ROC Curves per Soybean Disease Class\")\n\n\n\n\n\n\n\n## ---- 6b. All classes overlaid on ONE plot, AUC in the legend ------\nauc_labels &lt;- roc_auc_by_class |&gt;\n  mutate(label = paste0(.level, \" (AUC = \", round(.estimate, 2), \")\"))\n \nroc_data |&gt;\n  left_join(auc_labels, by = \".level\") |&gt;\n  ggplot(aes(x = 1 - specificity, y = sensitivity, color = label)) +\n  geom_path(linewidth = 0.9) +\n  geom_abline(lty = 3, color = \"grey50\") +\n  coord_equal() +\n  labs(\n    title    = \"Multiclass ROC Curves — Soybean Disease Classification\",\n    subtitle = \"One-vs-rest, colored by disease class\",\n    x = \"1 - Specificity (False Positive Rate)\",\n    y = \"Sensitivity (True Positive Rate)\",\n    color = \"Disease (AUC)\"\n  ) +\n  theme_minimal() +\n  theme(legend.text = element_text(size = 8))\n\n\n\n\n\n\n\n\nLet’s discuss each part of Multi-Class ROC curves:\n\n\\[ Sensitivity (True Positive Rate) = True_Positive_Cases / (True_Positive_Cases + False_Negative_Cases) \\]\n\\[ Specificity (False Positive Rate) = True_Negative_Cases / (True_Negative_Cases + False_Positive_Cases) \\]",
+    "text": "6.4 Data Pre-Processing\nData pre-processing is necessary before building model. In Sea urchin case study we have a perfect data set hence we could straight away jump to model building however it is not the case everytime. You will get messy data most of the time. You need to process the messy data into a polished and organized before building any model. Package recipes is the R package we will use to process the data. So, let’s begin.\nThe package Recipes has inbuilt series of preprocessing steps, such as:\n\nConverting qualitative predictors to indicator variables (also known as dummy variables),\nTransforming data to be on a different scale (e.g., taking the logarithm of a variable),\nTransforming whole groups of predictors together,\nExtracting key features from raw variables (e.g., getting the day of the week out of a date variable),\n\nTo use code, you will need to install (use install.packages(\"packagename\") command) the following packages: mlbench, themis,here, kableExtra, lubridate, nycflights13, skimr, tidymodels, and timeDate.\n\nlibrary(tidymodels)      # for the recipes package, along with the rest of tidymodels\n\n# Helper packages\nlibrary(skimr) \nlibrary(mlbench)\n\nWarning: package 'mlbench' was built under R version 4.4.3\n\nlibrary(themis)\nlibrary(stringr)\n\nWarning: package 'stringr' was built under R version 4.4.3\n\n\n\nAttaching package: 'stringr'\n\n\nThe following object is masked from 'package:recipes':\n\n    fixed\n\n\nSoybean is the crop majorly grown in Western India and the crop is prone to 16 different types of diseases. We use following dataset to build a classification model to identify the class of disease:\n\ndata(\"Soybean\", package = \"mlbench\")\n\nsoy = as_tibble(Soybean)\n\nglimpse(soy)\n\nRows: 683\nColumns: 36\n$ Class           &lt;fct&gt; diaporthe-stem-canker, diaporthe-stem-canker, diaporth…\n$ date            &lt;fct&gt; 6, 4, 3, 3, 6, 5, 5, 4, 6, 4, 6, 4, 3, 6, 6, 5, 6, 4, …\n$ plant.stand     &lt;ord&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ precip          &lt;ord&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ temp            &lt;ord&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 1, …\n$ hail            &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, …\n$ crop.hist       &lt;fct&gt; 1, 2, 1, 1, 2, 3, 2, 1, 3, 2, 1, 1, 1, 3, 1, 3, 0, 2, …\n$ area.dam        &lt;fct&gt; 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 2, 3, 3, 3, 2, 2, …\n$ sever           &lt;fct&gt; 1, 2, 2, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, …\n$ seed.tmt        &lt;fct&gt; 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, …\n$ germ            &lt;ord&gt; 0, 1, 2, 1, 2, 1, 0, 2, 1, 2, 0, 1, 0, 0, 1, 2, 0, 1, …\n$ plant.growth    &lt;fct&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …\n$ leaves          &lt;fct&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …\n$ leaf.halo       &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ leaf.marg       &lt;fct&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, …\n$ leaf.size       &lt;ord&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, …\n$ leaf.shread     &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ leaf.malf       &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ leaf.mild       &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ stem            &lt;fct&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …\n$ lodging         &lt;fct&gt; 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, …\n$ stem.cankers    &lt;fct&gt; 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ canker.lesion   &lt;fct&gt; 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, …\n$ fruiting.bodies &lt;fct&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ ext.decay       &lt;fct&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ mycelium        &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ int.discolor    &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, …\n$ sclerotia       &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, …\n$ fruit.pods      &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ fruit.spots     &lt;fct&gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, …\n$ seed            &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ mold.growth     &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ seed.discolor   &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ seed.size       &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ shriveling      &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …\n$ roots           &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …\n\n\nIn the dataset, we have 683 rows and 36 variables. Let’s look at the missingness in the data:\n\n## Quick look at missingness and class balance\ncolSums(is.na(soy)) |&gt; \n  sort(decreasing = TRUE) |&gt; \n  head(10)\n\n           hail           sever        seed.tmt         lodging            germ \n            121             121             121             121             112 \n      leaf.mild fruiting.bodies     fruit.spots   seed.discolor      shriveling \n            108             106             106             106             106 \n\n\nLet’s also check class imbalance in the Class variable that is decision variable (y):\n\nsoy |&gt; \n  count(Class, sort = TRUE) |&gt; \n  print(n = 20)\n\n# A tibble: 19 × 2\n   Class                           n\n   &lt;fct&gt;                       &lt;int&gt;\n 1 brown-spot                     92\n 2 alternarialeaf-spot            91\n 3 frog-eye-leaf-spot             91\n 4 phytophthora-rot               88\n 5 anthracnose                    44\n 6 brown-stem-rot                 44\n 7 bacterial-blight               20\n 8 bacterial-pustule              20\n 9 charcoal-rot                   20\n10 diaporthe-stem-canker          20\n11 downy-mildew                   20\n12 phyllosticta-leaf-spot         20\n13 powdery-mildew                 20\n14 purple-seed-stain              20\n15 rhizoctonia-root-rot           20\n16 2-4-d-injury                   16\n17 diaporthe-pod-&-stem-blight    15\n18 cyst-nematode                  14\n19 herbicide-injury                8\n\n\nWe can clearly see class imbalance here. The disease class herbicide-injury has only 8 observations and disease class brown-spot has 92 observations. When we build model on such imbalanced data, the model will get more discriminant features from higher frequency class and very less discriminant features from the low freqquency class. Consequenly, model will be biased towards higher frequency class which will create a model that can not be reliable.\nTo sort out this, we need to balance the class frequencies to the equal proportions in the data. But, first we build a classification model with all data preprocessing needed:\n\n6.4.1 Data Split\nWe train the model on 80% of the data and keep 20% data to test the model. The data is split through stratified random sampling:\n\nset.seed(42)\nsplit      &lt;- initial_split(soy, prop = 0.8, strata = Class)\nsoy_train  &lt;- training(split)\nsoy_test   &lt;- testing(split)\n \nsoy_train\n\n# A tibble: 545 × 36\n   Class  date  plant.stand precip temp  hail  crop.hist area.dam sever seed.tmt\n   &lt;fct&gt;  &lt;fct&gt; &lt;ord&gt;       &lt;ord&gt;  &lt;ord&gt; &lt;fct&gt; &lt;fct&gt;     &lt;fct&gt;    &lt;fct&gt; &lt;fct&gt;   \n 1 diapo… 6     0           2      1     0     1         1        1     0       \n 2 diapo… 4     0           2      1     0     2         0        2     1       \n 3 diapo… 3     0           2      1     0     1         0        2     1       \n 4 diapo… 6     0           2      1     0     3         0        1     1       \n 5 charc… 6     0           0      2     0     1         3        1     1       \n 6 charc… 5     0           0      2     1     3         3        1     1       \n 7 rhizo… 0     1           2      0     0     0         1        1     1       \n 8 rhizo… 1     1           2      0     0     0         1        1     0       \n 9 rhizo… 1     1           2      0     0     1         1        2     0       \n10 rhizo… 2     1           2      0     0     1         1        2     0       \n# ℹ 535 more rows\n# ℹ 26 more variables: germ &lt;ord&gt;, plant.growth &lt;fct&gt;, leaves &lt;fct&gt;,\n#   leaf.halo &lt;fct&gt;, leaf.marg &lt;fct&gt;, leaf.size &lt;ord&gt;, leaf.shread &lt;fct&gt;,\n#   leaf.malf &lt;fct&gt;, leaf.mild &lt;fct&gt;, stem &lt;fct&gt;, lodging &lt;fct&gt;,\n#   stem.cankers &lt;fct&gt;, canker.lesion &lt;fct&gt;, fruiting.bodies &lt;fct&gt;,\n#   ext.decay &lt;fct&gt;, mycelium &lt;fct&gt;, int.discolor &lt;fct&gt;, sclerotia &lt;fct&gt;,\n#   fruit.pods &lt;fct&gt;, fruit.spots &lt;fct&gt;, seed &lt;fct&gt;, mold.growth &lt;fct&gt;, …\n\nsoy_test\n\n# A tibble: 138 × 36\n   Class  date  plant.stand precip temp  hail  crop.hist area.dam sever seed.tmt\n   &lt;fct&gt;  &lt;fct&gt; &lt;ord&gt;       &lt;ord&gt;  &lt;ord&gt; &lt;fct&gt; &lt;fct&gt;     &lt;fct&gt;    &lt;fct&gt; &lt;fct&gt;   \n 1 diapo… 3     0           2      1     0     1         0        2     0       \n 2 charc… 3     0           0      1     0     1         2        1     0       \n 3 charc… 4     0           0      1     0     2         2        1     0       \n 4 rhizo… 3     0           2      0     1     3         1        2     0       \n 5 rhizo… 0     1           2      0     0     1         1        2     1       \n 6 rhizo… 2     1           2      0     0     2         1        1     0       \n 7 phyto… 0     1           1      1     0     1         1        1     0       \n 8 phyto… 2     1           1      1     &lt;NA&gt;  0         1        &lt;NA&gt;  &lt;NA&gt;    \n 9 phyto… 2     1           2      0     0     1         1        2     0       \n10 phyto… 1     1           2      1     1     3         1        2     0       \n# ℹ 128 more rows\n# ℹ 26 more variables: germ &lt;ord&gt;, plant.growth &lt;fct&gt;, leaves &lt;fct&gt;,\n#   leaf.halo &lt;fct&gt;, leaf.marg &lt;fct&gt;, leaf.size &lt;ord&gt;, leaf.shread &lt;fct&gt;,\n#   leaf.malf &lt;fct&gt;, leaf.mild &lt;fct&gt;, stem &lt;fct&gt;, lodging &lt;fct&gt;,\n#   stem.cankers &lt;fct&gt;, canker.lesion &lt;fct&gt;, fruiting.bodies &lt;fct&gt;,\n#   ext.decay &lt;fct&gt;, mycelium &lt;fct&gt;, int.discolor &lt;fct&gt;, sclerotia &lt;fct&gt;,\n#   fruit.pods &lt;fct&gt;, fruit.spots &lt;fct&gt;, seed &lt;fct&gt;, mold.growth &lt;fct&gt;, …\n\n\nYou can see that out of 683 observations, soy_train dataset contains 80% observations i.e. 545 observations and soy_test dataset contains 20% observations i.e. 138 observations.\n\n\n6.4.2 Build the preprocessing recipe\nThis is the core of the exercise: every cleaning/encoding Decision is captured as a recipe step, learned only on the training set, then reproducibly applied to any new data.\n\nsoy_recipe &lt;-\n  recipe(Class ~ ., data = soy_train) |&gt;\n \n  # (a) Drop predictors that are (near) constant -&gt; add no signal\n  step_nzv(all_predictors()) |&gt;\n \n  # (b) Handle missing values in categorical predictors\n  #     Bagged trees impute using the other predictors' patterns,\n  #     which works well for structured agronomic survey data.\n  step_impute_bag(all_nominal_predictors(), impute_with = imp_vars(all_predictors())) |&gt;\n \n  # (c) Collapse rarely-occurring factor levels into \"other\"\n  #     (prevents unstable dummy columns from very rare categories)\n  step_other(all_nominal_predictors(), threshold = 0.03, other = \"other_level\") |&gt;\n \n  # (d) Ensure factor levels seen in test/new data don't break the model\n  step_novel(all_nominal_predictors()) |&gt;\n \n  # (e) One-hot / dummy encode categorical predictors for models\n  #     that need numeric input\n  step_dummy(all_nominal_predictors(), one_hot = TRUE) |&gt;\n \n  # (f) Remove any dummy columns that are (still) near-zero variance\n  #     after encoding\n  step_nzv(all_predictors()) |&gt;\n \n  # (g) Remove highly correlated dummy columns (redundant info)\n  step_corr(all_numeric_predictors(), threshold = 0.9) |&gt;\n \n  # (h) Scale numeric predictors (harmless here, essential if you\n  #     later add real-valued agronomic measurements e.g. rainfall_mm)\n  step_normalize(all_numeric_predictors()) |&gt;\n \n  # (i) Address class imbalance (19 disease classes, some very rare)\n  #     using up-sampling on the TRAINING data only\n  step_upsample(Class, over_ratio = 0.5)\n\n\n\n6.4.3 Inspect the recipe without training a model\nprep() estimates all step parameters (imputation models, which levels to pool, correlation matrix, normalization mean/sd, etc.) using soy_train ONLY - no leakage from soy_test.\n\nsoy_prep &lt;- prep(soy_recipe, training = soy_train)\nsoy_prep\n\n\n\n\n── Recipe ──────────────────────────────────────────────────────────────────────\n\n\n\n\n\n── Inputs \n\n\nNumber of variables by role\n\n\noutcome:    1\npredictor: 35\n\n\n\n\n\n── Training information \n\n\nTraining data contained 545 data points and 95 incomplete rows.\n\n\n\n\n\n── Operations \n\n\n• Sparse, unbalanced variable filter removed: leaf.mild, ... | Trained\n\n\n• Bagged tree imputation for: date, plant.stand, precip, temp, ... | Trained\n\n\n• Collapsing factor levels for: leaf.marg ext.decay, ... | Trained\n\n\n• Novel factor level assignment for: date plant.stand, ... | Trained\n\n\n• Dummy variables from: date, plant.stand, precip, temp, hail, ... | Trained\n\n\n• Sparse, unbalanced variable filter removed: date_X0, ... | Trained\n\n\n• Correlation filter on: seed.tmt_X1 leaf.marg_X0, ... | Trained\n\n\n• Centering and scaling for: date_X1, date_X2, date_X3, ... | Trained\n\n\n• Up-sampling based on: Class | Trained\n\n\n\n\n6.4.4 Data Pransformation for Model\nbake() applies the learned transformations to produce the final model-ready data frame:\n\ntrain_baked &lt;- bake(soy_prep, new_data = NULL)   # transformed training data\ntest_baked  &lt;- bake(soy_prep, new_data = soy_test)  # test data, same transforms\n \ndim(train_baked)\n\n[1] 848  64\n\ndim(test_baked)\n\n[1] 138  64\n\nsum(is.na(train_baked))   # should be 0 - imputation worked\n\n[1] 0\n\n\n\n\n6.4.5 Plug the recipe into a modeling workflow\nWe use random forest algorithm to build the model.\n\nrf_spec &lt;- rand_forest(trees = 500) |&gt;\n  set_engine(\"ranger\") |&gt;\n  set_mode(\"classification\")\n \nsoy_workflow &lt;- workflow() |&gt;\n  add_recipe(soy_recipe) |&gt;\n  add_model(rf_spec)\n \nsoy_fit &lt;- fit(soy_workflow, data = soy_train)\n\n\n\n6.4.6 Evaluate on held-out test data\nIn the previous step, we have built a machine learning model named as soy_fit and to test the accuracy of the model, we use test data and create prediction of the diseases based on the predictors:\n\nsoy_preds &lt;- predict(soy_fit, new_data = soy_test) |&gt;\n  bind_cols(soy_test |&gt; select(Class))\n \naccuracy(soy_preds, truth = Class, estimate = .pred_class)\n\n# A tibble: 1 × 3\n  .metric  .estimator .estimate\n  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;\n1 accuracy multiclass     0.928\n\n\nWe can see that the accuracy of the model is 92.8% which means out of 100 attempts of classification, model is able to predict accurately is 92.8%.\nLet’s deep dive into classification accuracy using confusion matrix:\n\nsoy_preds |&gt; conf_mat(truth = Class, estimate = .pred_class) |&gt;\n  summary() |&gt;\n  filter(.metric %in% c(\"accuracy\", \"kap\"))\n\n# A tibble: 2 × 3\n  .metric  .estimator .estimate\n  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;\n1 accuracy multiclass     0.928\n2 kap      multiclass     0.921\n\n\nLet’s evaluate model accuracy for each class of disease in soybean:\n\nsoy_probs &lt;- predict(soy_fit, new_data = soy_test, type = \"prob\") |&gt;\n  bind_cols(soy_test |&gt; select(Class))\n \nsoy_probs |&gt; head()\n\n# A tibble: 6 × 20\n  `.pred_2-4-d-injury` `.pred_alternarialeaf-spot` .pred_anthracnose\n                 &lt;dbl&gt;                       &lt;dbl&gt;             &lt;dbl&gt;\n1             0.000211                           0           0.00344\n2             0.002                              0           0.002  \n3             0.002                              0           0.00222\n4             0.000413                           0           0.0065 \n5             0.000413                           0           0      \n6             0.000413                           0           0.00183\n# ℹ 17 more variables: `.pred_bacterial-blight` &lt;dbl&gt;,\n#   `.pred_bacterial-pustule` &lt;dbl&gt;, `.pred_brown-spot` &lt;dbl&gt;,\n#   `.pred_brown-stem-rot` &lt;dbl&gt;, `.pred_charcoal-rot` &lt;dbl&gt;,\n#   `.pred_cyst-nematode` &lt;dbl&gt;, `.pred_diaporthe-pod-&-stem-blight` &lt;dbl&gt;,\n#   `.pred_diaporthe-stem-canker` &lt;dbl&gt;, `.pred_downy-mildew` &lt;dbl&gt;,\n#   `.pred_frog-eye-leaf-spot` &lt;dbl&gt;, `.pred_herbicide-injury` &lt;dbl&gt;,\n#   `.pred_phyllosticta-leaf-spot` &lt;dbl&gt;, `.pred_phytophthora-rot` &lt;dbl&gt;, …\n\n## Columns look like: .pred_brown-spot, .pred_frog-eye-leaf-spot, ... , Class\n\n\n\n6.4.7 Multiclass ROC (one-vs-rest)\nThe roc_curve() automatically does one-vs-rest for a multi-level truth column when you pass all the .pred_* probability columns.\n\nprob_cols &lt;- names(soy_probs) |&gt; str_subset(\"^\\\\.pred_\")\n \nroc_data &lt;- roc_curve(\n  soy_probs,\n  truth = Class,\n  !!!syms(prob_cols)\n)\n \n## Per-class AUC (one-vs-rest)\n## a multiclass setting we loop over each class, re-code it as a\n## binary \"this class vs. all others\" problem, and score that.\nclass_levels &lt;- levels(soy_probs$Class)\n \nroc_auc_by_class &lt;- map_dfr(class_levels, function(cls) {\n  prob_col &lt;- paste0(\".pred_\", cls)\n \n  binary_truth &lt;- factor(\n    if_else(soy_probs$Class == cls, cls, \"other\"),\n    levels = c(cls, \"other\")   # cls = \"event\" / first level\n  )\n \n  bin_auc &lt;- roc_auc(\n    tibble(truth = binary_truth, prob = soy_probs[[prob_col]]),\n    truth = truth,\n    prob,\n    event_level = \"first\"\n  )\n \n  tibble(.level = cls, .estimate = bin_auc$.estimate)\n})\n \nprint(roc_auc_by_class, n = Inf)\n\n# A tibble: 19 × 2\n   .level                      .estimate\n   &lt;chr&gt;                           &lt;dbl&gt;\n 1 2-4-d-injury                    1    \n 2 alternarialeaf-spot             0.992\n 3 anthracnose                     1    \n 4 bacterial-blight                0.998\n 5 bacterial-pustule               0.998\n 6 brown-spot                      0.998\n 7 brown-stem-rot                  1    \n 8 charcoal-rot                    1    \n 9 cyst-nematode                   1    \n10 diaporthe-pod-&-stem-blight     1    \n11 diaporthe-stem-canker           1    \n12 downy-mildew                    1    \n13 frog-eye-leaf-spot              0.991\n14 herbicide-injury                1    \n15 phyllosticta-leaf-spot          1    \n16 phytophthora-rot                1    \n17 powdery-mildew                  1    \n18 purple-seed-stain               1    \n19 rhizoctonia-root-rot            1    \n\n## Overall macro-average AUC (what you'd usually report as \"the\" AUC)\nroc_auc_macro &lt;- roc_auc(\n  soy_probs,\n  truth = Class,\n  !!!syms(prob_cols)\n)\nprint(roc_auc_macro)\n\n# A tibble: 1 × 3\n  .metric .estimator .estimate\n  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;\n1 roc_auc hand_till      0.999\n\n## ---- 6a. Quick built-in plot: one ROC curve per class, faceted ----\nautoplot(roc_data) +\n  labs(title = \"One-vs-Rest ROC Curves per Soybean Disease Class\")\n\n\n\n\n\n\n\n## ---- 6b. All classes overlaid on ONE plot, AUC in the legend ------\nauc_labels &lt;- roc_auc_by_class |&gt;\n  mutate(label = paste0(.level, \" (AUC = \", round(.estimate, 2), \")\"))\n \nroc_data |&gt;\n  left_join(auc_labels, by = \".level\") |&gt;\n  ggplot(aes(x = 1 - specificity, y = sensitivity, color = label)) +\n  geom_path(linewidth = 0.9) +\n  geom_abline(lty = 3, color = \"grey50\") +\n  coord_equal() +\n  labs(\n    title    = \"Multiclass ROC Curves — Soybean Disease Classification\",\n    subtitle = \"One-vs-rest, colored by disease class\",\n    x = \"1 - Specificity (False Positive Rate)\",\n    y = \"Sensitivity (True Positive Rate)\",\n    color = \"Disease (AUC)\"\n  ) +\n  theme_minimal() +\n  theme(legend.text = element_text(size = 8))\n\n\n\n\n\n\n\n\nLet’s discuss each part of Multi-Class ROC curves:\n\n\\[ Sensitivity (True Positive Rate) = True_Positive_Cases / (True_Positive_Cases + False_Negative_Cases) \\]\n\\[ Specificity (False Positive Rate) = True_Negative_Cases / (True_Negative_Cases + False_Positive_Cases) \\]\n\n\n\n6.4.8 Concluding Remarks\nThis analysis demonstrated an end-to-end multiclass classification pipeline for diagnosing soybean diseases from categorical agronomic and environmental observations. The recipes package handled the preprocessing burden reproducibly and without data leakage — filtering near-zero-variance predictors, imputing missing symptom records via bagged trees, pooling rare factor levels, one-hot encoding, removing redundant correlated features, and upsampling rare disease classes — all learned strictly on the training split and applied identically to the held-out test data.\nThe random forest classifier trained on this preprocessed data was evaluated using one-vs-rest ROC curves for each disease class rather than a single aggregate accuracy figure, since accuracy alone can mask poor performance on rarer or harder-to-distinguish diseases. Per-class AUC values reveal which diseases the model separates cleanly from all others (curves hugging the top-left corner, AUC near 1.0) versus which ones it confuses with visually or symptomatically similar conditions (curves closer to the diagonal, AUC near 0.5). This class-by-class view is more actionable for an agribusiness context than a single overall score — it tells you specifically which diseases a field-deployed diagnostic tool can be trusted on, and which would still need expert/agronomist confirmation before acting on the model’s flag.\nPractical takeaway: the preprocessing recipe is reusable well beyond this dataset — swap in real farm records (soil tests, weather logs, crop-cam imagery-derived features, past yield data) and the same step_impute_* → step_other/step_novel → step_dummy → step_corr/step_nzv → step_normalize → step_upsample sequence provides a robust, leakage-free foundation for any agribusiness classification problem — whether that’s disease diagnosis, loan-default risk for agri-lending, or yield-grade prediction.",
     "crumbs": [
       "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
     ]
@@ -433,8 +433,8 @@
     "objectID": "block-II-unit-1.html#section",
     "href": "block-II-unit-1.html#section",
     "title": "6  Block II Unit 1",
-    "section": "6.19 ============================================================",
-    "text": "6.19 ============================================================",
+    "section": "6.6 ============================================================",
+    "text": "6.6 ============================================================",
     "crumbs": [
       "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
     ]
@@ -533,8 +533,648 @@
     "objectID": "block-II-unit-1.html#section-1",
     "href": "block-II-unit-1.html#section-1",
     "title": "6  Block II Unit 1",
-    "section": "6.29 ==========================================================",
-    "text": "6.29 ==========================================================\n```",
+    "section": "6.8 ============================================================",
+    "text": "6.8 ============================================================",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#regression-methods",
+    "href": "block-II-unit-1.html#regression-methods",
+    "title": "6  Block II Unit 1",
+    "section": "6.5 Regression Methods",
+    "text": "6.5 Regression Methods\nRegression methods are used to build model to predict the estimate or classify an obervation. In this section we will cover linear regression, nonlinear regression, multiple regression, polynomial regression,lasso regression, ridge regression, stepwise regression, quantile regression and logistic regression.\nAll examples use ONE simulated crop-yield dataset so you can compare techniques on the same problem:\nPredict crop YIELD (kg/hectare) from rainfall, fertilizer,temperature, and soil pH — plus a binary GOOD_YIELD outcome\nSo, let’s begin with calling the libraries required:\n\n# install.packages(c(\"glmnet\", \"quantreg\", \"ggplot2\"))\nlibrary(glmnet)     # ridge & lasso\n\nWarning: package 'glmnet' was built under R version 4.4.3\n\n\nLoading required package: Matrix\n\n\nWarning: package 'Matrix' was built under R version 4.4.2\n\n\n\nAttaching package: 'Matrix'\n\n\nThe following objects are masked from 'package:tidyr':\n\n    expand, pack, unpack\n\n\nLoaded glmnet 4.1-10\n\nlibrary(quantreg)   # quantile regression\n\nWarning: package 'quantreg' was built under R version 4.4.2\n\n\nLoading required package: SparseM\n\n\n\nAttaching package: 'SparseM'\n\n\nThe following object is masked from 'package:Matrix':\n\n    det\n\nlibrary(ggplot2)    # plotting\n\n\n6.5.1 Simulate Data\nWe create a dataset of 200 observations and variables are as follows:\n\nrainfall_mm: Average rainfall measured in mm using mean 800 and standard deviation 150.\nfertilizer_kg: Fertilizer consumed in KG using max use 150 Kg and min use 20 Kg.\ntemperature_C: Temperature measured in degree centigrade with mean 27 and standard deviation 3.\nsoil_ph: Soil PH created with mean 6.5 and standard deviation 0.5.\nyeild_kg_ha: Yeild per Hectare using a regression equation.\n\nWe create a dataset by combining all the variables and we also add one more factor variable - good_yield using if_else logic.\n\nset.seed(123)\nn &lt;- 200\n\nrainfall_mm  &lt;- round(rnorm(n, mean = 800, sd = 150), 1)\nfertilizer_kg&lt;- round(runif(n, 20, 150), 1)\ntemperature_C&lt;- round(rnorm(n, mean = 27, sd = 3), 1)\nsoil_ph      &lt;- round(rnorm(n, mean = 6.5, sd = 0.5), 2)\n\n## Yield has a linear-ish relationship with rainfall/fertilizer/pH,\n## but a NONLINEAR (diminishing-returns) relationship with fertilizer,\n## and a curved (polynomial) relationship with temperature (yield\n## drops off if it gets too hot or too cold - not just \"more is better\")\n\nyield_kg_ha &lt;- 2000 +\n  2.5   * rainfall_mm +\n  40    * sqrt(fertilizer_kg) -             # diminishing returns\n  15    * (temperature_C - 27)^2 +          # optimal temp ~27C\n  300   * soil_ph +\n  rnorm(n, 0, 200)\n\ncrop &lt;- data.frame(rainfall_mm, fertilizer_kg, temperature_C, soil_ph, yield_kg_ha)\n\n## Binary outcome for logistic regression: \"good yield\" = above median\ncrop$good_yield &lt;- factor(ifelse(crop$yield_kg_ha &gt; median(crop$yield_kg_ha), 1, 0))\n\n\nglimpse(crop)\n\nRows: 200\nColumns: 6\n$ rainfall_mm   &lt;dbl&gt; 715.9, 765.5, 1033.8, 810.6, 819.4, 1057.3, 869.1, 610.2…\n$ fertilizer_kg &lt;dbl&gt; 148.2, 37.8, 137.7, 94.9, 71.4, 78.5, 111.8, 30.7, 64.1,…\n$ temperature_C &lt;dbl&gt; 24.9, 24.7, 24.2, 23.8, 25.7, 28.0, 21.0, 27.6, 30.7, 33…\n$ soil_ph       &lt;dbl&gt; 6.20, 6.00, 7.01, 6.88, 5.75, 6.45, 6.05, 5.46, 6.58, 6.…\n$ yield_kg_ha   &lt;dbl&gt; 5924.906, 5572.238, 6900.664, 6350.336, 5813.202, 7035.6…\n$ good_yield    &lt;fct&gt; 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0,…\n\n\n\n\n6.5.2 Train/test split (80/20)\n\nset.seed(42)\ntrain_idx &lt;- sample(seq_len(n), size = 0.8 * n)\ntrain &lt;- crop[train_idx, ]\ntest  &lt;- crop[-train_idx, ]\n\n\n\n6.5.3 LINEAR REGRESSION\nTo understand linear regression, we build mode with One predictor, straight-line relationship: yield vs. rainfall\n\nlm_simple &lt;- lm(yield_kg_ha ~ rainfall_mm, data = train)\nsummary(lm_simple)\n\n\nCall:\nlm(formula = yield_kg_ha ~ rainfall_mm, data = train)\n\nResiduals:\n     Min       1Q   Median       3Q      Max \n-1138.21  -217.55    69.47   212.02   814.09 \n\nCoefficients:\n             Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept) 4299.7736   151.5065   28.38   &lt;2e-16 ***\nrainfall_mm    2.3660     0.1882   12.57   &lt;2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 333.1 on 158 degrees of freedom\nMultiple R-squared:  0.5002,    Adjusted R-squared:  0.497 \nF-statistic: 158.1 on 1 and 158 DF,  p-value: &lt; 2.2e-16\n\n\nA simple linear regression was conducted to examine whether rainfall predicted crop yield. The overall model was statistically significant, F(1, 158) = 158.10, p &lt; .001, and explained approximately 50% of the variance in yield, R² = .50, adjusted R² = .497.\nRainfall was a significant positive predictor of yield, b = 2.37, SE = 0.19, t(158) = 12.57, p &lt; .001. For every additional millimeter of rainfall, yield increased by approximately 2.37 kg/hectare, holding all else constant. The intercept, b = 4299.77, SE = 151.51, t(158) = 28.38, p &lt; .001, represents the model’s predicted yield when rainfall is zero, though this value has limited practical interpretation since zero rainfall falls well outside the observed range of the data.\nLet’s check the relationship using visualization:\n\nggplot(train, aes(rainfall_mm, yield_kg_ha)) +\n  geom_point(alpha = 0.5) +\n  geom_smooth(method = \"lm\", se = TRUE, color = \"steelblue\") +\n  labs(title = \"Linear Regression: Yield vs. Rainfall\")\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\n\n\n\n\n\n\n\n\n\n6.5.4 MULTIPLE REGRESSION\nNow, we build model with Several predictors, each assumed to have a straight-line (additive) effect on yield:\n\nlm_multiple &lt;- lm(yield_kg_ha ~ rainfall_mm + fertilizer_kg + temperature_C + soil_ph,\n                   data = train)\nsummary(lm_multiple)\n\n\nCall:\nlm(formula = yield_kg_ha ~ rainfall_mm + fertilizer_kg + temperature_C + \n    soil_ph, data = train)\n\nResiduals:\n     Min       1Q   Median       3Q      Max \n-1017.50  -187.31    38.67   186.97   617.16 \n\nCoefficients:\n               Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept)   2319.5617   396.0693   5.856 2.74e-08 ***\nrainfall_mm      2.3383     0.1617  14.459  &lt; 2e-16 ***\nfertilizer_kg    2.5336     0.5959   4.252 3.65e-05 ***\ntemperature_C   -0.6421     7.7034  -0.083    0.934    \nsoil_ph        278.4878    44.6961   6.231 4.19e-09 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 283.5 on 155 degrees of freedom\nMultiple R-squared:  0.6447,    Adjusted R-squared:  0.6355 \nF-statistic:  70.3 on 4 and 155 DF,  p-value: &lt; 2.2e-16\n\n## Compare R-squared to the simple model - more predictors usually\n\nTwo regression models were compared to evaluate the predictors of crop yield. The simple linear regression, using rainfall alone, was statistically significant and explained approximately 50% of the variance in yield, R² = .50, adjusted R² = .497, F(1, 158) = 158.10, p &lt; .001. Adding three additional predictors — fertilizer application, temperature, and soil pH — produced a multiple regression model that was also statistically significant, F(4, 155) = 70.30, p &lt; .001, and explained a larger proportion of variance in yield, R² = .64, adjusted R² = .636.\nThe increase in adjusted R² from .497 to .636 indicates that the additional predictors accounted for meaningful variance in yield beyond rainfall alone, rather than merely adding noise (adjusted R², unlike R², penalizes the inclusion of uninformative predictors, making it the more appropriate statistic for comparing models of different sizes). This is further supported by the reduction in residual standard error from 333.1 to 283.5 kg/hectare, reflecting improved prediction accuracy.\nExamining individual predictors in the multiple regression model, rainfall remained a strong, statistically significant positive predictor of yield, b = 2.34, SE = 0.16, t(155) = 14.46, p &lt; .001, with a coefficient nearly identical to its estimate in the simple regression (b = 2.37), suggesting its effect on yield is robust to the inclusion of other variables. Fertilizer application was also a significant positive predictor, b = 2.53, SE = 0.60, t(155) = 4.25, p &lt; .001, as was soil pH, b = 278.49, SE = 44.70, t(155) = 6.23, p &lt; .001, which showed the largest standardized influence relative to its measurement scale. Temperature, however, was not a statistically significant predictor in this model, b = −0.64, SE = 7.70, t(155) = −0.08, p = .934.\nLet’s predict check the RMSE (Root Mean Squared Error):\n\npred_multi &lt;- predict(lm_multiple, newdata = test)\nsqrt(mean((pred_multi - test$yield_kg_ha)^2))   # test RMSE\n\n[1] 372.6435\n\n\nThe test RMSE of 372.64 kg/hectare represents the typical magnitude of error when the multiple regression model predicts crop yield on data it has not seen before (the held-out test set). In other words, on average, the model’s yield predictions deviate from actual yield by roughly 372.64 kg/hectare.\n\nThe training-set residual standard error was 283.5 kg/hectare — noticeably lower than the test RMSE of 372.64.\nThis gap (283.5 vs. 372.64) is a signal worth flagging: the model fits the training data better than it generalizes to new data. Some of this is expected (models almost always perform somewhat worse on unseen data), but a gap this size also lines up with what you found in the coefficient output — temperature was included as a plain linear term even though its true relationship with yield is quadratic (peaking at an optimal temperature). Because the model can’t capture that curvature, it likely makes systematically larger errors on test observations with temperatures far from the training set’s typical range, inflating the test RMSE.\nTo assess whether 372.64 kg/hectare is “good” or “bad,” it should be compared against the scale of the outcome itself — e.g., as a percentage of mean yield (mean(train$yield_kg_ha) would give you that denominator). A RMSE that’s small relative to typical yield (say, under 10%) suggests reasonably useful predictions for advisory purposes; one that’s large relative to typical yield suggests the model isn’t precise enough to act on without caution.\nThis is exactly the kind of gap the polynomial regression step (correctly modeling temperature’s curvature) should help close — comparing this multiple-regression test RMSE against the polynomial model’s test RMSE would be a natural next check, and a good addition to your assignment’s Part C if you want students to explicitly connect “which model generalizes best” rather than just “which model fits training data best.”\n\n\n\n6.5.5 POLYNOMIAL REGRESSION\nWe build polynomial model that Captures a curved relationship - here, yield peaks at an OPTIMAL temperature rather than rising or falling monotonically.\n\nlm_poly &lt;- lm(yield_kg_ha ~ poly(temperature_C, 2) + rainfall_mm + fertilizer_kg + soil_ph,\n              data = train)\nsummary(lm_poly)\n\n\nCall:\nlm(formula = yield_kg_ha ~ poly(temperature_C, 2) + rainfall_mm + \n    fertilizer_kg + soil_ph, data = train)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-521.34 -134.14    1.29  128.03  513.63 \n\nCoefficients:\n                          Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept)              2113.7362   231.3758   9.136 3.54e-16 ***\npoly(temperature_C, 2)1    11.1288   211.0545   0.053    0.958    \npoly(temperature_C, 2)2 -2412.8212   209.6024 -11.511  &lt; 2e-16 ***\nrainfall_mm                 2.4653     0.1195  20.638  &lt; 2e-16 ***\nfertilizer_kg               2.5721     0.4383   5.868 2.61e-08 ***\nsoil_ph                   291.5119    32.8943   8.862 1.81e-15 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 208.6 on 154 degrees of freedom\nMultiple R-squared:  0.809, Adjusted R-squared:  0.8028 \nF-statistic: 130.5 on 5 and 154 DF,  p-value: &lt; 2.2e-16\n\nggplot(train, aes(temperature_C, yield_kg_ha)) +\n  geom_point(alpha = 0.4) +\n  geom_smooth(method = \"lm\", formula = y ~ poly(x, 2), color = \"darkorange\") +\n  labs(title = \"Polynomial Regression: Yield vs. Temperature (degree 2)\")\n\n\n\n\n\n\n\n\nA polynomial regression model was estimated to test whether allowing temperature a curved (quadratic) relationship with yield would improve on the purely linear multiple regression model. The polynomial model was statistically significant, F(5, 154) = 130.50, p &lt; .001, and explained substantially more variance in yield than the linear multiple regression model, R² = .809, adjusted R² = .803, compared to R² = .645, adjusted R² = .636 previously.\nThe quadratic term for temperature was highly significant, b = −2412.82, SE = 209.60, t(154) = −11.51, p &lt; .001, while the linear temperature term was not, b = 11.13, SE = 211.05, t(154) = 0.05, p = .958. This pattern confirms what the earlier linear model’s non-significant temperature coefficient had obscured: temperature does meaningfully affect yield, but through a curved, not straight-line, relationship — consistent with an agronomic optimum temperature, where yield is highest at a moderate temperature and declines when conditions are either too cool or too hot. The negative sign on the squared term indicates an inverted-U (concave-down) curve, as expected.\nRainfall, b = 2.47, SE = 0.12, t(154) = 20.64, p &lt; .001, fertilizer, b = 2.57, SE = 0.44, t(154) = 5.87, p &lt; .001, and soil pH, b = 291.51, SE = 32.89, t(154) = 8.86, p &lt; .001, all remained significant positive predictors, with coefficient estimates very similar to the linear multiple regression model — indicating their linear effects on yield were already well-captured and are not confounded with temperature’s curvature.\nThe residual standard error also dropped notably, from 283.5 kg/hectare (linear multiple regression) to 208.6 kg/hectare (polynomial), reflecting a considerably tighter fit to the training data once temperature’s true functional form was correctly specified.\nPractical takeaway: This is a clean illustration of a common modeling mistake — a predictor can appear “non-significant” in a linear model not because it doesn’t matter, but because the model was given the wrong functional form to detect it. Once quadratic curvature was allowed, temperature emerged as one of the most important predictors in the model (via its squared term).\nOne useful next step for your assignment: compute this model’s test RMSE (the same way as before, using predict(lm_poly, newdata = test)) and compare it directly against the 372.64 kg/hectare from the linear multiple regression — that comparison will tell students concretely whether correctly modeling temperature’s curvature also improves generalization, not just training fit.\n\npreds_poly = predict(lm_poly, newdata = test)\n\nsqrt(mean((preds_poly - test$yield_kg_ha)^2))   # test RMSE\n\n[1] 203.5892\n\n\nWe can see that RMSE is now reduced to 203.59 from 372.64. There is an improvement in accuracy of the model.\n\n\n6.5.6 NONLINEAR REGRESSION (nls)\nNow, we fit a nonlinear functional FORM (not just apolynomial in the linear-model framework)here a Michaelis-Menten style diminishing-returns curve for fertilizer using yield = Vmax * fertilizer / (K + fertilizer).\n\nnls_fert &lt;- nls(\n  yield_kg_ha ~ Vmax * fertilizer_kg / (K + fertilizer_kg),\n  data  = train,\n  start = list(Vmax = 6000, K = 50)   # starting guesses required for nls\n)\nsummary(nls_fert)\n\n\nFormula: yield_kg_ha ~ Vmax * fertilizer_kg/(K + fertilizer_kg)\n\nParameters:\n      Estimate Std. Error t value Pr(&gt;|t|)    \nVmax 6375.7537    73.5154  86.727  &lt; 2e-16 ***\nK       2.0904     0.6778   3.084  0.00241 ** \n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 455.9 on 158 degrees of freedom\n\nNumber of iterations to convergence: 5 \nAchieved convergence tolerance: 3.413e-07\n\nggplot(train, aes(fertilizer_kg, yield_kg_ha)) +\n  geom_point(alpha = 0.4) +\n  geom_line(aes(y = predict(nls_fert)), color = \"forestgreen\", linewidth = 1) +\n  labs(title = \"Nonlinear Regression: Diminishing Returns on Fertilizer\")\n\n\n\n\n\n\n\n\n\n\n6.5.7 STEPWISE REGRESSION\nWhen we build model we use a set of predictors. All predictors do not contribute to the model and still create noise and increases variance. Here, we use STEPWISE REGRESSION which automatically selects a subset of predictors by adding/removing predictors to optimize AIC (lower = better trade-off of fit vs. complexity).\n\nfull_model &lt;- lm(yield_kg_ha ~ rainfall_mm + fertilizer_kg + temperature_C + soil_ph,\n                  data = train)\nnull_model &lt;- lm(yield_kg_ha ~ 1, data = train)\n\nstep_model &lt;- stats::step(\n  null_model,\n  scope = list(lower = null_model, upper = full_model),\n  direction = \"both\",   # \"forward\", \"backward\", or \"both\"\n  trace = FALSE\n)\nsummary(step_model)\n\n\nCall:\nlm(formula = yield_kg_ha ~ rainfall_mm + soil_ph + fertilizer_kg, \n    data = train)\n\nResiduals:\n    Min      1Q  Median      3Q     Max \n-1022.2  -185.3    39.2   185.4   616.6 \n\nCoefficients:\n               Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept)   2299.2125   310.8933   7.396 8.11e-12 ***\nrainfall_mm      2.3401     0.1598  14.641  &lt; 2e-16 ***\nsoil_ph        278.7416    44.4501   6.271 3.37e-09 ***\nfertilizer_kg    2.5317     0.5936   4.265 3.45e-05 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 282.6 on 156 degrees of freedom\nMultiple R-squared:  0.6446,    Adjusted R-squared:  0.6378 \nF-statistic: 94.33 on 3 and 156 DF,  p-value: &lt; 2.2e-16\n\nformula(step_model)   # which predictors survived\n\nyield_kg_ha ~ rainfall_mm + soil_ph + fertilizer_kg\n\n\nA stepwise regression procedure (bidirectional selection based on AIC) was conducted to identify the subset of predictors that best explained crop yield, starting from an intercept-only model and considering rainfall, fertilizer, temperature, and soil pH as candidate predictors. The procedure selected a final model retaining rainfall, soil pH, and fertilizer, while removing temperature entirely from the model.\nThe selected model was statistically significant, F(3, 156) = 94.33, p &lt; .001, and explained approximately 64.5% of the variance in yield, R² = .645, adjusted R² = .638. Rainfall was the strongest predictor, b = 2.34, SE = 0.16, t(156) = 14.64, p &lt; .001, followed by soil pH, b = 278.74, SE = 44.45, t(156) = 6.27, p &lt; .001, and fertilizer, b = 2.53, SE = 0.59, t(156) = 4.27, p &lt; .001. All three retained predictors were significant positive predictors of yield.\nComparison to the full linear multiple regression model:\n\n\n\n\n\n\n\n\n\nModel\nPredictors\nAdjusted R²\nResidual SE\n\n\n\n\nFull linear multiple\nrainfall + fertilizer + temperature + soil pH\n.636\n283.5\n\n\nStepwise-selected\nrainfall + fertilizer + soil pH\n.638\n282.6\n\n\n\nNotably, the stepwise model achieves a marginally higher adjusted R² (.638 vs. .636) and lower residual standard error (282.6 vs. 283.5) than the full model — despite dropping a predictor. This is expected: adjusted R² penalizes unnecessary predictors, and since temperature’s linear term was non-significant in the full model (p = .934, from your earlier output), removing it slightly improves the fit efficiency without sacrificing explanatory power.\nImportant caveat worth flagging (especially for a student assignment): this result illustrates a key limitation of stepwise selection rather than a genuine insight about temperature’s importance. Temperature was correctly dropped as a linear term, but your polynomial regression model showed temperature’s quadratic term was highly significant (p &lt; .001) and substantially improved fit (adjusted R² = .803). Stepwise selection using step() only ever considered rainfall, fertilizer, temperature, and soil pH as linear terms — it never had the opportunity to discover the curved relationship, because poly(temperature_C, 2) was never in its candidate scope. This is a classic pitfall of stepwise/AIC-based selection: it can only select among the functional forms you explicitly offer it, and will confidently discard a genuinely important predictor if its true effect doesn’t match the form tested.\nPractical takeaway: stepwise regression is useful for pruning redundant linear predictors efficiently, but it is not a substitute for exploring nonlinear relationships first (via EDA plots or domain knowledge) — a variable dropped by stepwise selection may still be highly important if given the right functional form, as shown here.\n\n\n6.5.8 RIDGE REGRESSION\nRIDGE REGRESSION Shrinks ALL coefficients toward zero (L2 penalty) - keeps every predictor but reduces overfitting/multicollinearity impact. Let’s check how it works now:\n\nx_train &lt;- as.matrix(train[, c(\"rainfall_mm\", \"fertilizer_kg\", \"temperature_C\", \"soil_ph\")])\ny_train &lt;- train$yield_kg_ha\nx_test  &lt;- as.matrix(test[,  c(\"rainfall_mm\", \"fertilizer_kg\", \"temperature_C\", \"soil_ph\")])\n\nridge_cv &lt;- cv.glmnet(x_train, y_train, alpha = 0)   # alpha = 0 -&gt; ridge\nplot(ridge_cv)\n\n\n\n\n\n\n\nbest_lambda_ridge &lt;- ridge_cv$lambda.min\n\nridge_model &lt;- glmnet(x_train, y_train, alpha = 0, lambda = best_lambda_ridge)\ncoef(ridge_model)\n\n5 x 1 sparse Matrix of class \"dgCMatrix\"\n                       s0\n(Intercept)   2587.943930\nrainfall_mm      2.182658\nfertilizer_kg    2.378863\ntemperature_C   -1.634813\nsoil_ph        262.315045\n\n\nLet’s evaluate RIDGE MODEL:\n\npred_ridge &lt;- predict(ridge_model, newx = x_test)\nsqrt(mean((pred_ridge - test$yield_kg_ha)^2))   # test RMSE\n\n[1] 383.9022\n\n\n\n\n6.5.9 LASSO REGRESSION\nLASSO REGRESSION shrinks coefficients toward zero AND can set some exactly to zero (L1 penalty) - performs automatic variable selection.\n\nlasso_cv &lt;- cv.glmnet(x_train, y_train, alpha = 1)   # alpha = 1 -&gt; lasso\nplot(lasso_cv)\n\n\n\n\n\n\n\nbest_lambda_lasso &lt;- lasso_cv$lambda.min\n\nlasso_model &lt;- glmnet(x_train, y_train, alpha = 1, lambda = best_lambda_lasso)\ncoef(lasso_model)   # predictors shrunk to exactly 0 are effectively dropped\n\n5 x 1 sparse Matrix of class \"dgCMatrix\"\n                       s0\n(Intercept)   2616.718547\nrainfall_mm      2.221523\nfertilizer_kg    2.116091\ntemperature_C    .       \nsoil_ph        249.681922\n\npred_lasso &lt;- predict(lasso_model, newx = x_test)\nsqrt(mean((pred_lasso - test$yield_kg_ha)^2))   # test RMSE\n\n[1] 380.7707\n\n\n\n\n6.5.10 QUANTILE REGRESSION\nModels a specific PERCENTILE of the outcome (not just the mean) - e.g. the 10th percentile is useful for “worst-case” yield planning, the 90th for best-case\n\nqr_median &lt;- rq(yield_kg_ha ~ rainfall_mm + fertilizer_kg + temperature_C + soil_ph,\n                 data = train, tau = 0.5)   # tau = 0.5 -&gt; median regression\nsummary(qr_median)\n\n\nCall: rq(formula = yield_kg_ha ~ rainfall_mm + fertilizer_kg + temperature_C + \n    soil_ph, tau = 0.5, data = train)\n\ntau: [1] 0.5\n\nCoefficients:\n              coefficients lower bd   upper bd  \n(Intercept)   2258.38498    734.06630 3093.08693\nrainfall_mm      2.28506      2.03619    2.63899\nfertilizer_kg    2.49500      0.85012    3.42591\ntemperature_C    5.39328    -19.95405   30.27147\nsoil_ph        275.80216    221.09104  369.59808\n\nqr_low  &lt;- rq(yield_kg_ha ~ rainfall_mm + fertilizer_kg, data = train, tau = 0.10)\nqr_high &lt;- rq(yield_kg_ha ~ rainfall_mm + fertilizer_kg, data = train, tau = 0.90)\n\nggplot(train, aes(rainfall_mm, yield_kg_ha)) +\n  geom_point(alpha = 0.3) +\n  geom_quantile(quantiles = c(0.1, 0.5, 0.9), color = \"purple\") +\n  labs(title = \"Quantile Regression: 10th / 50th / 90th Percentile Yield\")\n\nSmoothing formula not specified. Using: y ~ x\n\n\n\n\n\n\n\n\n\n\n\n6.5.11 LOGISTIC REGRESSION\nNow we want to classify the yield as Good For a BINARY outcome - here, whether yield is “good”(1) or “bad” (0).\n\nlog_model &lt;- glm(good_yield ~ rainfall_mm + fertilizer_kg + temperature_C + soil_ph,\n                  data = train, family = binomial)\nsummary(log_model)\n\n\nCall:\nglm(formula = good_yield ~ rainfall_mm + fertilizer_kg + temperature_C + \n    soil_ph, family = binomial, data = train)\n\nCoefficients:\n                Estimate Std. Error z value Pr(&gt;|z|)    \n(Intercept)   -25.775522   5.338626  -4.828 1.38e-06 ***\nrainfall_mm     0.015777   0.002649   5.956 2.59e-09 ***\nfertilizer_kg   0.014366   0.006125   2.345    0.019 *  \ntemperature_C  -0.076273   0.075452  -1.011    0.312    \nsoil_ph         2.196929   0.519530   4.229 2.35e-05 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\n(Dispersion parameter for binomial family taken to be 1)\n\n    Null deviance: 221.78  on 159  degrees of freedom\nResidual deviance: 130.09  on 155  degrees of freedom\nAIC: 140.09\n\nNumber of Fisher Scoring iterations: 6\n\n## Predicted probabilities and classification on test data\npred_prob  &lt;- predict(log_model, newdata = test, type = \"response\")\npred_class &lt;- factor(ifelse(pred_prob &gt; 0.5, 1, 0))\ntable(Predicted = pred_class, Actual = test$good_yield)   # confusion matrix\n\n         Actual\nPredicted  0  1\n        0 16  4\n        1  5 15\n\nmean(pred_class == test$good_yield)                       # accuracy\n\n[1] 0.775",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#traintest-split-8020",
+    "href": "block-II-unit-1.html#traintest-split-8020",
+    "title": "6  Block II Unit 1",
+    "section": "6.6 Train/test split (80/20)",
+    "text": "6.6 Train/test split (80/20)\nset.seed(42) train_idx &lt;- sample(seq_len(n), size = 0.8 * n) train &lt;- crop[train_idx, ] test &lt;- crop[-train_idx, ]",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#linear-regression",
+    "href": "block-II-unit-1.html#linear-regression",
+    "title": "6  Block II Unit 1",
+    "section": "6.8 1. LINEAR REGRESSION",
+    "text": "6.8 1. LINEAR REGRESSION",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#one-predictor-straight-line-relationship-yield-vs.-rainfall",
+    "href": "block-II-unit-1.html#one-predictor-straight-line-relationship-yield-vs.-rainfall",
+    "title": "6  Block II Unit 1",
+    "section": "6.9 One predictor, straight-line relationship: yield vs. rainfall",
+    "text": "6.9 One predictor, straight-line relationship: yield vs. rainfall",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#section-2",
+    "href": "block-II-unit-1.html#section-2",
+    "title": "6  Block II Unit 1",
+    "section": "6.20 ============================================================",
+    "text": "6.20 ============================================================",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#multiple-regression",
+    "href": "block-II-unit-1.html#multiple-regression",
+    "title": "6  Block II Unit 1",
+    "section": "6.12 2. MULTIPLE REGRESSION",
+    "text": "6.12 2. MULTIPLE REGRESSION",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#several-predictors-each-assumed-to-have-a-straight-line",
+    "href": "block-II-unit-1.html#several-predictors-each-assumed-to-have-a-straight-line",
+    "title": "6  Block II Unit 1",
+    "section": "6.13 Several predictors, each assumed to have a straight-line",
+    "text": "6.13 Several predictors, each assumed to have a straight-line",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#additive-effect-on-yield",
+    "href": "block-II-unit-1.html#additive-effect-on-yield",
+    "title": "6  Block II Unit 1",
+    "section": "6.14 (additive) effect on yield",
+    "text": "6.14 (additive) effect on yield",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#section-3",
+    "href": "block-II-unit-1.html#section-3",
+    "title": "6  Block II Unit 1",
+    "section": "6.15 ============================================================",
+    "text": "6.15 ============================================================\nlm_multiple &lt;- lm(yield_kg_ha ~ rainfall_mm + fertilizer_kg + temperature_C + soil_ph, data = train) summary(lm_multiple) ## Compare R-squared to the simple model - more predictors usually ## explain more variance, but check for overfitting on test data: pred_multi &lt;- predict(lm_multiple, newdata = test) sqrt(mean((pred_multi - test$yield_kg_ha)^2)) # test RMSE",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#section-4",
+    "href": "block-II-unit-1.html#section-4",
+    "title": "6  Block II Unit 1",
+    "section": "6.16 ============================================================",
+    "text": "6.16 ============================================================",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#polynomial-regression",
+    "href": "block-II-unit-1.html#polynomial-regression",
+    "title": "6  Block II Unit 1",
+    "section": "6.17 3. POLYNOMIAL REGRESSION",
+    "text": "6.17 3. POLYNOMIAL REGRESSION",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#captures-a-curved-relationship---here-yield-peaks-at-an",
+    "href": "block-II-unit-1.html#captures-a-curved-relationship---here-yield-peaks-at-an",
+    "title": "6  Block II Unit 1",
+    "section": "6.18 Captures a curved relationship - here, yield peaks at an",
+    "text": "6.18 Captures a curved relationship - here, yield peaks at an",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#optimal-temperature-rather-than-rising-or-falling-monotonically",
+    "href": "block-II-unit-1.html#optimal-temperature-rather-than-rising-or-falling-monotonically",
+    "title": "6  Block II Unit 1",
+    "section": "6.19 OPTIMAL temperature rather than rising or falling monotonically",
+    "text": "6.19 OPTIMAL temperature rather than rising or falling monotonically",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#section-5",
+    "href": "block-II-unit-1.html#section-5",
+    "title": "6  Block II Unit 1",
+    "section": "6.20 ============================================================",
+    "text": "6.20 ============================================================\nlm_poly &lt;- lm(yield_kg_ha ~ poly(temperature_C, 2) + rainfall_mm + fertilizer_kg + soil_ph, data = train) summary(lm_poly)\nggplot(train, aes(temperature_C, yield_kg_ha)) + geom_point(alpha = 0.4) + geom_smooth(method = “lm”, formula = y ~ poly(x, 2), color = “darkorange”) + labs(title = “Polynomial Regression: Yield vs. Temperature (degree 2)”)",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#section-6",
+    "href": "block-II-unit-1.html#section-6",
+    "title": "6  Block II Unit 1",
+    "section": "6.21 ============================================================",
+    "text": "6.21 ============================================================",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#nonlinear-regression-nls",
+    "href": "block-II-unit-1.html#nonlinear-regression-nls",
+    "title": "6  Block II Unit 1",
+    "section": "6.22 4. NONLINEAR REGRESSION (nls)",
+    "text": "6.22 4. NONLINEAR REGRESSION (nls)",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#fits-a-genuinely-nonlinear-functional-form-not-just-a",
+    "href": "block-II-unit-1.html#fits-a-genuinely-nonlinear-functional-form-not-just-a",
+    "title": "6  Block II Unit 1",
+    "section": "6.23 Fits a genuinely nonlinear functional FORM (not just a",
+    "text": "6.23 Fits a genuinely nonlinear functional FORM (not just a",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#polynomial-in-the-linear-model-framework---here-a",
+    "href": "block-II-unit-1.html#polynomial-in-the-linear-model-framework---here-a",
+    "title": "6  Block II Unit 1",
+    "section": "6.24 polynomial in the linear-model framework) - here a",
+    "text": "6.24 polynomial in the linear-model framework) - here a",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#michaelis-menten-style-diminishing-returns-curve-for-fertilizer",
+    "href": "block-II-unit-1.html#michaelis-menten-style-diminishing-returns-curve-for-fertilizer",
+    "title": "6  Block II Unit 1",
+    "section": "6.25 Michaelis-Menten style diminishing-returns curve for fertilizer:",
+    "text": "6.25 Michaelis-Menten style diminishing-returns curve for fertilizer:",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#yield-vmax-fertilizer-k-fertilizer",
+    "href": "block-II-unit-1.html#yield-vmax-fertilizer-k-fertilizer",
+    "title": "6  Block II Unit 1",
+    "section": "6.26 yield = Vmax * fertilizer / (K + fertilizer)",
+    "text": "6.26 yield = Vmax * fertilizer / (K + fertilizer)",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#section-7",
+    "href": "block-II-unit-1.html#section-7",
+    "title": "6  Block II Unit 1",
+    "section": "6.27 ============================================================",
+    "text": "6.27 ============================================================\nnls_fert &lt;- nls( yield_kg_ha ~ Vmax * fertilizer_kg / (K + fertilizer_kg), data = train, start = list(Vmax = 6000, K = 50) # starting guesses required for nls ) summary(nls_fert)\nggplot(train, aes(fertilizer_kg, yield_kg_ha)) + geom_point(alpha = 0.4) + geom_line(aes(y = predict(nls_fert)), color = “forestgreen”, linewidth = 1) + labs(title = “Nonlinear Regression: Diminishing Returns on Fertilizer”)",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#section-8",
+    "href": "block-II-unit-1.html#section-8",
+    "title": "6  Block II Unit 1",
+    "section": "6.28 ============================================================",
+    "text": "6.28 ============================================================",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#stepwise-regression",
+    "href": "block-II-unit-1.html#stepwise-regression",
+    "title": "6  Block II Unit 1",
+    "section": "6.29 5. STEPWISE REGRESSION",
+    "text": "6.29 5. STEPWISE REGRESSION",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#automatically-selects-a-subset-of-predictors-by-addingremoving",
+    "href": "block-II-unit-1.html#automatically-selects-a-subset-of-predictors-by-addingremoving",
+    "title": "6  Block II Unit 1",
+    "section": "6.30 Automatically selects a subset of predictors by adding/removing",
+    "text": "6.30 Automatically selects a subset of predictors by adding/removing",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#terms-to-optimize-aic-lower-better-trade-off-of-fit-vs.",
+    "href": "block-II-unit-1.html#terms-to-optimize-aic-lower-better-trade-off-of-fit-vs.",
+    "title": "6  Block II Unit 1",
+    "section": "6.31 terms to optimize AIC (lower = better trade-off of fit vs.",
+    "text": "6.31 terms to optimize AIC (lower = better trade-off of fit vs.",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#complexity",
+    "href": "block-II-unit-1.html#complexity",
+    "title": "6  Block II Unit 1",
+    "section": "6.32 complexity)",
+    "text": "6.32 complexity)",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#section-9",
+    "href": "block-II-unit-1.html#section-9",
+    "title": "6  Block II Unit 1",
+    "section": "6.33 ============================================================",
+    "text": "6.33 ============================================================\nfull_model &lt;- lm(yield_kg_ha ~ rainfall_mm + fertilizer_kg + temperature_C + soil_ph, data = train) null_model &lt;- lm(yield_kg_ha ~ 1, data = train)\nstep_model &lt;- step( null_model, scope = list(lower = null_model, upper = full_model), direction = “both”, # “forward”, “backward”, or “both” trace = FALSE ) summary(step_model) formula(step_model) # which predictors survived",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#section-10",
+    "href": "block-II-unit-1.html#section-10",
+    "title": "6  Block II Unit 1",
+    "section": "6.34 ============================================================",
+    "text": "6.34 ============================================================",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#ridge-regression",
+    "href": "block-II-unit-1.html#ridge-regression",
+    "title": "6  Block II Unit 1",
+    "section": "6.35 6. RIDGE REGRESSION",
+    "text": "6.35 6. RIDGE REGRESSION",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#shrinks-all-coefficients-toward-zero-l2-penalty---keeps-every",
+    "href": "block-II-unit-1.html#shrinks-all-coefficients-toward-zero-l2-penalty---keeps-every",
+    "title": "6  Block II Unit 1",
+    "section": "6.36 Shrinks ALL coefficients toward zero (L2 penalty) - keeps every",
+    "text": "6.36 Shrinks ALL coefficients toward zero (L2 penalty) - keeps every",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#predictor-but-reduces-overfittingmulticollinearity-impact",
+    "href": "block-II-unit-1.html#predictor-but-reduces-overfittingmulticollinearity-impact",
+    "title": "6  Block II Unit 1",
+    "section": "6.37 predictor but reduces overfitting/multicollinearity impact",
+    "text": "6.37 predictor but reduces overfitting/multicollinearity impact",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#section-11",
+    "href": "block-II-unit-1.html#section-11",
+    "title": "6  Block II Unit 1",
+    "section": "6.38 ============================================================",
+    "text": "6.38 ============================================================\nx_train &lt;- as.matrix(train[, c(“rainfall_mm”, “fertilizer_kg”, “temperature_C”, “soil_ph”)]) y_train &lt;- train$yield_kg_ha x_test &lt;- as.matrix(test[, c(“rainfall_mm”, “fertilizer_kg”, “temperature_C”, “soil_ph”)])\nridge_cv &lt;- cv.glmnet(x_train, y_train, alpha = 0) # alpha = 0 -&gt; ridge plot(ridge_cv) best_lambda_ridge &lt;- ridge_cv$lambda.min\nridge_model &lt;- glmnet(x_train, y_train, alpha = 0, lambda = best_lambda_ridge) coef(ridge_model) pred_ridge &lt;- predict(ridge_model, newx = x_test) sqrt(mean((pred_ridge - test$yield_kg_ha)^2)) # test RMSE",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#section-12",
+    "href": "block-II-unit-1.html#section-12",
+    "title": "6  Block II Unit 1",
+    "section": "6.39 ============================================================",
+    "text": "6.39 ============================================================",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#lasso-regression",
+    "href": "block-II-unit-1.html#lasso-regression",
+    "title": "6  Block II Unit 1",
+    "section": "6.40 7. LASSO REGRESSION",
+    "text": "6.40 7. LASSO REGRESSION",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#shrinks-coefficients-toward-zero-and-can-set-some-exactly-to",
+    "href": "block-II-unit-1.html#shrinks-coefficients-toward-zero-and-can-set-some-exactly-to",
+    "title": "6  Block II Unit 1",
+    "section": "6.41 Shrinks coefficients toward zero AND can set some exactly to",
+    "text": "6.41 Shrinks coefficients toward zero AND can set some exactly to",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#zero-l1-penalty---performs-automatic-variable-selection",
+    "href": "block-II-unit-1.html#zero-l1-penalty---performs-automatic-variable-selection",
+    "title": "6  Block II Unit 1",
+    "section": "6.42 zero (L1 penalty) - performs automatic variable selection",
+    "text": "6.42 zero (L1 penalty) - performs automatic variable selection",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#section-13",
+    "href": "block-II-unit-1.html#section-13",
+    "title": "6  Block II Unit 1",
+    "section": "6.43 ============================================================",
+    "text": "6.43 ============================================================\nlasso_cv &lt;- cv.glmnet(x_train, y_train, alpha = 1) # alpha = 1 -&gt; lasso plot(lasso_cv) best_lambda_lasso &lt;- lasso_cv$lambda.min\nlasso_model &lt;- glmnet(x_train, y_train, alpha = 1, lambda = best_lambda_lasso) coef(lasso_model) # predictors shrunk to exactly 0 are effectively dropped pred_lasso &lt;- predict(lasso_model, newx = x_test) sqrt(mean((pred_lasso - test$yield_kg_ha)^2)) # test RMSE",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#section-14",
+    "href": "block-II-unit-1.html#section-14",
+    "title": "6  Block II Unit 1",
+    "section": "6.44 ============================================================",
+    "text": "6.44 ============================================================",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#quantile-regression",
+    "href": "block-II-unit-1.html#quantile-regression",
+    "title": "6  Block II Unit 1",
+    "section": "6.45 8. QUANTILE REGRESSION",
+    "text": "6.45 8. QUANTILE REGRESSION",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#models-a-specific-percentile-of-the-outcome-not-just-the-mean--",
+    "href": "block-II-unit-1.html#models-a-specific-percentile-of-the-outcome-not-just-the-mean--",
+    "title": "6  Block II Unit 1",
+    "section": "6.46 Models a specific PERCENTILE of the outcome (not just the mean) -",
+    "text": "6.46 Models a specific PERCENTILE of the outcome (not just the mean) -",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#e.g.-the-10th-percentile-is-useful-for-worst-case-yield",
+    "href": "block-II-unit-1.html#e.g.-the-10th-percentile-is-useful-for-worst-case-yield",
+    "title": "6  Block II Unit 1",
+    "section": "6.47 e.g. the 10th percentile is useful for “worst-case” yield",
+    "text": "6.47 e.g. the 10th percentile is useful for “worst-case” yield",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#planning-the-90th-for-best-case",
+    "href": "block-II-unit-1.html#planning-the-90th-for-best-case",
+    "title": "6  Block II Unit 1",
+    "section": "6.48 planning, the 90th for best-case",
+    "text": "6.48 planning, the 90th for best-case",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#section-15",
+    "href": "block-II-unit-1.html#section-15",
+    "title": "6  Block II Unit 1",
+    "section": "6.49 ============================================================",
+    "text": "6.49 ============================================================\nqr_median &lt;- rq(yield_kg_ha ~ rainfall_mm + fertilizer_kg + temperature_C + soil_ph, data = train, tau = 0.5) # tau = 0.5 -&gt; median regression summary(qr_median)\nqr_low &lt;- rq(yield_kg_ha ~ rainfall_mm + fertilizer_kg, data = train, tau = 0.10) qr_high &lt;- rq(yield_kg_ha ~ rainfall_mm + fertilizer_kg, data = train, tau = 0.90)\nggplot(train, aes(rainfall_mm, yield_kg_ha)) + geom_point(alpha = 0.3) + geom_quantile(quantiles = c(0.1, 0.5, 0.9), color = “purple”) + labs(title = “Quantile Regression: 10th / 50th / 90th Percentile Yield”)",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#section-16",
+    "href": "block-II-unit-1.html#section-16",
+    "title": "6  Block II Unit 1",
+    "section": "6.50 ============================================================",
+    "text": "6.50 ============================================================",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#logistic-regression",
+    "href": "block-II-unit-1.html#logistic-regression",
+    "title": "6  Block II Unit 1",
+    "section": "6.51 9. LOGISTIC REGRESSION",
+    "text": "6.51 9. LOGISTIC REGRESSION",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#for-a-binary-outcome---here-whether-yield-is-good-above",
+    "href": "block-II-unit-1.html#for-a-binary-outcome---here-whether-yield-is-good-above",
+    "title": "6  Block II Unit 1",
+    "section": "6.52 For a BINARY outcome - here, whether yield is “good” (above",
+    "text": "6.52 For a BINARY outcome - here, whether yield is “good” (above",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#median-or-not-predicted-from-continuous-inputs",
+    "href": "block-II-unit-1.html#median-or-not-predicted-from-continuous-inputs",
+    "title": "6  Block II Unit 1",
+    "section": "6.53 median) or not, predicted from continuous inputs",
+    "text": "6.53 median) or not, predicted from continuous inputs",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#section-17",
+    "href": "block-II-unit-1.html#section-17",
+    "title": "6  Block II Unit 1",
+    "section": "6.54 ============================================================",
+    "text": "6.54 ============================================================\nlog_model &lt;- glm(good_yield ~ rainfall_mm + fertilizer_kg + temperature_C + soil_ph, data = train, family = binomial) summary(log_model)",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#predicted-probabilities-and-classification-on-test-data",
+    "href": "block-II-unit-1.html#predicted-probabilities-and-classification-on-test-data",
+    "title": "6  Block II Unit 1",
+    "section": "6.55 Predicted probabilities and classification on test data",
+    "text": "6.55 Predicted probabilities and classification on test data\npred_prob &lt;- predict(log_model, newdata = test, type = “response”) pred_class &lt;- factor(ifelse(pred_prob &gt; 0.5, 1, 0)) table(Predicted = pred_class, Actual = test\\(good_yield)   # confusion matrix\nmean(pred_class == test\\)good_yield) # accuracy",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#section-18",
+    "href": "block-II-unit-1.html#section-18",
+    "title": "6  Block II Unit 1",
+    "section": "6.56 ============================================================",
+    "text": "6.56 ============================================================",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#summary-when-to-use-which",
+    "href": "block-II-unit-1.html#summary-when-to-use-which",
+    "title": "6  Block II Unit 1",
+    "section": "6.7 SUMMARY — When to use which",
+    "text": "6.7 SUMMARY — When to use which",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#section-19",
+    "href": "block-II-unit-1.html#section-19",
+    "title": "6  Block II Unit 1",
+    "section": "6.58 ============================================================",
+    "text": "6.58 ============================================================",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#linear---one-predictor-straight-line-relationship",
+    "href": "block-II-unit-1.html#linear---one-predictor-straight-line-relationship",
+    "title": "6  Block II Unit 1",
+    "section": "6.9 Linear - one predictor, straight-line relationship",
+    "text": "6.9 Linear - one predictor, straight-line relationship",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#multiple---several-predictors-each-additivelinear",
+    "href": "block-II-unit-1.html#multiple---several-predictors-each-additivelinear",
+    "title": "6  Block II Unit 1",
+    "section": "6.10 Multiple - several predictors, each additive/linear",
+    "text": "6.10 Multiple - several predictors, each additive/linear",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#polynomial---curved-relationship-still-fit-within-lm-framework",
+    "href": "block-II-unit-1.html#polynomial---curved-relationship-still-fit-within-lm-framework",
+    "title": "6  Block II Unit 1",
+    "section": "6.11 Polynomial - curved relationship still fit within lm() framework",
+    "text": "6.11 Polynomial - curved relationship still fit within lm() framework",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#nonlinearnls--true-nonlinear-functional-form-e.g.-saturation",
+    "href": "block-II-unit-1.html#nonlinearnls--true-nonlinear-functional-form-e.g.-saturation",
+    "title": "6  Block II Unit 1",
+    "section": "6.12 Nonlinear(nls)- true nonlinear functional form (e.g. saturation,",
+    "text": "6.12 Nonlinear(nls)- true nonlinear functional form (e.g. saturation,",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#growth-curves---you-must-specify-the-equation",
+    "href": "block-II-unit-1.html#growth-curves---you-must-specify-the-equation",
+    "title": "6  Block II Unit 1",
+    "section": "6.13 growth curves) - you must specify the equation",
+    "text": "6.13 growth curves) - you must specify the equation",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#stepwise---automatic-predictor-selection-via-aic",
+    "href": "block-II-unit-1.html#stepwise---automatic-predictor-selection-via-aic",
+    "title": "6  Block II Unit 1",
+    "section": "6.14 Stepwise - automatic predictor selection via AIC",
+    "text": "6.14 Stepwise - automatic predictor selection via AIC",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#ridge---manycorrelated-predictors-keep-all-shrink-coefficients",
+    "href": "block-II-unit-1.html#ridge---manycorrelated-predictors-keep-all-shrink-coefficients",
+    "title": "6  Block II Unit 1",
+    "section": "6.15 Ridge - many/correlated predictors, keep all, shrink coefficients",
+    "text": "6.15 Ridge - many/correlated predictors, keep all, shrink coefficients",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#lasso---many-predictors-want-automatic-feature-selection",
+    "href": "block-II-unit-1.html#lasso---many-predictors-want-automatic-feature-selection",
+    "title": "6  Block II Unit 1",
+    "section": "6.16 Lasso - many predictors, want automatic feature selection",
+    "text": "6.16 Lasso - many predictors, want automatic feature selection",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#quantile---care-about-a-specific-percentile-not-just-the-mean",
+    "href": "block-II-unit-1.html#quantile---care-about-a-specific-percentile-not-just-the-mean",
+    "title": "6  Block II Unit 1",
+    "section": "6.17 Quantile - care about a specific percentile, not just the mean",
+    "text": "6.17 Quantile - care about a specific percentile, not just the mean",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#e.g.-worst-casebest-case-yield-planning",
+    "href": "block-II-unit-1.html#e.g.-worst-casebest-case-yield-planning",
+    "title": "6  Block II Unit 1",
+    "section": "6.18 (e.g. worst-case/best-case yield planning)",
+    "text": "6.18 (e.g. worst-case/best-case yield planning)",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#logistic---binary-outcome-successfailure-goodbad-yesno",
+    "href": "block-II-unit-1.html#logistic---binary-outcome-successfailure-goodbad-yesno",
+    "title": "6  Block II Unit 1",
+    "section": "6.19 Logistic - binary outcome (success/failure, good/bad, yes/no)",
+    "text": "6.19 Logistic - binary outcome (success/failure, good/bad, yes/no)",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
+    ]
+  },
+  {
+    "objectID": "block-II-unit-1.html#section-20",
+    "href": "block-II-unit-1.html#section-20",
+    "title": "6  Block II Unit 1",
+    "section": "6.70 ============================================================",
+    "text": "6.70 ============================================================",
     "crumbs": [
       "<span class='chapter-number'>6</span>  <span class='chapter-title'>Block II Unit 1</span>"
     ]

@@ -256,13 +256,43 @@ window.Quarto = {
   <li><a href="#data-pre-processing" id="toc-data-pre-processing" class="nav-link" data-scroll-target="#data-pre-processing"><span class="header-section-number">6.4</span> Data Pre-Processing</a>
   <ul class="collapse">
   <li><a href="#data-split" id="toc-data-split" class="nav-link" data-scroll-target="#data-split"><span class="header-section-number">6.4.1</span> Data Split</a></li>
-  <li><a href="#build-the-preprocessing-recipe" id="toc-build-the-preprocessing-recipe" class="nav-link" data-scroll-target="#build-the-preprocessing-recipe"><span class="header-section-number">6.4.2</span> Build the preprocessing recipe ————————</a></li>
+  <li><a href="#build-the-preprocessing-recipe" id="toc-build-the-preprocessing-recipe" class="nav-link" data-scroll-target="#build-the-preprocessing-recipe"><span class="header-section-number">6.4.2</span> Build the preprocessing <code>recipe</code></a></li>
   <li><a href="#inspect-the-recipe-without-training-a-model" id="toc-inspect-the-recipe-without-training-a-model" class="nav-link" data-scroll-target="#inspect-the-recipe-without-training-a-model"><span class="header-section-number">6.4.3</span> Inspect the recipe without training a model</a></li>
   <li><a href="#data-pransformation-for-model" id="toc-data-pransformation-for-model" class="nav-link" data-scroll-target="#data-pransformation-for-model"><span class="header-section-number">6.4.4</span> Data Pransformation for Model</a></li>
   <li><a href="#plug-the-recipe-into-a-modeling-workflow" id="toc-plug-the-recipe-into-a-modeling-workflow" class="nav-link" data-scroll-target="#plug-the-recipe-into-a-modeling-workflow"><span class="header-section-number">6.4.5</span> Plug the recipe into a modeling workflow</a></li>
   <li><a href="#evaluate-on-held-out-test-data" id="toc-evaluate-on-held-out-test-data" class="nav-link" data-scroll-target="#evaluate-on-held-out-test-data"><span class="header-section-number">6.4.6</span> Evaluate on held-out test data</a></li>
   <li><a href="#multiclass-roc-one-vs-rest" id="toc-multiclass-roc-one-vs-rest" class="nav-link" data-scroll-target="#multiclass-roc-one-vs-rest"><span class="header-section-number">6.4.7</span> Multiclass ROC (one-vs-rest)</a></li>
+  <li><a href="#concluding-remarks" id="toc-concluding-remarks" class="nav-link" data-scroll-target="#concluding-remarks"><span class="header-section-number">6.4.8</span> Concluding Remarks</a></li>
   </ul></li>
+  <li><a href="#regression-methods" id="toc-regression-methods" class="nav-link" data-scroll-target="#regression-methods"><span class="header-section-number">6.5</span> Regression Methods</a>
+  <ul class="collapse">
+  <li><a href="#simulate-data" id="toc-simulate-data" class="nav-link" data-scroll-target="#simulate-data"><span class="header-section-number">6.5.1</span> Simulate Data</a></li>
+  <li><a href="#traintest-split-8020" id="toc-traintest-split-8020" class="nav-link" data-scroll-target="#traintest-split-8020"><span class="header-section-number">6.5.2</span> Train/test split (80/20)</a></li>
+  <li><a href="#linear-regression" id="toc-linear-regression" class="nav-link" data-scroll-target="#linear-regression"><span class="header-section-number">6.5.3</span> LINEAR REGRESSION</a></li>
+  <li><a href="#multiple-regression" id="toc-multiple-regression" class="nav-link" data-scroll-target="#multiple-regression"><span class="header-section-number">6.5.4</span> MULTIPLE REGRESSION</a></li>
+  <li><a href="#polynomial-regression" id="toc-polynomial-regression" class="nav-link" data-scroll-target="#polynomial-regression"><span class="header-section-number">6.5.5</span> POLYNOMIAL REGRESSION</a></li>
+  <li><a href="#nonlinear-regression-nls" id="toc-nonlinear-regression-nls" class="nav-link" data-scroll-target="#nonlinear-regression-nls"><span class="header-section-number">6.5.6</span> NONLINEAR REGRESSION (nls)</a></li>
+  <li><a href="#stepwise-regression" id="toc-stepwise-regression" class="nav-link" data-scroll-target="#stepwise-regression"><span class="header-section-number">6.5.7</span> STEPWISE REGRESSION</a></li>
+  <li><a href="#ridge-regression" id="toc-ridge-regression" class="nav-link" data-scroll-target="#ridge-regression"><span class="header-section-number">6.5.8</span> RIDGE REGRESSION</a></li>
+  <li><a href="#lasso-regression" id="toc-lasso-regression" class="nav-link" data-scroll-target="#lasso-regression"><span class="header-section-number">6.5.9</span> LASSO REGRESSION</a></li>
+  <li><a href="#quantile-regression" id="toc-quantile-regression" class="nav-link" data-scroll-target="#quantile-regression"><span class="header-section-number">6.5.10</span> QUANTILE REGRESSION</a></li>
+  <li><a href="#logistic-regression" id="toc-logistic-regression" class="nav-link" data-scroll-target="#logistic-regression"><span class="header-section-number">6.5.11</span> LOGISTIC REGRESSION</a></li>
+  </ul></li>
+  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"><span class="header-section-number">6.6</span> ============================================================</a></li>
+  <li><a href="#summary-when-to-use-which" id="toc-summary-when-to-use-which" class="nav-link" data-scroll-target="#summary-when-to-use-which"><span class="header-section-number">6.7</span> SUMMARY — When to use which</a></li>
+  <li><a href="#section-1" id="toc-section-1" class="nav-link" data-scroll-target="#section-1"><span class="header-section-number">6.8</span> ============================================================</a></li>
+  <li><a href="#linear---one-predictor-straight-line-relationship" id="toc-linear---one-predictor-straight-line-relationship" class="nav-link" data-scroll-target="#linear---one-predictor-straight-line-relationship"><span class="header-section-number">6.9</span> Linear - one predictor, straight-line relationship</a></li>
+  <li><a href="#multiple---several-predictors-each-additivelinear" id="toc-multiple---several-predictors-each-additivelinear" class="nav-link" data-scroll-target="#multiple---several-predictors-each-additivelinear"><span class="header-section-number">6.10</span> Multiple - several predictors, each additive/linear</a></li>
+  <li><a href="#polynomial---curved-relationship-still-fit-within-lm-framework" id="toc-polynomial---curved-relationship-still-fit-within-lm-framework" class="nav-link" data-scroll-target="#polynomial---curved-relationship-still-fit-within-lm-framework"><span class="header-section-number">6.11</span> Polynomial - curved relationship still fit within lm() framework</a></li>
+  <li><a href="#nonlinearnls--true-nonlinear-functional-form-e.g.-saturation" id="toc-nonlinearnls--true-nonlinear-functional-form-e.g.-saturation" class="nav-link" data-scroll-target="#nonlinearnls--true-nonlinear-functional-form-e.g.-saturation"><span class="header-section-number">6.12</span> Nonlinear(nls)- true nonlinear functional form (e.g.&nbsp;saturation,</a></li>
+  <li><a href="#growth-curves---you-must-specify-the-equation" id="toc-growth-curves---you-must-specify-the-equation" class="nav-link" data-scroll-target="#growth-curves---you-must-specify-the-equation"><span class="header-section-number">6.13</span> growth curves) - you must specify the equation</a></li>
+  <li><a href="#stepwise---automatic-predictor-selection-via-aic" id="toc-stepwise---automatic-predictor-selection-via-aic" class="nav-link" data-scroll-target="#stepwise---automatic-predictor-selection-via-aic"><span class="header-section-number">6.14</span> Stepwise - automatic predictor selection via AIC</a></li>
+  <li><a href="#ridge---manycorrelated-predictors-keep-all-shrink-coefficients" id="toc-ridge---manycorrelated-predictors-keep-all-shrink-coefficients" class="nav-link" data-scroll-target="#ridge---manycorrelated-predictors-keep-all-shrink-coefficients"><span class="header-section-number">6.15</span> Ridge - many/correlated predictors, keep all, shrink coefficients</a></li>
+  <li><a href="#lasso---many-predictors-want-automatic-feature-selection" id="toc-lasso---many-predictors-want-automatic-feature-selection" class="nav-link" data-scroll-target="#lasso---many-predictors-want-automatic-feature-selection"><span class="header-section-number">6.16</span> Lasso - many predictors, want automatic feature selection</a></li>
+  <li><a href="#quantile---care-about-a-specific-percentile-not-just-the-mean" id="toc-quantile---care-about-a-specific-percentile-not-just-the-mean" class="nav-link" data-scroll-target="#quantile---care-about-a-specific-percentile-not-just-the-mean"><span class="header-section-number">6.17</span> Quantile - care about a specific percentile, not just the mean</a></li>
+  <li><a href="#e.g.-worst-casebest-case-yield-planning" id="toc-e.g.-worst-casebest-case-yield-planning" class="nav-link" data-scroll-target="#e.g.-worst-casebest-case-yield-planning"><span class="header-section-number">6.18</span> (e.g.&nbsp;worst-case/best-case yield planning)</a></li>
+  <li><a href="#logistic---binary-outcome-successfailure-goodbad-yesno" id="toc-logistic---binary-outcome-successfailure-goodbad-yesno" class="nav-link" data-scroll-target="#logistic---binary-outcome-successfailure-goodbad-yesno"><span class="header-section-number">6.19</span> Logistic - binary outcome (success/failure, good/bad, yes/no)</a></li>
+  <li><a href="#section-2" id="toc-section-2" class="nav-link" data-scroll-target="#section-2"><span class="header-section-number">6.20</span> ============================================================</a></li>
   </ul>
 </nav>
     </div>
@@ -900,7 +930,7 @@ $ roots           &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 <p>You can see that out of 683 observations, soy_train dataset contains 80% observations i.e.&nbsp;545 observations and soy_test dataset contains 20% observations i.e.&nbsp;138 observations.</p>
 </section>
 <section id="build-the-preprocessing-recipe" class="level3" data-number="6.4.2">
-<h3 data-number="6.4.2" class="anchored" data-anchor-id="build-the-preprocessing-recipe"><span class="header-section-number">6.4.2</span> Build the preprocessing recipe ————————</h3>
+<h3 data-number="6.4.2" class="anchored" data-anchor-id="build-the-preprocessing-recipe"><span class="header-section-number">6.4.2</span> Build the preprocessing <code>recipe</code></h3>
 <p>This is the core of the exercise: every cleaning/encoding Decision is captured as a <em>recipe step</em>, learned only on the training set, then reproducibly applied to any new data.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>soy_recipe <span class="ot">&lt;-</span></span>
@@ -1217,9 +1247,609 @@ predictor: 35</code></pre>
 <li><p><span class="math display">\[ Sensitivity (True Positive Rate) = True_Positive_Cases / (True_Positive_Cases + False_Negative_Cases) \]</span></p></li>
 <li><p><span class="math display">\[ Specificity (False Positive Rate) = True_Negative_Cases / (True_Negative_Cases + False_Positive_Cases) \]</span></p></li>
 </ul>
-
-
 </section>
+<section id="concluding-remarks" class="level3" data-number="6.4.8">
+<h3 data-number="6.4.8" class="anchored" data-anchor-id="concluding-remarks"><span class="header-section-number">6.4.8</span> Concluding Remarks</h3>
+<p>This analysis demonstrated an end-to-end multiclass classification pipeline for diagnosing soybean diseases from categorical agronomic and environmental observations. The <code>recipes</code> package handled the preprocessing burden reproducibly and without data leakage — filtering near-zero-variance predictors, imputing missing symptom records via bagged trees, pooling rare factor levels, one-hot encoding, removing redundant correlated features, and upsampling rare disease classes — all learned strictly on the training split and applied identically to the held-out test data.</p>
+<p>The random forest classifier trained on this preprocessed data was evaluated using one-vs-rest ROC curves for each disease class rather than a single aggregate accuracy figure, since accuracy alone can mask poor performance on rarer or harder-to-distinguish diseases. Per-class AUC values reveal which diseases the model separates cleanly from all others (curves hugging the top-left corner, AUC near 1.0) versus which ones it confuses with visually or symptomatically similar conditions (curves closer to the diagonal, AUC near 0.5). This class-by-class view is more actionable for an agribusiness context than a single overall score — it tells you specifically which diseases a field-deployed diagnostic tool can be trusted on, and which would still need expert/agronomist confirmation before acting on the model’s flag.</p>
+<p><strong>Practical takeaway:</strong> the preprocessing recipe is reusable well beyond this dataset — swap in real farm records (soil tests, weather logs, crop-cam imagery-derived features, past yield data) and the same <code>step_impute_*</code> → <code>step_other</code>/<code>step_novel</code> → <code>step_dummy</code> → <code>step_corr</code>/<code>step_nzv</code> → <code>step_normalize</code> → <code>step_upsample</code> sequence provides a robust, leakage-free foundation for any agribusiness classification problem — whether that’s disease diagnosis, loan-default risk for agri-lending, or yield-grade prediction.</p>
+<hr>
+</section>
+</section>
+<section id="regression-methods" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="regression-methods"><span class="header-section-number">6.5</span> Regression Methods</h2>
+<p>Regression methods are used to build model to predict the estimate or classify an obervation. In this section we will cover linear regression, nonlinear regression, multiple regression, polynomial regression,lasso regression, ridge regression, stepwise regression, quantile regression and logistic regression.</p>
+<p>All examples use ONE simulated crop-yield dataset so you can compare techniques on the same problem:</p>
+<p><strong>Predict crop YIELD (kg/hectare) from rainfall, fertilizer,temperature, and soil pH — plus a binary GOOD_YIELD outcome</strong></p>
+<p>So, let’s begin with calling the libraries required:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb114"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(c("glmnet", "quantreg", "ggplot2"))</span></span>
+<span id="cb114-2"><a href="#cb114-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet)     <span class="co"># ridge &amp; lasso</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'glmnet' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: Matrix</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'Matrix' was built under R version 4.4.2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'Matrix'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:tidyr':
+
+    expand, pack, unpack</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loaded glmnet 4.1-10</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb121"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quantreg)   <span class="co"># quantile regression</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'quantreg' was built under R version 4.4.2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: SparseM</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'SparseM'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:Matrix':
+
+    det</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb126"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)    <span class="co"># plotting</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="simulate-data" class="level3" data-number="6.5.1">
+<h3 data-number="6.5.1" class="anchored" data-anchor-id="simulate-data"><span class="header-section-number">6.5.1</span> Simulate Data</h3>
+<p>We create a dataset of 200 observations and variables are as follows:</p>
+<ul>
+<li><code>rainfall_mm</code>: Average rainfall measured in mm using mean 800 and standard deviation 150.</li>
+<li><code>fertilizer_kg</code>: Fertilizer consumed in KG using max use 150 Kg and min use 20 Kg.</li>
+<li><code>temperature_C</code>: Temperature measured in degree centigrade with mean 27 and standard deviation 3.</li>
+<li><code>soil_ph</code>: Soil PH created with mean 6.5 and standard deviation 0.5.</li>
+<li><code>yeild_kg_ha</code>: Yeild per Hectare using a regression equation.</li>
+</ul>
+<p>We create a dataset by combining all the variables and we also add one more factor variable - <code>good_yield</code> using <code>if_else</code> logic.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb127"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb127-1"><a href="#cb127-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb127-2"><a href="#cb127-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb127-3"><a href="#cb127-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb127-4"><a href="#cb127-4" aria-hidden="true" tabindex="-1"></a>rainfall_mm  <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">800</span>, <span class="at">sd =</span> <span class="dv">150</span>), <span class="dv">1</span>)</span>
+<span id="cb127-5"><a href="#cb127-5" aria-hidden="true" tabindex="-1"></a>fertilizer_kg<span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">20</span>, <span class="dv">150</span>), <span class="dv">1</span>)</span>
+<span id="cb127-6"><a href="#cb127-6" aria-hidden="true" tabindex="-1"></a>temperature_C<span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">27</span>, <span class="at">sd =</span> <span class="dv">3</span>), <span class="dv">1</span>)</span>
+<span id="cb127-7"><a href="#cb127-7" aria-hidden="true" tabindex="-1"></a>soil_ph      <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="fl">6.5</span>, <span class="at">sd =</span> <span class="fl">0.5</span>), <span class="dv">2</span>)</span>
+<span id="cb127-8"><a href="#cb127-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb127-9"><a href="#cb127-9" aria-hidden="true" tabindex="-1"></a><span class="do">## Yield has a linear-ish relationship with rainfall/fertilizer/pH,</span></span>
+<span id="cb127-10"><a href="#cb127-10" aria-hidden="true" tabindex="-1"></a><span class="do">## but a NONLINEAR (diminishing-returns) relationship with fertilizer,</span></span>
+<span id="cb127-11"><a href="#cb127-11" aria-hidden="true" tabindex="-1"></a><span class="do">## and a curved (polynomial) relationship with temperature (yield</span></span>
+<span id="cb127-12"><a href="#cb127-12" aria-hidden="true" tabindex="-1"></a><span class="do">## drops off if it gets too hot or too cold - not just "more is better")</span></span>
+<span id="cb127-13"><a href="#cb127-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb127-14"><a href="#cb127-14" aria-hidden="true" tabindex="-1"></a>yield_kg_ha <span class="ot">&lt;-</span> <span class="dv">2000</span> <span class="sc">+</span></span>
+<span id="cb127-15"><a href="#cb127-15" aria-hidden="true" tabindex="-1"></a>  <span class="fl">2.5</span>   <span class="sc">*</span> rainfall_mm <span class="sc">+</span></span>
+<span id="cb127-16"><a href="#cb127-16" aria-hidden="true" tabindex="-1"></a>  <span class="dv">40</span>    <span class="sc">*</span> <span class="fu">sqrt</span>(fertilizer_kg) <span class="sc">-</span>             <span class="co"># diminishing returns</span></span>
+<span id="cb127-17"><a href="#cb127-17" aria-hidden="true" tabindex="-1"></a>  <span class="dv">15</span>    <span class="sc">*</span> (temperature_C <span class="sc">-</span> <span class="dv">27</span>)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span>          <span class="co"># optimal temp ~27C</span></span>
+<span id="cb127-18"><a href="#cb127-18" aria-hidden="true" tabindex="-1"></a>  <span class="dv">300</span>   <span class="sc">*</span> soil_ph <span class="sc">+</span></span>
+<span id="cb127-19"><a href="#cb127-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">200</span>)</span>
+<span id="cb127-20"><a href="#cb127-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb127-21"><a href="#cb127-21" aria-hidden="true" tabindex="-1"></a>crop <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(rainfall_mm, fertilizer_kg, temperature_C, soil_ph, yield_kg_ha)</span>
+<span id="cb127-22"><a href="#cb127-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb127-23"><a href="#cb127-23" aria-hidden="true" tabindex="-1"></a><span class="do">## Binary outcome for logistic regression: "good yield" = above median</span></span>
+<span id="cb127-24"><a href="#cb127-24" aria-hidden="true" tabindex="-1"></a>crop<span class="sc">$</span>good_yield <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">ifelse</span>(crop<span class="sc">$</span>yield_kg_ha <span class="sc">&gt;</span> <span class="fu">median</span>(crop<span class="sc">$</span>yield_kg_ha), <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb127-25"><a href="#cb127-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb127-26"><a href="#cb127-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb127-27"><a href="#cb127-27" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(crop)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 200
+Columns: 6
+$ rainfall_mm   &lt;dbl&gt; 715.9, 765.5, 1033.8, 810.6, 819.4, 1057.3, 869.1, 610.2…
+$ fertilizer_kg &lt;dbl&gt; 148.2, 37.8, 137.7, 94.9, 71.4, 78.5, 111.8, 30.7, 64.1,…
+$ temperature_C &lt;dbl&gt; 24.9, 24.7, 24.2, 23.8, 25.7, 28.0, 21.0, 27.6, 30.7, 33…
+$ soil_ph       &lt;dbl&gt; 6.20, 6.00, 7.01, 6.88, 5.75, 6.45, 6.05, 5.46, 6.58, 6.…
+$ yield_kg_ha   &lt;dbl&gt; 5924.906, 5572.238, 6900.664, 6350.336, 5813.202, 7035.6…
+$ good_yield    &lt;fct&gt; 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0,…</code></pre>
+</div>
+</div>
+</section>
+<section id="traintest-split-8020" class="level3" data-number="6.5.2">
+<h3 data-number="6.5.2" class="anchored" data-anchor-id="traintest-split-8020"><span class="header-section-number">6.5.2</span> Train/test split (80/20)</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb129"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb129-1"><a href="#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb129-2"><a href="#cb129-2" aria-hidden="true" tabindex="-1"></a>train_idx <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">seq_len</span>(n), <span class="at">size =</span> <span class="fl">0.8</span> <span class="sc">*</span> n)</span>
+<span id="cb129-3"><a href="#cb129-3" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> crop[train_idx, ]</span>
+<span id="cb129-4"><a href="#cb129-4" aria-hidden="true" tabindex="-1"></a>test  <span class="ot">&lt;-</span> crop[<span class="sc">-</span>train_idx, ]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="linear-regression" class="level3" data-number="6.5.3">
+<h3 data-number="6.5.3" class="anchored" data-anchor-id="linear-regression"><span class="header-section-number">6.5.3</span> LINEAR REGRESSION</h3>
+<p>To understand linear regression, we build mode with One predictor, straight-line relationship: yield vs.&nbsp;rainfall</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb130"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb130-1"><a href="#cb130-1" aria-hidden="true" tabindex="-1"></a>lm_simple <span class="ot">&lt;-</span> <span class="fu">lm</span>(yield_kg_ha <span class="sc">~</span> rainfall_mm, <span class="at">data =</span> train)</span>
+<span id="cb130-2"><a href="#cb130-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm_simple)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = yield_kg_ha ~ rainfall_mm, data = train)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-1138.21  -217.55    69.47   212.02   814.09 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 4299.7736   151.5065   28.38   &lt;2e-16 ***
+rainfall_mm    2.3660     0.1882   12.57   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 333.1 on 158 degrees of freedom
+Multiple R-squared:  0.5002,    Adjusted R-squared:  0.497 
+F-statistic: 158.1 on 1 and 158 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>A simple linear regression was conducted to examine whether rainfall predicted crop yield. The overall model was statistically significant, <em>F</em>(1, 158) = 158.10, <em>p</em> &lt; .001, and explained approximately 50% of the variance in yield, <em>R</em>² = .50, adjusted <em>R</em>² = .497.</p>
+<p>Rainfall was a significant positive predictor of yield, <em>b</em> = 2.37, <em>SE</em> = 0.19, <em>t</em>(158) = 12.57, <em>p</em> &lt; .001. For every additional millimeter of rainfall, yield increased by approximately 2.37 kg/hectare, holding all else constant. The intercept, <em>b</em> = 4299.77, <em>SE</em> = 151.51, <em>t</em>(158) = 28.38, <em>p</em> &lt; .001, represents the model’s predicted yield when rainfall is zero, though this value has limited practical interpretation since zero rainfall falls well outside the observed range of the data.</p>
+<p>Let’s check the relationship using visualization:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb132"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb132-1"><a href="#cb132-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(train, <span class="fu">aes</span>(rainfall_mm, yield_kg_ha)) <span class="sc">+</span></span>
+<span id="cb132-2"><a href="#cb132-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb132-3"><a href="#cb132-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">TRUE</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb132-4"><a href="#cb132-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Linear Regression: Yield vs. Rainfall"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-II-unit-1_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="multiple-regression" class="level3" data-number="6.5.4">
+<h3 data-number="6.5.4" class="anchored" data-anchor-id="multiple-regression"><span class="header-section-number">6.5.4</span> MULTIPLE REGRESSION</h3>
+<p>Now, we build model with Several predictors, each assumed to have a straight-line (additive) effect on yield:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb134"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb134-1"><a href="#cb134-1" aria-hidden="true" tabindex="-1"></a>lm_multiple <span class="ot">&lt;-</span> <span class="fu">lm</span>(yield_kg_ha <span class="sc">~</span> rainfall_mm <span class="sc">+</span> fertilizer_kg <span class="sc">+</span> temperature_C <span class="sc">+</span> soil_ph,</span>
+<span id="cb134-2"><a href="#cb134-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> train)</span>
+<span id="cb134-3"><a href="#cb134-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm_multiple)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = yield_kg_ha ~ rainfall_mm + fertilizer_kg + temperature_C + 
+    soil_ph, data = train)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-1017.50  -187.31    38.67   186.97   617.16 
+
+Coefficients:
+               Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   2319.5617   396.0693   5.856 2.74e-08 ***
+rainfall_mm      2.3383     0.1617  14.459  &lt; 2e-16 ***
+fertilizer_kg    2.5336     0.5959   4.252 3.65e-05 ***
+temperature_C   -0.6421     7.7034  -0.083    0.934    
+soil_ph        278.4878    44.6961   6.231 4.19e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 283.5 on 155 degrees of freedom
+Multiple R-squared:  0.6447,    Adjusted R-squared:  0.6355 
+F-statistic:  70.3 on 4 and 155 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb136"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb136-1"><a href="#cb136-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Compare R-squared to the simple model - more predictors usually</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Two regression models were compared to evaluate the predictors of crop yield. The simple linear regression, using rainfall alone, was statistically significant and explained approximately 50% of the variance in yield, <em>R</em>² = .50, adjusted <em>R</em>² = .497, <em>F</em>(1, 158) = 158.10, <em>p</em> &lt; .001. Adding three additional predictors — fertilizer application, temperature, and soil pH — produced a multiple regression model that was also statistically significant, <em>F</em>(4, 155) = 70.30, <em>p</em> &lt; .001, and explained a larger proportion of variance in yield, <em>R</em>² = .64, adjusted <em>R</em>² = .636.</p>
+<p>The increase in adjusted <em>R</em>² from .497 to .636 indicates that the additional predictors accounted for meaningful variance in yield beyond rainfall alone, rather than merely adding noise (adjusted <em>R</em>², unlike <em>R</em>², penalizes the inclusion of uninformative predictors, making it the more appropriate statistic for comparing models of different sizes). This is further supported by the reduction in residual standard error from 333.1 to 283.5 kg/hectare, reflecting improved prediction accuracy.</p>
+<p>Examining individual predictors in the multiple regression model, rainfall remained a strong, statistically significant positive predictor of yield, <em>b</em> = 2.34, <em>SE</em> = 0.16, <em>t</em>(155) = 14.46, <em>p</em> &lt; .001, with a coefficient nearly identical to its estimate in the simple regression (<em>b</em> = 2.37), suggesting its effect on yield is robust to the inclusion of other variables. Fertilizer application was also a significant positive predictor, <em>b</em> = 2.53, <em>SE</em> = 0.60, <em>t</em>(155) = 4.25, <em>p</em> &lt; .001, as was soil pH, <em>b</em> = 278.49, <em>SE</em> = 44.70, <em>t</em>(155) = 6.23, <em>p</em> &lt; .001, which showed the largest standardized influence relative to its measurement scale. Temperature, however, was not a statistically significant predictor in this model, <em>b</em> = −0.64, <em>SE</em> = 7.70, <em>t</em>(155) = −0.08, <em>p</em> = .934.</p>
+<p>Let’s predict check the RMSE (Root Mean Squared Error):</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb137"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb137-1"><a href="#cb137-1" aria-hidden="true" tabindex="-1"></a>pred_multi <span class="ot">&lt;-</span> <span class="fu">predict</span>(lm_multiple, <span class="at">newdata =</span> test)</span>
+<span id="cb137-2"><a href="#cb137-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="fu">mean</span>((pred_multi <span class="sc">-</span> test<span class="sc">$</span>yield_kg_ha)<span class="sc">^</span><span class="dv">2</span>))   <span class="co"># test RMSE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 372.6435</code></pre>
+</div>
+</div>
+<p>The test RMSE of 372.64 kg/hectare represents the typical magnitude of error when the multiple regression model predicts crop yield on <strong>data it has not seen before</strong> (the held-out test set). In other words, on average, the model’s yield predictions deviate from actual yield by roughly 372.64 kg/hectare.</p>
+<ul>
+<li><p>The training-set residual standard error was 283.5 kg/hectare — noticeably lower than the test RMSE of 372.64.</p></li>
+<li><p>This gap (283.5 vs.&nbsp;372.64) is a signal worth flagging: the model fits the training data better than it generalizes to new data. Some of this is expected (models almost always perform somewhat worse on unseen data), but a gap this size also lines up with what you found in the coefficient output — temperature was included as a plain linear term even though its true relationship with yield is quadratic (peaking at an optimal temperature). Because the model can’t capture that curvature, it likely makes systematically larger errors on test observations with temperatures far from the training set’s typical range, inflating the test RMSE.</p></li>
+<li><p>To assess whether 372.64 kg/hectare is “good” or “bad,” it should be compared against the scale of the outcome itself — e.g., as a percentage of mean yield (mean(train$yield_kg_ha) would give you that denominator). A RMSE that’s small relative to typical yield (say, under 10%) suggests reasonably useful predictions for advisory purposes; one that’s large relative to typical yield suggests the model isn’t precise enough to act on without caution.</p></li>
+<li><p>This is exactly the kind of gap the <strong>polynomial regression</strong> step (correctly modeling temperature’s curvature) should help close — comparing this multiple-regression test RMSE against the polynomial model’s test RMSE would be a natural next check, and a good addition to your assignment’s Part C if you want students to explicitly connect “which model generalizes best” rather than just “which model fits training data best.”</p></li>
+</ul>
+</section>
+<section id="polynomial-regression" class="level3" data-number="6.5.5">
+<h3 data-number="6.5.5" class="anchored" data-anchor-id="polynomial-regression"><span class="header-section-number">6.5.5</span> POLYNOMIAL REGRESSION</h3>
+<p>We build polynomial model that Captures a curved relationship - here, yield peaks at an OPTIMAL temperature rather than rising or falling monotonically.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb139"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb139-1"><a href="#cb139-1" aria-hidden="true" tabindex="-1"></a>lm_poly <span class="ot">&lt;-</span> <span class="fu">lm</span>(yield_kg_ha <span class="sc">~</span> <span class="fu">poly</span>(temperature_C, <span class="dv">2</span>) <span class="sc">+</span> rainfall_mm <span class="sc">+</span> fertilizer_kg <span class="sc">+</span> soil_ph,</span>
+<span id="cb139-2"><a href="#cb139-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> train)</span>
+<span id="cb139-3"><a href="#cb139-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm_poly)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = yield_kg_ha ~ poly(temperature_C, 2) + rainfall_mm + 
+    fertilizer_kg + soil_ph, data = train)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-521.34 -134.14    1.29  128.03  513.63 
+
+Coefficients:
+                          Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)              2113.7362   231.3758   9.136 3.54e-16 ***
+poly(temperature_C, 2)1    11.1288   211.0545   0.053    0.958    
+poly(temperature_C, 2)2 -2412.8212   209.6024 -11.511  &lt; 2e-16 ***
+rainfall_mm                 2.4653     0.1195  20.638  &lt; 2e-16 ***
+fertilizer_kg               2.5721     0.4383   5.868 2.61e-08 ***
+soil_ph                   291.5119    32.8943   8.862 1.81e-15 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 208.6 on 154 degrees of freedom
+Multiple R-squared:  0.809, Adjusted R-squared:  0.8028 
+F-statistic: 130.5 on 5 and 154 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb141"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb141-1"><a href="#cb141-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(train, <span class="fu">aes</span>(temperature_C, yield_kg_ha)) <span class="sc">+</span></span>
+<span id="cb141-2"><a href="#cb141-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb141-3"><a href="#cb141-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">formula =</span> y <span class="sc">~</span> <span class="fu">poly</span>(x, <span class="dv">2</span>), <span class="at">color =</span> <span class="st">"darkorange"</span>) <span class="sc">+</span></span>
+<span id="cb141-4"><a href="#cb141-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Polynomial Regression: Yield vs. Temperature (degree 2)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-II-unit-1_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>A polynomial regression model was estimated to test whether allowing temperature a curved (quadratic) relationship with yield would improve on the purely linear multiple regression model. The polynomial model was statistically significant, <em>F</em>(5, 154) = 130.50, <em>p</em> &lt; .001, and explained substantially more variance in yield than the linear multiple regression model, <em>R</em>² = .809, adjusted <em>R</em>² = .803, compared to <em>R</em>² = .645, adjusted <em>R</em>² = .636 previously.</p>
+<p>The quadratic term for temperature was highly significant, <em>b</em> = −2412.82, <em>SE</em> = 209.60, <em>t</em>(154) = −11.51, <em>p</em> &lt; .001, while the linear temperature term was not, <em>b</em> = 11.13, <em>SE</em> = 211.05, <em>t</em>(154) = 0.05, <em>p</em> = .958. This pattern confirms what the earlier linear model’s non-significant temperature coefficient had obscured: temperature does meaningfully affect yield, but through a <strong>curved, not straight-line, relationship</strong> — consistent with an agronomic optimum temperature, where yield is highest at a moderate temperature and declines when conditions are either too cool or too hot. The negative sign on the squared term indicates an inverted-U (concave-down) curve, as expected.</p>
+<p>Rainfall, <em>b</em> = 2.47, <em>SE</em> = 0.12, <em>t</em>(154) = 20.64, <em>p</em> &lt; .001, fertilizer, <em>b</em> = 2.57, <em>SE</em> = 0.44, <em>t</em>(154) = 5.87, <em>p</em> &lt; .001, and soil pH, <em>b</em> = 291.51, <em>SE</em> = 32.89, <em>t</em>(154) = 8.86, <em>p</em> &lt; .001, all remained significant positive predictors, with coefficient estimates very similar to the linear multiple regression model — indicating their linear effects on yield were already well-captured and are not confounded with temperature’s curvature.</p>
+<p>The residual standard error also dropped notably, from 283.5 kg/hectare (linear multiple regression) to 208.6 kg/hectare (polynomial), reflecting a considerably tighter fit to the training data once temperature’s true functional form was correctly specified.</p>
+<p><strong>Practical takeaway:</strong> This is a clean illustration of a common modeling mistake — a predictor can appear “non-significant” in a linear model not because it doesn’t matter, but because the model was given the wrong functional form to detect it. Once quadratic curvature was allowed, temperature emerged as one of the most important predictors in the model (via its squared term).</p>
+<p>One useful next step for your assignment: compute this model’s <strong>test RMSE</strong> (the same way as before, using <code>predict(lm_poly, newdata = test)</code>) and compare it directly against the 372.64 kg/hectare from the linear multiple regression — that comparison will tell students concretely whether correctly modeling temperature’s curvature also improves <em>generalization</em>, not just training fit.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb142"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb142-1"><a href="#cb142-1" aria-hidden="true" tabindex="-1"></a>preds_poly <span class="ot">=</span> <span class="fu">predict</span>(lm_poly, <span class="at">newdata =</span> test)</span>
+<span id="cb142-2"><a href="#cb142-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb142-3"><a href="#cb142-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="fu">mean</span>((preds_poly <span class="sc">-</span> test<span class="sc">$</span>yield_kg_ha)<span class="sc">^</span><span class="dv">2</span>))   <span class="co"># test RMSE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 203.5892</code></pre>
+</div>
+</div>
+<p>We can see that RMSE is now reduced to 203.59 from 372.64. There is an improvement in accuracy of the model.</p>
+</section>
+<section id="nonlinear-regression-nls" class="level3" data-number="6.5.6">
+<h3 data-number="6.5.6" class="anchored" data-anchor-id="nonlinear-regression-nls"><span class="header-section-number">6.5.6</span> NONLINEAR REGRESSION (nls)</h3>
+<p>Now, we fit a nonlinear functional FORM (not just apolynomial in the linear-model framework)here a Michaelis-Menten style diminishing-returns curve for fertilizer using yield = Vmax * fertilizer / (K + fertilizer).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb144"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb144-1"><a href="#cb144-1" aria-hidden="true" tabindex="-1"></a>nls_fert <span class="ot">&lt;-</span> <span class="fu">nls</span>(</span>
+<span id="cb144-2"><a href="#cb144-2" aria-hidden="true" tabindex="-1"></a>  yield_kg_ha <span class="sc">~</span> Vmax <span class="sc">*</span> fertilizer_kg <span class="sc">/</span> (K <span class="sc">+</span> fertilizer_kg),</span>
+<span id="cb144-3"><a href="#cb144-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data  =</span> train,</span>
+<span id="cb144-4"><a href="#cb144-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">start =</span> <span class="fu">list</span>(<span class="at">Vmax =</span> <span class="dv">6000</span>, <span class="at">K =</span> <span class="dv">50</span>)   <span class="co"># starting guesses required for nls</span></span>
+<span id="cb144-5"><a href="#cb144-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb144-6"><a href="#cb144-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(nls_fert)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Formula: yield_kg_ha ~ Vmax * fertilizer_kg/(K + fertilizer_kg)
+
+Parameters:
+      Estimate Std. Error t value Pr(&gt;|t|)    
+Vmax 6375.7537    73.5154  86.727  &lt; 2e-16 ***
+K       2.0904     0.6778   3.084  0.00241 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 455.9 on 158 degrees of freedom
+
+Number of iterations to convergence: 5 
+Achieved convergence tolerance: 3.413e-07</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb146"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb146-1"><a href="#cb146-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(train, <span class="fu">aes</span>(fertilizer_kg, yield_kg_ha)) <span class="sc">+</span></span>
+<span id="cb146-2"><a href="#cb146-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb146-3"><a href="#cb146-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">predict</span>(nls_fert)), <span class="at">color =</span> <span class="st">"forestgreen"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb146-4"><a href="#cb146-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Nonlinear Regression: Diminishing Returns on Fertilizer"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-II-unit-1_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="stepwise-regression" class="level3" data-number="6.5.7">
+<h3 data-number="6.5.7" class="anchored" data-anchor-id="stepwise-regression"><span class="header-section-number">6.5.7</span> STEPWISE REGRESSION</h3>
+<p>When we build model we use a set of predictors. All predictors do not contribute to the model and still create noise and increases variance. Here, we use STEPWISE REGRESSION which automatically selects a subset of predictors by adding/removing predictors to optimize AIC (lower = better trade-off of fit vs.&nbsp;complexity).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb147"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb147-1"><a href="#cb147-1" aria-hidden="true" tabindex="-1"></a>full_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(yield_kg_ha <span class="sc">~</span> rainfall_mm <span class="sc">+</span> fertilizer_kg <span class="sc">+</span> temperature_C <span class="sc">+</span> soil_ph,</span>
+<span id="cb147-2"><a href="#cb147-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> train)</span>
+<span id="cb147-3"><a href="#cb147-3" aria-hidden="true" tabindex="-1"></a>null_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(yield_kg_ha <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> train)</span>
+<span id="cb147-4"><a href="#cb147-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb147-5"><a href="#cb147-5" aria-hidden="true" tabindex="-1"></a>step_model <span class="ot">&lt;-</span> stats<span class="sc">::</span><span class="fu">step</span>(</span>
+<span id="cb147-6"><a href="#cb147-6" aria-hidden="true" tabindex="-1"></a>  null_model,</span>
+<span id="cb147-7"><a href="#cb147-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">scope =</span> <span class="fu">list</span>(<span class="at">lower =</span> null_model, <span class="at">upper =</span> full_model),</span>
+<span id="cb147-8"><a href="#cb147-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">direction =</span> <span class="st">"both"</span>,   <span class="co"># "forward", "backward", or "both"</span></span>
+<span id="cb147-9"><a href="#cb147-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">trace =</span> <span class="cn">FALSE</span></span>
+<span id="cb147-10"><a href="#cb147-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb147-11"><a href="#cb147-11" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(step_model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = yield_kg_ha ~ rainfall_mm + soil_ph + fertilizer_kg, 
+    data = train)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1022.2  -185.3    39.2   185.4   616.6 
+
+Coefficients:
+               Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   2299.2125   310.8933   7.396 8.11e-12 ***
+rainfall_mm      2.3401     0.1598  14.641  &lt; 2e-16 ***
+soil_ph        278.7416    44.4501   6.271 3.37e-09 ***
+fertilizer_kg    2.5317     0.5936   4.265 3.45e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 282.6 on 156 degrees of freedom
+Multiple R-squared:  0.6446,    Adjusted R-squared:  0.6378 
+F-statistic: 94.33 on 3 and 156 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb149"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb149-1"><a href="#cb149-1" aria-hidden="true" tabindex="-1"></a><span class="fu">formula</span>(step_model)   <span class="co"># which predictors survived</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>yield_kg_ha ~ rainfall_mm + soil_ph + fertilizer_kg</code></pre>
+</div>
+</div>
+<p>A stepwise regression procedure (bidirectional selection based on AIC) was conducted to identify the subset of predictors that best explained crop yield, starting from an intercept-only model and considering rainfall, fertilizer, temperature, and soil pH as candidate predictors. The procedure selected a final model retaining rainfall, soil pH, and fertilizer, while <strong>removing temperature entirely</strong> from the model.</p>
+<p>The selected model was statistically significant, <em>F</em>(3, 156) = 94.33, <em>p</em> &lt; .001, and explained approximately 64.5% of the variance in yield, <em>R</em>² = .645, adjusted <em>R</em>² = .638. Rainfall was the strongest predictor, <em>b</em> = 2.34, <em>SE</em> = 0.16, <em>t</em>(156) = 14.64, <em>p</em> &lt; .001, followed by soil pH, <em>b</em> = 278.74, <em>SE</em> = 44.45, <em>t</em>(156) = 6.27, <em>p</em> &lt; .001, and fertilizer, <em>b</em> = 2.53, <em>SE</em> = 0.59, <em>t</em>(156) = 4.27, <em>p</em> &lt; .001. All three retained predictors were significant positive predictors of yield.</p>
+<p><strong>Comparison to the full linear multiple regression model:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Model</th>
+<th>Predictors</th>
+<th>Adjusted R²</th>
+<th>Residual SE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Full linear multiple</td>
+<td>rainfall + fertilizer + temperature + soil pH</td>
+<td>.636</td>
+<td>283.5</td>
+</tr>
+<tr class="even">
+<td>Stepwise-selected</td>
+<td>rainfall + fertilizer + soil pH</td>
+<td>.638</td>
+<td>282.6</td>
+</tr>
+</tbody>
+</table>
+<p>Notably, the stepwise model achieves a <em>marginally higher</em> adjusted R² (.638 vs.&nbsp;.636) and lower residual standard error (282.6 vs.&nbsp;283.5) than the full model — <strong>despite dropping a predictor</strong>. This is expected: adjusted R² penalizes unnecessary predictors, and since temperature’s <em>linear</em> term was non-significant in the full model (<em>p</em> = .934, from your earlier output), removing it slightly improves the fit efficiency without sacrificing explanatory power.</p>
+<p><strong>Important caveat worth flagging (especially for a student assignment):</strong> this result illustrates a key limitation of stepwise selection rather than a genuine insight about temperature’s importance. Temperature was correctly dropped <em>as a linear term</em>, but your polynomial regression model showed temperature’s quadratic term was highly significant (<em>p</em> &lt; .001) and substantially improved fit (adjusted R² = .803). Stepwise selection using <code>step()</code> only ever considered rainfall, fertilizer, temperature, and soil pH as <strong>linear terms</strong> — it never had the opportunity to discover the curved relationship, because <code>poly(temperature_C, 2)</code> was never in its candidate scope. This is a classic pitfall of stepwise/AIC-based selection: it can only select among the functional forms you explicitly offer it, and will confidently discard a genuinely important predictor if its true effect doesn’t match the form tested.</p>
+<p><strong>Practical takeaway:</strong> stepwise regression is useful for pruning redundant linear predictors efficiently, but it is not a substitute for exploring nonlinear relationships first (via EDA plots or domain knowledge) — a variable dropped by stepwise selection may still be highly important if given the right functional form, as shown here.</p>
+</section>
+<section id="ridge-regression" class="level3" data-number="6.5.8">
+<h3 data-number="6.5.8" class="anchored" data-anchor-id="ridge-regression"><span class="header-section-number">6.5.8</span> RIDGE REGRESSION</h3>
+<p>RIDGE REGRESSION Shrinks ALL coefficients toward zero (L2 penalty) - keeps every predictor but reduces overfitting/multicollinearity impact. Let’s check how it works now:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb151"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb151-1"><a href="#cb151-1" aria-hidden="true" tabindex="-1"></a>x_train <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(train[, <span class="fu">c</span>(<span class="st">"rainfall_mm"</span>, <span class="st">"fertilizer_kg"</span>, <span class="st">"temperature_C"</span>, <span class="st">"soil_ph"</span>)])</span>
+<span id="cb151-2"><a href="#cb151-2" aria-hidden="true" tabindex="-1"></a>y_train <span class="ot">&lt;-</span> train<span class="sc">$</span>yield_kg_ha</span>
+<span id="cb151-3"><a href="#cb151-3" aria-hidden="true" tabindex="-1"></a>x_test  <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(test[,  <span class="fu">c</span>(<span class="st">"rainfall_mm"</span>, <span class="st">"fertilizer_kg"</span>, <span class="st">"temperature_C"</span>, <span class="st">"soil_ph"</span>)])</span>
+<span id="cb151-4"><a href="#cb151-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb151-5"><a href="#cb151-5" aria-hidden="true" tabindex="-1"></a>ridge_cv <span class="ot">&lt;-</span> <span class="fu">cv.glmnet</span>(x_train, y_train, <span class="at">alpha =</span> <span class="dv">0</span>)   <span class="co"># alpha = 0 -&gt; ridge</span></span>
+<span id="cb151-6"><a href="#cb151-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ridge_cv)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-II-unit-1_files/figure-html/unnamed-chunk-39-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb152"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb152-1"><a href="#cb152-1" aria-hidden="true" tabindex="-1"></a>best_lambda_ridge <span class="ot">&lt;-</span> ridge_cv<span class="sc">$</span>lambda.min</span>
+<span id="cb152-2"><a href="#cb152-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb152-3"><a href="#cb152-3" aria-hidden="true" tabindex="-1"></a>ridge_model <span class="ot">&lt;-</span> <span class="fu">glmnet</span>(x_train, y_train, <span class="at">alpha =</span> <span class="dv">0</span>, <span class="at">lambda =</span> best_lambda_ridge)</span>
+<span id="cb152-4"><a href="#cb152-4" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(ridge_model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>5 x 1 sparse Matrix of class "dgCMatrix"
+                       s0
+(Intercept)   2587.943930
+rainfall_mm      2.182658
+fertilizer_kg    2.378863
+temperature_C   -1.634813
+soil_ph        262.315045</code></pre>
+</div>
+</div>
+<p>Let’s evaluate RIDGE MODEL:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb154"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb154-1"><a href="#cb154-1" aria-hidden="true" tabindex="-1"></a>pred_ridge <span class="ot">&lt;-</span> <span class="fu">predict</span>(ridge_model, <span class="at">newx =</span> x_test)</span>
+<span id="cb154-2"><a href="#cb154-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="fu">mean</span>((pred_ridge <span class="sc">-</span> test<span class="sc">$</span>yield_kg_ha)<span class="sc">^</span><span class="dv">2</span>))   <span class="co"># test RMSE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 383.9022</code></pre>
+</div>
+</div>
+</section>
+<section id="lasso-regression" class="level3" data-number="6.5.9">
+<h3 data-number="6.5.9" class="anchored" data-anchor-id="lasso-regression"><span class="header-section-number">6.5.9</span> LASSO REGRESSION</h3>
+<p>LASSO REGRESSION shrinks coefficients toward zero AND can set some exactly to zero (L1 penalty) - performs automatic variable selection.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb156"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb156-1"><a href="#cb156-1" aria-hidden="true" tabindex="-1"></a>lasso_cv <span class="ot">&lt;-</span> <span class="fu">cv.glmnet</span>(x_train, y_train, <span class="at">alpha =</span> <span class="dv">1</span>)   <span class="co"># alpha = 1 -&gt; lasso</span></span>
+<span id="cb156-2"><a href="#cb156-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(lasso_cv)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-II-unit-1_files/figure-html/unnamed-chunk-41-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb157"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb157-1"><a href="#cb157-1" aria-hidden="true" tabindex="-1"></a>best_lambda_lasso <span class="ot">&lt;-</span> lasso_cv<span class="sc">$</span>lambda.min</span>
+<span id="cb157-2"><a href="#cb157-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb157-3"><a href="#cb157-3" aria-hidden="true" tabindex="-1"></a>lasso_model <span class="ot">&lt;-</span> <span class="fu">glmnet</span>(x_train, y_train, <span class="at">alpha =</span> <span class="dv">1</span>, <span class="at">lambda =</span> best_lambda_lasso)</span>
+<span id="cb157-4"><a href="#cb157-4" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(lasso_model)   <span class="co"># predictors shrunk to exactly 0 are effectively dropped</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>5 x 1 sparse Matrix of class "dgCMatrix"
+                       s0
+(Intercept)   2616.718547
+rainfall_mm      2.221523
+fertilizer_kg    2.116091
+temperature_C    .       
+soil_ph        249.681922</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb159"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb159-1"><a href="#cb159-1" aria-hidden="true" tabindex="-1"></a>pred_lasso <span class="ot">&lt;-</span> <span class="fu">predict</span>(lasso_model, <span class="at">newx =</span> x_test)</span>
+<span id="cb159-2"><a href="#cb159-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="fu">mean</span>((pred_lasso <span class="sc">-</span> test<span class="sc">$</span>yield_kg_ha)<span class="sc">^</span><span class="dv">2</span>))   <span class="co"># test RMSE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 380.7707</code></pre>
+</div>
+</div>
+</section>
+<section id="quantile-regression" class="level3" data-number="6.5.10">
+<h3 data-number="6.5.10" class="anchored" data-anchor-id="quantile-regression"><span class="header-section-number">6.5.10</span> QUANTILE REGRESSION</h3>
+<p>Models a specific PERCENTILE of the outcome (not just the mean) - e.g.&nbsp;the 10th percentile is useful for “worst-case” yield planning, the 90th for best-case</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb161"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb161-1"><a href="#cb161-1" aria-hidden="true" tabindex="-1"></a>qr_median <span class="ot">&lt;-</span> <span class="fu">rq</span>(yield_kg_ha <span class="sc">~</span> rainfall_mm <span class="sc">+</span> fertilizer_kg <span class="sc">+</span> temperature_C <span class="sc">+</span> soil_ph,</span>
+<span id="cb161-2"><a href="#cb161-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> train, <span class="at">tau =</span> <span class="fl">0.5</span>)   <span class="co"># tau = 0.5 -&gt; median regression</span></span>
+<span id="cb161-3"><a href="#cb161-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(qr_median)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call: rq(formula = yield_kg_ha ~ rainfall_mm + fertilizer_kg + temperature_C + 
+    soil_ph, tau = 0.5, data = train)
+
+tau: [1] 0.5
+
+Coefficients:
+              coefficients lower bd   upper bd  
+(Intercept)   2258.38498    734.06630 3093.08693
+rainfall_mm      2.28506      2.03619    2.63899
+fertilizer_kg    2.49500      0.85012    3.42591
+temperature_C    5.39328    -19.95405   30.27147
+soil_ph        275.80216    221.09104  369.59808</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb163"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb163-1"><a href="#cb163-1" aria-hidden="true" tabindex="-1"></a>qr_low  <span class="ot">&lt;-</span> <span class="fu">rq</span>(yield_kg_ha <span class="sc">~</span> rainfall_mm <span class="sc">+</span> fertilizer_kg, <span class="at">data =</span> train, <span class="at">tau =</span> <span class="fl">0.10</span>)</span>
+<span id="cb163-2"><a href="#cb163-2" aria-hidden="true" tabindex="-1"></a>qr_high <span class="ot">&lt;-</span> <span class="fu">rq</span>(yield_kg_ha <span class="sc">~</span> rainfall_mm <span class="sc">+</span> fertilizer_kg, <span class="at">data =</span> train, <span class="at">tau =</span> <span class="fl">0.90</span>)</span>
+<span id="cb163-3"><a href="#cb163-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb163-4"><a href="#cb163-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(train, <span class="fu">aes</span>(rainfall_mm, yield_kg_ha)) <span class="sc">+</span></span>
+<span id="cb163-5"><a href="#cb163-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb163-6"><a href="#cb163-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_quantile</span>(<span class="at">quantiles =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.9</span>), <span class="at">color =</span> <span class="st">"purple"</span>) <span class="sc">+</span></span>
+<span id="cb163-7"><a href="#cb163-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Quantile Regression: 10th / 50th / 90th Percentile Yield"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Smoothing formula not specified. Using: y ~ x</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-II-unit-1_files/figure-html/unnamed-chunk-42-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="logistic-regression" class="level3" data-number="6.5.11">
+<h3 data-number="6.5.11" class="anchored" data-anchor-id="logistic-regression"><span class="header-section-number">6.5.11</span> LOGISTIC REGRESSION</h3>
+<p>Now we want to classify the yield as Good For a BINARY outcome - here, whether yield is “good”(1) or “bad” (0).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb165"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb165-1"><a href="#cb165-1" aria-hidden="true" tabindex="-1"></a>log_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(good_yield <span class="sc">~</span> rainfall_mm <span class="sc">+</span> fertilizer_kg <span class="sc">+</span> temperature_C <span class="sc">+</span> soil_ph,</span>
+<span id="cb165-2"><a href="#cb165-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> train, <span class="at">family =</span> binomial)</span>
+<span id="cb165-3"><a href="#cb165-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(log_model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = good_yield ~ rainfall_mm + fertilizer_kg + temperature_C + 
+    soil_ph, family = binomial, data = train)
+
+Coefficients:
+                Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)   -25.775522   5.338626  -4.828 1.38e-06 ***
+rainfall_mm     0.015777   0.002649   5.956 2.59e-09 ***
+fertilizer_kg   0.014366   0.006125   2.345    0.019 *  
+temperature_C  -0.076273   0.075452  -1.011    0.312    
+soil_ph         2.196929   0.519530   4.229 2.35e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 221.78  on 159  degrees of freedom
+Residual deviance: 130.09  on 155  degrees of freedom
+AIC: 140.09
+
+Number of Fisher Scoring iterations: 6</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb167"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb167-1"><a href="#cb167-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Predicted probabilities and classification on test data</span></span>
+<span id="cb167-2"><a href="#cb167-2" aria-hidden="true" tabindex="-1"></a>pred_prob  <span class="ot">&lt;-</span> <span class="fu">predict</span>(log_model, <span class="at">newdata =</span> test, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb167-3"><a href="#cb167-3" aria-hidden="true" tabindex="-1"></a>pred_class <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">ifelse</span>(pred_prob <span class="sc">&gt;</span> <span class="fl">0.5</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb167-4"><a href="#cb167-4" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="at">Predicted =</span> pred_class, <span class="at">Actual =</span> test<span class="sc">$</span>good_yield)   <span class="co"># confusion matrix</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         Actual
+Predicted  0  1
+        0 16  4
+        1  5 15</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb169"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb169-1"><a href="#cb169-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(pred_class <span class="sc">==</span> test<span class="sc">$</span>good_yield)                       <span class="co"># accuracy</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.775</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="section" class="level2" data-number="6.6">
+<h2 data-number="6.6" class="anchored" data-anchor-id="section"><span class="header-section-number">6.6</span> ============================================================</h2>
+</section>
+<section id="summary-when-to-use-which" class="level2" data-number="6.7">
+<h2 data-number="6.7" class="anchored" data-anchor-id="summary-when-to-use-which"><span class="header-section-number">6.7</span> SUMMARY — When to use which</h2>
+</section>
+<section id="section-1" class="level2" data-number="6.8">
+<h2 data-number="6.8" class="anchored" data-anchor-id="section-1"><span class="header-section-number">6.8</span> ============================================================</h2>
+</section>
+<section id="linear---one-predictor-straight-line-relationship" class="level2" data-number="6.9">
+<h2 data-number="6.9" class="anchored" data-anchor-id="linear---one-predictor-straight-line-relationship"><span class="header-section-number">6.9</span> Linear - one predictor, straight-line relationship</h2>
+</section>
+<section id="multiple---several-predictors-each-additivelinear" class="level2" data-number="6.10">
+<h2 data-number="6.10" class="anchored" data-anchor-id="multiple---several-predictors-each-additivelinear"><span class="header-section-number">6.10</span> Multiple - several predictors, each additive/linear</h2>
+</section>
+<section id="polynomial---curved-relationship-still-fit-within-lm-framework" class="level2" data-number="6.11">
+<h2 data-number="6.11" class="anchored" data-anchor-id="polynomial---curved-relationship-still-fit-within-lm-framework"><span class="header-section-number">6.11</span> Polynomial - curved relationship still fit within lm() framework</h2>
+</section>
+<section id="nonlinearnls--true-nonlinear-functional-form-e.g.-saturation" class="level2" data-number="6.12">
+<h2 data-number="6.12" class="anchored" data-anchor-id="nonlinearnls--true-nonlinear-functional-form-e.g.-saturation"><span class="header-section-number">6.12</span> Nonlinear(nls)- true nonlinear functional form (e.g.&nbsp;saturation,</h2>
+</section>
+<section id="growth-curves---you-must-specify-the-equation" class="level2" data-number="6.13">
+<h2 data-number="6.13" class="anchored" data-anchor-id="growth-curves---you-must-specify-the-equation"><span class="header-section-number">6.13</span> growth curves) - you must specify the equation</h2>
+</section>
+<section id="stepwise---automatic-predictor-selection-via-aic" class="level2" data-number="6.14">
+<h2 data-number="6.14" class="anchored" data-anchor-id="stepwise---automatic-predictor-selection-via-aic"><span class="header-section-number">6.14</span> Stepwise - automatic predictor selection via AIC</h2>
+</section>
+<section id="ridge---manycorrelated-predictors-keep-all-shrink-coefficients" class="level2" data-number="6.15">
+<h2 data-number="6.15" class="anchored" data-anchor-id="ridge---manycorrelated-predictors-keep-all-shrink-coefficients"><span class="header-section-number">6.15</span> Ridge - many/correlated predictors, keep all, shrink coefficients</h2>
+</section>
+<section id="lasso---many-predictors-want-automatic-feature-selection" class="level2" data-number="6.16">
+<h2 data-number="6.16" class="anchored" data-anchor-id="lasso---many-predictors-want-automatic-feature-selection"><span class="header-section-number">6.16</span> Lasso - many predictors, want automatic feature selection</h2>
+</section>
+<section id="quantile---care-about-a-specific-percentile-not-just-the-mean" class="level2" data-number="6.17">
+<h2 data-number="6.17" class="anchored" data-anchor-id="quantile---care-about-a-specific-percentile-not-just-the-mean"><span class="header-section-number">6.17</span> Quantile - care about a specific percentile, not just the mean</h2>
+</section>
+<section id="e.g.-worst-casebest-case-yield-planning" class="level2" data-number="6.18">
+<h2 data-number="6.18" class="anchored" data-anchor-id="e.g.-worst-casebest-case-yield-planning"><span class="header-section-number">6.18</span> (e.g.&nbsp;worst-case/best-case yield planning)</h2>
+</section>
+<section id="logistic---binary-outcome-successfailure-goodbad-yesno" class="level2" data-number="6.19">
+<h2 data-number="6.19" class="anchored" data-anchor-id="logistic---binary-outcome-successfailure-goodbad-yesno"><span class="header-section-number">6.19</span> Logistic - binary outcome (success/failure, good/bad, yes/no)</h2>
+</section>
+<section id="section-2" class="level2" data-number="6.20">
+<h2 data-number="6.20" class="anchored" data-anchor-id="section-2"><span class="header-section-number">6.20</span> ============================================================</h2>
+
+
 </section>
 
 </main> <!-- /main -->

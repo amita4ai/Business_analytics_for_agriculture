@@ -349,7 +349,7 @@ soy_test
 
 You can see that out of `r nrow(soy)` observations, soy_train dataset contains 80% observations i.e. `r nrow(soy_train)` observations and soy_test dataset contains 20% observations i.e. `r nrow(soy_test)` observations. 
 
-### Build the preprocessing recipe ------------------------
+### Build the preprocessing `recipe`
 
 This is the core of the exercise: every cleaning/encoding
 Decision is captured as a *recipe step*, learned only on the training set, then reproducibly applied to any new data.
@@ -557,5 +557,353 @@ Let's discuss each part of Multi-Class ROC curves:
 - $$ Sensitivity (True Positive Rate) = True_Positive_Cases / (True_Positive_Cases + False_Negative_Cases) $$
 
 - $$ Specificity (False Positive Rate) = True_Negative_Cases / (True_Negative_Cases + False_Positive_Cases) $$
+
+
+### Concluding Remarks
+
+This analysis demonstrated an end-to-end multiclass classification pipeline for diagnosing soybean diseases from categorical agronomic and environmental observations. The `recipes` package handled the preprocessing burden reproducibly and without data leakage — filtering near-zero-variance predictors, imputing missing symptom records via bagged trees, pooling rare factor levels, one-hot encoding, removing redundant correlated features, and upsampling rare disease classes — all learned strictly on the training split and applied identically to the held-out test data.
+
+The random forest classifier trained on this preprocessed data was evaluated using one-vs-rest ROC curves for each disease class rather than a single aggregate accuracy figure, since accuracy alone can mask poor performance on rarer or harder-to-distinguish diseases. Per-class AUC values reveal which diseases the model separates cleanly from all others (curves hugging the top-left corner, AUC near 1.0) versus which ones it confuses with visually or symptomatically similar conditions (curves closer to the diagonal, AUC near 0.5). This class-by-class view is more actionable for an agribusiness context than a single overall score — it tells you specifically which diseases a field-deployed diagnostic tool can be trusted on, and which would still need expert/agronomist confirmation before acting on the model's flag.
+
+**Practical takeaway:** the preprocessing recipe is reusable well beyond this dataset — swap in real farm records (soil tests, weather logs, crop-cam imagery-derived features, past yield data) and the same `step_impute_*` → `step_other`/`step_novel` → `step_dummy` → `step_corr`/`step_nzv` → `step_normalize` → `step_upsample` sequence provides a robust, leakage-free foundation for any agribusiness classification problem — whether that's disease diagnosis, loan-default risk for agri-lending, or yield-grade prediction.
+
+
+---
+
+## Regression Methods
+
+Regression methods are used to build model to predict the estimate or classify an obervation. In this section we will cover linear regression, nonlinear regression, multiple regression, polynomial regression,lasso regression, ridge regression, stepwise regression, quantile regression and logistic regression.
+
+All examples use ONE simulated crop-yield dataset so you can compare techniques on the same problem:
+
+**Predict crop YIELD (kg/hectare) from rainfall, fertilizer,temperature, and soil pH — plus a binary GOOD_YIELD outcome**
+
+So, let's begin with calling the libraries required:
+
+```{r}
+
+# install.packages(c("glmnet", "quantreg", "ggplot2"))
+library(glmnet)     # ridge & lasso
+library(quantreg)   # quantile regression
+library(ggplot2)    # plotting
+
+```
+
+### Simulate Data
+
+We create a dataset of 200 observations and variables are as follows:
+
+- `rainfall_mm`: Average rainfall measured in mm using mean 800 and standard deviation 150. 
+- `fertilizer_kg`: Fertilizer consumed in KG using max use 150 Kg and min use 20 Kg. 
+- `temperature_C`: Temperature measured in degree centigrade with mean 27 and standard deviation 3.
+- `soil_ph`: Soil PH created with mean 6.5 and standard deviation 0.5. 
+- `yeild_kg_ha`: Yeild per Hectare using a regression equation. 
+
+We create a dataset by combining all the variables and we also add one more factor variable - `good_yield` using `if_else` logic. 
+
+```{r}
+
+set.seed(123)
+n <- 200
+
+rainfall_mm  <- round(rnorm(n, mean = 800, sd = 150), 1)
+fertilizer_kg<- round(runif(n, 20, 150), 1)
+temperature_C<- round(rnorm(n, mean = 27, sd = 3), 1)
+soil_ph      <- round(rnorm(n, mean = 6.5, sd = 0.5), 2)
+
+## Yield has a linear-ish relationship with rainfall/fertilizer/pH,
+## but a NONLINEAR (diminishing-returns) relationship with fertilizer,
+## and a curved (polynomial) relationship with temperature (yield
+## drops off if it gets too hot or too cold - not just "more is better")
+
+yield_kg_ha <- 2000 +
+  2.5   * rainfall_mm +
+  40    * sqrt(fertilizer_kg) -             # diminishing returns
+  15    * (temperature_C - 27)^2 +          # optimal temp ~27C
+  300   * soil_ph +
+  rnorm(n, 0, 200)
+
+crop <- data.frame(rainfall_mm, fertilizer_kg, temperature_C, soil_ph, yield_kg_ha)
+
+## Binary outcome for logistic regression: "good yield" = above median
+crop$good_yield <- factor(ifelse(crop$yield_kg_ha > median(crop$yield_kg_ha), 1, 0))
+
+
+glimpse(crop)
+
+```
+
+
+### Train/test split (80/20)
+
+```{r}
+
+set.seed(42)
+train_idx <- sample(seq_len(n), size = 0.8 * n)
+train <- crop[train_idx, ]
+test  <- crop[-train_idx, ]
+
+```
+
+### LINEAR REGRESSION
+
+To understand linear regression, we build mode with One predictor, straight-line relationship: yield vs. rainfall
+
+```{r}
+
+lm_simple <- lm(yield_kg_ha ~ rainfall_mm, data = train)
+summary(lm_simple)
+
+```
+
+A simple linear regression was conducted to examine whether rainfall predicted crop yield. The overall model was statistically significant, *F*(1, 158) = 158.10, *p* < .001, and explained approximately 50% of the variance in yield, *R*² = .50, adjusted *R*² = .497.
+
+Rainfall was a significant positive predictor of yield, *b* = 2.37, *SE* = 0.19, *t*(158) = 12.57, *p* < .001. For every additional millimeter of rainfall, yield increased by approximately 2.37 kg/hectare, holding all else constant. The intercept, *b* = 4299.77, *SE* = 151.51, *t*(158) = 28.38, *p* < .001, represents the model's predicted yield when rainfall is zero, though this value has limited practical interpretation since zero rainfall falls well outside the observed range of the data.
+
+Let's check the relationship using visualization:
+
+```{r}
+
+ggplot(train, aes(rainfall_mm, yield_kg_ha)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm", se = TRUE, color = "steelblue") +
+  labs(title = "Linear Regression: Yield vs. Rainfall")
+
+```
+
+### MULTIPLE REGRESSION
+
+Now, we build model with Several predictors, each assumed to have a straight-line (additive) effect on yield:
+
+```{r}
+
+lm_multiple <- lm(yield_kg_ha ~ rainfall_mm + fertilizer_kg + temperature_C + soil_ph,
+                   data = train)
+summary(lm_multiple)
+## Compare R-squared to the simple model - more predictors usually
+
+```
+
+Two regression models were compared to evaluate the predictors of crop yield. The simple linear regression, using rainfall alone, was statistically significant and explained approximately 50% of the variance in yield, *R*² = .50, adjusted *R*² = .497, *F*(1, 158) = 158.10, *p* < .001. Adding three additional predictors — fertilizer application, temperature, and soil pH — produced a multiple regression model that was also statistically significant, *F*(4, 155) = 70.30, *p* < .001, and explained a larger proportion of variance in yield, *R*² = .64, adjusted *R*² = .636.
+
+The increase in adjusted *R*² from .497 to .636 indicates that the additional predictors accounted for meaningful variance in yield beyond rainfall alone, rather than merely adding noise (adjusted *R*², unlike *R*², penalizes the inclusion of uninformative predictors, making it the more appropriate statistic for comparing models of different sizes). This is further supported by the reduction in residual standard error from 333.1 to 283.5 kg/hectare, reflecting improved prediction accuracy.
+
+Examining individual predictors in the multiple regression model, rainfall remained a strong, statistically significant positive predictor of yield, *b* = 2.34, *SE* = 0.16, *t*(155) = 14.46, *p* < .001, with a coefficient nearly identical to its estimate in the simple regression (*b* = 2.37), suggesting its effect on yield is robust to the inclusion of other variables. Fertilizer application was also a significant positive predictor, *b* = 2.53, *SE* = 0.60, *t*(155) = 4.25, *p* < .001, as was soil pH, *b* = 278.49, *SE* = 44.70, *t*(155) = 6.23, *p* < .001, which showed the largest standardized influence relative to its measurement scale. Temperature, however, was not a statistically significant predictor in this model, *b* = −0.64, *SE* = 7.70, *t*(155) = −0.08, *p* = .934.
+
+Let's predict check the RMSE (Root Mean Squared Error):
+
+```{r}
+
+pred_multi <- predict(lm_multiple, newdata = test)
+sqrt(mean((pred_multi - test$yield_kg_ha)^2))   # test RMSE
+
+```
+
+The test RMSE of 372.64 kg/hectare represents the typical magnitude of error when the multiple regression model predicts crop yield on **data it has not seen before** (the held-out test set). In other words, on average, the model's yield predictions deviate from actual yield by roughly 372.64 kg/hectare.
+
+- The training-set residual standard error was 283.5 kg/hectare — noticeably lower than the test RMSE of 372.64.
+- This gap (283.5 vs. 372.64) is a signal worth flagging: the model fits the training data better than it generalizes to new data. Some of this is expected (models almost always perform somewhat worse on unseen data), but a gap this size also lines up with what you found in the coefficient output — temperature was included as a plain linear term even though its true relationship with yield is quadratic (peaking at an optimal temperature). Because the model can't capture that curvature, it likely makes systematically larger errors on test observations with temperatures far from the training set's typical range, inflating the test RMSE.
+
+- To assess whether 372.64 kg/hectare is "good" or "bad," it should be compared against the scale of the outcome itself — e.g., as a percentage of mean yield (mean(train$yield_kg_ha) would give you that denominator). A RMSE that's small relative to typical yield (say, under 10%) suggests reasonably useful predictions for advisory purposes; one that's large relative to typical yield suggests the model isn't precise enough to act on without caution.
+
+- This is exactly the kind of gap the **polynomial regression** step (correctly modeling temperature's curvature) should help close — comparing this multiple-regression test RMSE against the polynomial model's test RMSE would be a natural next check, and a good addition to your assignment's Part C if you want students to explicitly connect "which model generalizes best" rather than just "which model fits training data best."
+
+### POLYNOMIAL REGRESSION
+
+We build polynomial model that Captures a curved relationship - here, yield peaks at an  OPTIMAL temperature rather than rising or falling monotonically.
+
+```{r}
+
+lm_poly <- lm(yield_kg_ha ~ poly(temperature_C, 2) + rainfall_mm + fertilizer_kg + soil_ph,
+              data = train)
+summary(lm_poly)
+
+ggplot(train, aes(temperature_C, yield_kg_ha)) +
+  geom_point(alpha = 0.4) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2), color = "darkorange") +
+  labs(title = "Polynomial Regression: Yield vs. Temperature (degree 2)")
+
+```
+
+A polynomial regression model was estimated to test whether allowing temperature a curved (quadratic) relationship with yield would improve on the purely linear multiple regression model. The polynomial model was statistically significant, *F*(5, 154) = 130.50, *p* < .001, and explained substantially more variance in yield than the linear multiple regression model, *R*² = .809, adjusted *R*² = .803, compared to *R*² = .645, adjusted *R*² = .636 previously.
+
+The quadratic term for temperature was highly significant, *b* = −2412.82, *SE* = 209.60, *t*(154) = −11.51, *p* < .001, while the linear temperature term was not, *b* = 11.13, *SE* = 211.05, *t*(154) = 0.05, *p* = .958. This pattern confirms what the earlier linear model's non-significant temperature coefficient had obscured: temperature does meaningfully affect yield, but through a **curved, not straight-line, relationship** — consistent with an agronomic optimum temperature, where yield is highest at a moderate temperature and declines when conditions are either too cool or too hot. The negative sign on the squared term indicates an inverted-U (concave-down) curve, as expected.
+
+Rainfall, *b* = 2.47, *SE* = 0.12, *t*(154) = 20.64, *p* < .001, fertilizer, *b* = 2.57, *SE* = 0.44, *t*(154) = 5.87, *p* < .001, and soil pH, *b* = 291.51, *SE* = 32.89, *t*(154) = 8.86, *p* < .001, all remained significant positive predictors, with coefficient estimates very similar to the linear multiple regression model — indicating their linear effects on yield were already well-captured and are not confounded with temperature's curvature.
+
+The residual standard error also dropped notably, from 283.5 kg/hectare (linear multiple regression) to 208.6 kg/hectare (polynomial), reflecting a considerably tighter fit to the training data once temperature's true functional form was correctly specified.
+
+**Practical takeaway:** This is a clean illustration of a common modeling mistake — a predictor can appear "non-significant" in a linear model not because it doesn't matter, but because the model was given the wrong functional form to detect it. Once quadratic curvature was allowed, temperature emerged as one of the most important predictors in the model (via its squared term).
+
+One useful next step for your assignment: compute this model's **test RMSE** (the same way as before, using `predict(lm_poly, newdata = test)`) and compare it directly against the 372.64 kg/hectare from the linear multiple regression — that comparison will tell students concretely whether correctly modeling temperature's curvature also improves *generalization*, not just training fit.
+
+```{r}
+
+preds_poly = predict(lm_poly, newdata = test)
+
+sqrt(mean((preds_poly - test$yield_kg_ha)^2))   # test RMSE
+
+```
+
+We can see that RMSE is now reduced to 203.59 from 372.64. There is an improvement in accuracy of the model. 
+
+
+### NONLINEAR REGRESSION (nls)
+
+Now, we fit a nonlinear functional FORM (not just apolynomial in the linear-model framework)here a Michaelis-Menten style diminishing-returns curve for fertilizer using   yield = Vmax * fertilizer / (K + fertilizer).
+
+```{r}
+
+nls_fert <- nls(
+  yield_kg_ha ~ Vmax * fertilizer_kg / (K + fertilizer_kg),
+  data  = train,
+  start = list(Vmax = 6000, K = 50)   # starting guesses required for nls
+)
+summary(nls_fert)
+
+ggplot(train, aes(fertilizer_kg, yield_kg_ha)) +
+  geom_point(alpha = 0.4) +
+  geom_line(aes(y = predict(nls_fert)), color = "forestgreen", linewidth = 1) +
+  labs(title = "Nonlinear Regression: Diminishing Returns on Fertilizer")
+
+```
+
+### STEPWISE REGRESSION
+
+When we build model we use a set of predictors. All predictors do not contribute to the model and still create noise and increases variance. Here, we use STEPWISE REGRESSION which automatically selects a subset of predictors by adding/removing predictors to optimize AIC (lower = better trade-off of fit vs. complexity). 
+
+```{r}
+
+full_model <- lm(yield_kg_ha ~ rainfall_mm + fertilizer_kg + temperature_C + soil_ph,
+                  data = train)
+null_model <- lm(yield_kg_ha ~ 1, data = train)
+
+step_model <- stats::step(
+  null_model,
+  scope = list(lower = null_model, upper = full_model),
+  direction = "both",   # "forward", "backward", or "both"
+  trace = FALSE
+)
+summary(step_model)
+formula(step_model)   # which predictors survived
+
+```
+
+A stepwise regression procedure (bidirectional selection based on AIC) was conducted to identify the subset of predictors that best explained crop yield, starting from an intercept-only model and considering rainfall, fertilizer, temperature, and soil pH as candidate predictors. The procedure selected a final model retaining rainfall, soil pH, and fertilizer, while **removing temperature entirely** from the model.
+
+The selected model was statistically significant, *F*(3, 156) = 94.33, *p* < .001, and explained approximately 64.5% of the variance in yield, *R*² = .645, adjusted *R*² = .638. Rainfall was the strongest predictor, *b* = 2.34, *SE* = 0.16, *t*(156) = 14.64, *p* < .001, followed by soil pH, *b* = 278.74, *SE* = 44.45, *t*(156) = 6.27, *p* < .001, and fertilizer, *b* = 2.53, *SE* = 0.59, *t*(156) = 4.27, *p* < .001. All three retained predictors were significant positive predictors of yield.
+
+**Comparison to the full linear multiple regression model:**
+
+| Model | Predictors | Adjusted R² | Residual SE |
+|---|---|---|---|
+| Full linear multiple | rainfall + fertilizer + temperature + soil pH | .636 | 283.5 |
+| Stepwise-selected | rainfall + fertilizer + soil pH | .638 | 282.6 |
+
+Notably, the stepwise model achieves a *marginally higher* adjusted R² (.638 vs. .636) and lower residual standard error (282.6 vs. 283.5) than the full model — **despite dropping a predictor**. This is expected: adjusted R² penalizes unnecessary predictors, and since temperature's *linear* term was non-significant in the full model (*p* = .934, from your earlier output), removing it slightly improves the fit efficiency without sacrificing explanatory power.
+
+**Important caveat worth flagging (especially for a student assignment):** this result illustrates a key limitation of stepwise selection rather than a genuine insight about temperature's importance. Temperature was correctly dropped *as a linear term*, but your polynomial regression model showed temperature's quadratic term was highly significant (*p* < .001) and substantially improved fit (adjusted R² = .803). Stepwise selection using `step()` only ever considered rainfall, fertilizer, temperature, and soil pH as **linear terms** — it never had the opportunity to discover the curved relationship, because `poly(temperature_C, 2)` was never in its candidate scope. This is a classic pitfall of stepwise/AIC-based selection: it can only select among the functional forms you explicitly offer it, and will confidently discard a genuinely important predictor if its true effect doesn't match the form tested.
+
+**Practical takeaway:** stepwise regression is useful for pruning redundant linear predictors efficiently, but it is not a substitute for exploring nonlinear relationships first (via EDA plots or domain knowledge) — a variable dropped by stepwise selection may still be highly important if given the right functional form, as shown here.
+
+### RIDGE REGRESSION
+
+RIDGE REGRESSION Shrinks ALL coefficients toward zero (L2 penalty) - keeps every predictor but reduces overfitting/multicollinearity impact. Let's check how it works now: 
+
+```{r}
+
+x_train <- as.matrix(train[, c("rainfall_mm", "fertilizer_kg", "temperature_C", "soil_ph")])
+y_train <- train$yield_kg_ha
+x_test  <- as.matrix(test[,  c("rainfall_mm", "fertilizer_kg", "temperature_C", "soil_ph")])
+
+ridge_cv <- cv.glmnet(x_train, y_train, alpha = 0)   # alpha = 0 -> ridge
+plot(ridge_cv)
+best_lambda_ridge <- ridge_cv$lambda.min
+
+ridge_model <- glmnet(x_train, y_train, alpha = 0, lambda = best_lambda_ridge)
+coef(ridge_model)
+
+```
+
+Let's evaluate RIDGE MODEL:
+
+```{r}
+
+pred_ridge <- predict(ridge_model, newx = x_test)
+sqrt(mean((pred_ridge - test$yield_kg_ha)^2))   # test RMSE
+
+```
+
+### LASSO REGRESSION
+
+LASSO REGRESSION shrinks coefficients toward zero AND can set some exactly to zero (L1 penalty) - performs automatic variable selection.
+
+```{r}
+
+lasso_cv <- cv.glmnet(x_train, y_train, alpha = 1)   # alpha = 1 -> lasso
+plot(lasso_cv)
+best_lambda_lasso <- lasso_cv$lambda.min
+
+lasso_model <- glmnet(x_train, y_train, alpha = 1, lambda = best_lambda_lasso)
+coef(lasso_model)   # predictors shrunk to exactly 0 are effectively dropped
+pred_lasso <- predict(lasso_model, newx = x_test)
+sqrt(mean((pred_lasso - test$yield_kg_ha)^2))   # test RMSE
+
+```
+
+
+### QUANTILE REGRESSION
+
+Models a specific PERCENTILE of the outcome (not just the mean) - e.g. the 10th percentile is useful for "worst-case" yield planning, the 90th for best-case
+
+```{r}
+qr_median <- rq(yield_kg_ha ~ rainfall_mm + fertilizer_kg + temperature_C + soil_ph,
+                 data = train, tau = 0.5)   # tau = 0.5 -> median regression
+summary(qr_median)
+
+qr_low  <- rq(yield_kg_ha ~ rainfall_mm + fertilizer_kg, data = train, tau = 0.10)
+qr_high <- rq(yield_kg_ha ~ rainfall_mm + fertilizer_kg, data = train, tau = 0.90)
+
+ggplot(train, aes(rainfall_mm, yield_kg_ha)) +
+  geom_point(alpha = 0.3) +
+  geom_quantile(quantiles = c(0.1, 0.5, 0.9), color = "purple") +
+  labs(title = "Quantile Regression: 10th / 50th / 90th Percentile Yield")
+
+```
+
+### LOGISTIC REGRESSION
+
+Now we want to classify the yield as Good For a BINARY outcome - here, whether yield is "good"(1) or "bad" (0). 
+
+```{r}
+
+log_model <- glm(good_yield ~ rainfall_mm + fertilizer_kg + temperature_C + soil_ph,
+                  data = train, family = binomial)
+summary(log_model)
+
+## Predicted probabilities and classification on test data
+pred_prob  <- predict(log_model, newdata = test, type = "response")
+pred_class <- factor(ifelse(pred_prob > 0.5, 1, 0))
+table(Predicted = pred_class, Actual = test$good_yield)   # confusion matrix
+mean(pred_class == test$good_yield)                       # accuracy
+
+```
+
+
+## ============================================================
+## SUMMARY — When to use which
+## ============================================================
+## Linear        - one predictor, straight-line relationship
+## Multiple      - several predictors, each additive/linear
+## Polynomial    - curved relationship still fit within lm() framework
+## Nonlinear(nls)- true nonlinear functional form (e.g. saturation,
+##                 growth curves) - you must specify the equation
+## Stepwise      - automatic predictor selection via AIC
+## Ridge         - many/correlated predictors, keep all, shrink coefficients
+## Lasso         - many predictors, want automatic feature selection
+## Quantile      - care about a specific percentile, not just the mean
+##                 (e.g. worst-case/best-case yield planning)
+## Logistic      - binary outcome (success/failure, good/bad, yes/no)
+## ============================================================
 
 
