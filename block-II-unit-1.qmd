@@ -1,9 +1,7 @@
 # Block II Unit 1
 
 ::: {.callout-note title="Chapter Outline"}
-
 Supervised machine learning: Basic framework, regression models and classification models. Linear regression, nonlinear regression, multiple regression, polynomial regression,lasso regression, ridge regression, stepwise regression, quantile regression, logistic regression.
-
 :::
 
 ## Supervised machine learning: Basic framework, regression models and classification models
@@ -20,8 +18,7 @@ Machine learning works through mathematical logic. The relevant characteristics 
 
 All machine learning methods can be categorized as one of three distinct learning paradigms: supervised learning, unsupervised learning or reinforcement learning, based on the nature of their training objectives and (often but not always) by the type of training data they entail.
 
-Supervised learning trains a model to predict the “correct” output for a given input. It applies to tasks that require some degree of accuracy relative to some external “ground truth,” such as classification or regression.
-Unsupervised learning trains a model to discern intrinsic patterns, dependencies and correlations in data. Unlike in supervised learning, unsupervised learning tasks don’t involve any external ground truth against which its outputs should be compared.
+Supervised learning trains a model to predict the “correct” output for a given input. It applies to tasks that require some degree of accuracy relative to some external “ground truth,” such as classification or regression. Unsupervised learning trains a model to discern intrinsic patterns, dependencies and correlations in data. Unlike in supervised learning, unsupervised learning tasks don’t involve any external ground truth against which its outputs should be compared.
 
 Reinforcement learning (RL) trains a model to evaluate its environment and take an action that will garner the greatest reward. RL scenarios don’t entail the existence of a singular ground truth, but they do entail the existence of “good” and “bad” (or neutral) actions.
 
@@ -29,9 +26,232 @@ Reinforcement learning (RL) trains a model to evaluate its environment and take 
 
 Supervised learning algorithms train models for tasks requiring accuracy, such as classification or regression. Supervised machine learning powers both state-of-the-art deep learning models and a wide array of traditional ML models still widely employed across industries.
 
-_Regression models_ predict continuous values, such as price, duration, temperature or size. Examples of traditional regression algorithms include linear regression, polynomial regression and state space models.
+*Regression models* predict continuous values, such as price, duration, temperature or size. Examples of traditional regression algorithms include linear regression, polynomial regression and state space models.
 
-_Classification models_ predict discrete values, such as the category (or class) a data point belongs to, a binary decision or a specific action to be taken. Examples of traditional classification algorithms include support vector machines (SVMs), Naïve Bayes and logistic regression.
+*Classification models* predict discrete values, such as the category (or class) a data point belongs to, a binary decision or a specific action to be taken. Examples of traditional classification algorithms include support vector machines (SVMs), Naïve Bayes and logistic regression.
 
 Many supervised ML algorithms can be used for either task. For instance, the output of what’s nominally a regression algorithm can subsequently be used to inform a classification prediction.
+
+## Machine Learning Case Study
+
+A Japanese company - selling packed sea urchin based food preps. Recently Japanese Food Regulation Authority made sea urchin based food manufacturing more stringent and adherence to nutritional consistency more stringent. 
+
+Till now, company was receiving sea urchin supplies from local fishermen. Company washes, preserves and packages the sea urchins and sends in the market. In this process, the sea urchin's nutritional values were not managed by company as they just collect and market them. Due to difference in quality, there were various voices raised by the food experts so that people get consistent quality.
+
+Company management decides to introduce a 30 day feed plan for the supplies of the sea urchins before they are packed and sent to the market. So, they wanted an real world evidence of a diet plan that can make sea urchins width equal and consistent. The company wants to calibrate width and initial volume vs. the food regime. The data collected is shown below:
+
+```{r}
+
+library(tidymodels)
+library(readr)
+
+urchins <-
+
+  read_csv("https://tidymodels.org/start/models/urchins.csv") |>
+  
+    setNames(c("food_regime", "initial_volume", "width")) |> 
+
+    mutate(food_regime = factor(food_regime, levels = c("Initial", "Low", "High")))
+
+head(urchins)
+
+```
+
+To keep the diet regime composition secret, company codifies the three levels of diets as Initial, Low and High. Number of observations in the data is `r nrow(urchins)`.
+
+Let's plot the data:
+
+```{r}
+
+library(ggplot2)
+
+ggplot(urchins,
+       
+       aes(x=initial_volume, y=width, colour = food_regime)) +
+  
+      geom_point() +
+  
+      geom_smooth(method = lm, se = FALSE) +
+  
+      labs(title="Sea Urchin: Width Vs initial volume",
+           y = "Width",
+           x = "initial volume",
+           subtitle = "Based on sample of 72 urchins",
+           caption = "Study conducted by IABM Students MBA Part 2") +
+  
+  theme_classic()
+
+```
+
+
+If we observe the plot, we can see that food regime has different effect for the width vs initial volume relationship. This gives us an indication that food regime interacts with width and initial volume relationship. This a significant information for building a machine learning model. Since the slopes appear to be different for at least two of the feeding regimes, let’s build a model that allows for two-way interactions. Specifying an R formula with our variables in this way:
+
+`width ~ initial_volume * food_regime`
+
+We can also check the distribution of width and initial volume acorss the sample:
+
+```{r}
+
+hist(urchins$width, main="Distribution of width : Sea Urchin", n=30)
+
+hist(urchins$initial_volume, main="Distribution of initial volume : Sea Urchin", n=30)
+
+```
+
+We can see that the distribution of the width and initial volume of sea urchin sample is near to normal bell shaped curve. We can check normality of a variable through statistical tests also:
+
+```{r}
+
+# applying shapiro-Wilk test
+
+shapiro.test(urchins$width)
+
+shapiro.test(urchins$initial_volume)
+
+```
+
+To check the assumption of normality, Shapiro-Wilk tests were conducted on the sample of 72 urchins. The results indicated that the distribution of initial volume (W = 0.91, p < .001) and width (W = 0.96, p = .016) both significantly deviated from normality.
+
+Let's also check for missing values in the data:
+
+```{r}
+
+sum(is.na(urchins))
+
+```
+
+So, there is no missing values in the dataset. 
+
+The width and initial_volume both are numerical variables and we want to predict width based on initial_volume subject to food_regime. This can be modeled with linear regression model. Following command chunck shows this:
+
+```{r}
+
+lm_mod = linear_reg()
+
+lm_fit = lm_mod |>
+  
+  fit(width ~ initial_volume * food_regime, data = urchins)
+
+lm_fit
+
+```
+
+
+Let's see the model in better (tidy) format:
+
+```{r}
+
+tidy(lm_fit)
+
+```
+
+With `dotwhisker` package, we can also observe model visually:
+
+```{r}
+
+library(dotwhisker)
+
+tidy(lm_fit) |>
+  dwplot(dot_args = list(size = 2, color = "#7C7C7C"),
+         whisker_args = list(color = "#7C7C7C"),
+         vline = geom_vline(xintercept = 0, colour = "grey50", linetype = 2))
+
+
+```
+
+
+Now let's create new set of observations to predict the width of sea urchin using the regression model we buold just now.
+
+```{r}
+
+new_obs = expand.grid(initial_volume = 20, 
+                       food_regime = c("Initial","Low","High"))
+
+```
+
+
+Let's predict:
+
+```{r}
+
+mean_pred = predict(lm_fit, new_data = new_obs)
+
+mean_pred
+
+```
+
+
+Or we can also predict with confidence interval:
+
+```{r}
+
+conf_int_pred = predict(lm_fit, new_data = new_obs,
+        type = "conf_int")
+
+conf_int_pred
+
+```
+
+Let's combine both predictions and visualise:
+
+```{r}
+
+plot_data <- 
+  new_obs |> 
+  bind_cols(mean_pred) |> 
+  bind_cols(conf_int_pred)
+
+ggplot(plot_data, aes(x = food_regime)) + 
+  geom_point(aes(y = .pred)) + 
+  geom_errorbar(aes(ymin = .pred_lower, 
+                    ymax = .pred_upper),
+                width = .2) + 
+  labs(y = "urchin size")
+
+```
+
+Another way of building model is using Bayesian approach. In Bayesian approach, the prior distribution is used to build model. Here we need to first declare prior probabilities first and then, we do model building using different engine. 
+
+```{r}
+
+# set the prior distribution
+prior_dist <- rstanarm::student_t(df = 1)   # Setting up prior probability using t distribution
+
+set.seed(123)
+
+# make the parsnip model
+bayes_mod <-   
+  linear_reg() |> 
+  set_engine("stan",                          # Engine for Bayesian model
+             prior_intercept = prior_dist,
+             prior = prior_dist,
+             refresh = 0)
+
+# train the model
+bayes_fit <- 
+  bayes_mod |> 
+  fit(width ~ initial_volume * food_regime, data = urchins)
+
+print(bayes_fit, digits = 5)
+
+```
+
+Let's visualize the Bayesian model:
+
+```{r}
+
+bayes_plot_data <- 
+  new_obs |> 
+  bind_cols(predict(bayes_fit, new_data = new_obs)) |> 
+  bind_cols(predict(bayes_fit, new_data = new_obs, type = "conf_int"))
+
+ggplot(bayes_plot_data, aes(x = food_regime)) + 
+  geom_point(aes(y = .pred)) + 
+  geom_errorbar(aes(ymin = .pred_lower, ymax = .pred_upper), width = .2) + 
+  labs(y = "urchin size") + 
+  ggtitle("Bayesian model with t(1) prior distribution")
+
+```
+
+
 
