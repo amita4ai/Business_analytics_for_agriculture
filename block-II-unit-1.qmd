@@ -34,6 +34,16 @@ Many supervised ML algorithms can be used for either task. For instance, the out
 
 ## Machine Learning Case Study
 
+### Build a Baseline Model
+
+![](sea.webp)
+
+Credit: https://share.google/VZsjc4wcgbifTAUZd
+
+![](food.webp)
+
+Credit: https://share.google/GJPqwS4zBoWp9Ej25
+
 A Japanese company - selling packed sea urchin based food preps. Recently Japanese Food Regulation Authority made sea urchin based food manufacturing more stringent and adherence to nutritional consistency more stringent. 
 
 Till now, company was receiving sea urchin supplies from local fishermen. Company washes, preserves and packages the sea urchins and sends in the market. In this process, the sea urchin's nutritional values were not managed by company as they just collect and market them. Due to difference in quality, there were various voices raised by the food experts so that people get consistent quality.
@@ -253,5 +263,299 @@ ggplot(bayes_plot_data, aes(x = food_regime)) +
 
 ```
 
+
+## Data Pre-Processing
+
+Data pre-processing is necessary before building model. In Sea urchin case study we have a perfect data set hence we could straight away jump to model building however it is not the case everytime. You will get messy data most of the time. You need to process the messy data into a polished and organized before building any model. Package `recipes` is the R package we will use to process the data. So, let's begin.
+
+The package `Recipes` has inbuilt series of preprocessing steps, such as:
+
+* Converting qualitative predictors to indicator variables (also known as dummy variables),
+
+* Transforming data to be on a different scale (e.g., taking the logarithm of a variable),
+
+* Transforming whole groups of predictors together,
+
+* Extracting key features from raw variables (e.g., getting the day of the week out of a date variable),
+
+To use code, you will need to install (use `install.packages("packagename")` command) the following packages: `mlbench, themis,here, kableExtra, lubridate, nycflights13, skimr, tidymodels`, and `timeDate`.
+
+```{r}
+
+library(tidymodels)      # for the recipes package, along with the rest of tidymodels
+
+# Helper packages
+library(skimr) 
+library(mlbench)
+library(themis)
+library(stringr)
+
+```
+
+
+Soybean is the crop majorly grown in Western India and the crop is prone to 16 different types of diseases. We use following dataset to build a classification model to identify the class of disease:
+
+```{r}
+
+data("Soybean", package = "mlbench")
+
+soy = as_tibble(Soybean)
+
+glimpse(soy)
+
+```
+
+In the dataset, we have 683 rows and 36 variables. Let's look at the missingness in the data:
+
+```{r}
+
+## Quick look at missingness and class balance
+colSums(is.na(soy)) |> 
+  sort(decreasing = TRUE) |> 
+  head(10)
+
+```
+
+Let's also check class imbalance in the `Class` variable that is decision variable (`y`): 
+
+```{r}
+
+soy |> 
+  count(Class, sort = TRUE) |> 
+  print(n = 20)
+
+```
+
+We can clearly see class imbalance here. The disease class `herbicide-injury` has only 8 observations and disease class `brown-spot` has 92 observations. When we build model on such imbalanced data, the model will get more discriminant features from higher frequency class and very less discriminant features from the low freqquency class. Consequenly, model will be biased towards higher frequency class which will create a model that can not be reliable. 
+
+To sort out this, we need to balance the class frequencies to the equal proportions in the data. But, first we build a classification model with all data preprocessing needed:
+
+### Data Split
+
+We train the model on 80% of the data and keep 20% data to test the model. The data is split through stratified random sampling:
+
+```{r}
+
+set.seed(42)
+split      <- initial_split(soy, prop = 0.8, strata = Class)
+soy_train  <- training(split)
+soy_test   <- testing(split)
+ 
+soy_train
+
+soy_test
+
+```
+
+You can see that out of `r nrow(soy)` observations, soy_train dataset contains 80% observations i.e. `r nrow(soy_train)` observations and soy_test dataset contains 20% observations i.e. `r nrow(soy_test)` observations. 
+
+### Build the preprocessing recipe ------------------------
+
+This is the core of the exercise: every cleaning/encoding
+Decision is captured as a *recipe step*, learned only on the training set, then reproducibly applied to any new data.
+ 
+```{r} 
+ 
+soy_recipe <-
+  recipe(Class ~ ., data = soy_train) |>
+ 
+  # (a) Drop predictors that are (near) constant -> add no signal
+  step_nzv(all_predictors()) |>
+ 
+  # (b) Handle missing values in categorical predictors
+  #     Bagged trees impute using the other predictors' patterns,
+  #     which works well for structured agronomic survey data.
+  step_impute_bag(all_nominal_predictors(), impute_with = imp_vars(all_predictors())) |>
+ 
+  # (c) Collapse rarely-occurring factor levels into "other"
+  #     (prevents unstable dummy columns from very rare categories)
+  step_other(all_nominal_predictors(), threshold = 0.03, other = "other_level") |>
+ 
+  # (d) Ensure factor levels seen in test/new data don't break the model
+  step_novel(all_nominal_predictors()) |>
+ 
+  # (e) One-hot / dummy encode categorical predictors for models
+  #     that need numeric input
+  step_dummy(all_nominal_predictors(), one_hot = TRUE) |>
+ 
+  # (f) Remove any dummy columns that are (still) near-zero variance
+  #     after encoding
+  step_nzv(all_predictors()) |>
+ 
+  # (g) Remove highly correlated dummy columns (redundant info)
+  step_corr(all_numeric_predictors(), threshold = 0.9) |>
+ 
+  # (h) Scale numeric predictors (harmless here, essential if you
+  #     later add real-valued agronomic measurements e.g. rainfall_mm)
+  step_normalize(all_numeric_predictors()) |>
+ 
+  # (i) Address class imbalance (19 disease classes, some very rare)
+  #     using up-sampling on the TRAINING data only
+  step_upsample(Class, over_ratio = 0.5)
+ 
+```
+
+
+### Inspect the recipe without training a model
+
+`prep()` estimates all step parameters (imputation models, which
+levels to pool, correlation matrix, normalization mean/sd, etc.) using soy_train ONLY - no leakage from soy_test.
+ 
+```{r}
+
+soy_prep <- prep(soy_recipe, training = soy_train)
+soy_prep
+
+```
+ 
+### Data Pransformation for Model 
+ 
+`bake()` applies the learned transformations to produce the final model-ready data frame:
+
+```{r}
+
+train_baked <- bake(soy_prep, new_data = NULL)   # transformed training data
+test_baked  <- bake(soy_prep, new_data = soy_test)  # test data, same transforms
+ 
+dim(train_baked)
+dim(test_baked)
+sum(is.na(train_baked))   # should be 0 - imputation worked
+
+```
+ 
+### Plug the recipe into a modeling workflow
+
+We use random forest algorithm to build the model. 
+
+```{r}
+
+rf_spec <- rand_forest(trees = 500) |>
+  set_engine("ranger") |>
+  set_mode("classification")
+ 
+soy_workflow <- workflow() |>
+  add_recipe(soy_recipe) |>
+  add_model(rf_spec)
+ 
+soy_fit <- fit(soy_workflow, data = soy_train)
+ 
+```
+
+
+### Evaluate on held-out test data
+
+In the previous step, we have built a machine learning model named as `soy_fit` and to test the accuracy of the model, we use test data and create prediction of the diseases based on the predictors:
+
+```{r}
+
+soy_preds <- predict(soy_fit, new_data = soy_test) |>
+  bind_cols(soy_test |> select(Class))
+ 
+accuracy(soy_preds, truth = Class, estimate = .pred_class)
+
+```
+
+We can see that the accuracy of the model is 92.8% which means out of 100 attempts of classification, model is able to predict accurately is 92.8%. 
+
+Let's deep dive into classification accuracy using confusion matrix:
+
+```{r}
+
+soy_preds |> conf_mat(truth = Class, estimate = .pred_class) |>
+  summary() |>
+  filter(.metric %in% c("accuracy", "kap"))
+ 
+```
+
+Let's evaluate model accuracy for each class of disease in soybean:
+
+```{r}
+
+soy_probs <- predict(soy_fit, new_data = soy_test, type = "prob") |>
+  bind_cols(soy_test |> select(Class))
+ 
+soy_probs |> head()
+## Columns look like: .pred_brown-spot, .pred_frog-eye-leaf-spot, ... , Class
+
+```
+
+### Multiclass ROC (one-vs-rest)
+
+The `roc_curve()` automatically does one-vs-rest for a multi-level truth column when you pass all the .pred_* probability columns.
+
+```{r} 
+ 
+prob_cols <- names(soy_probs) |> str_subset("^\\.pred_")
+ 
+roc_data <- roc_curve(
+  soy_probs,
+  truth = Class,
+  !!!syms(prob_cols)
+)
+ 
+## Per-class AUC (one-vs-rest)
+## a multiclass setting we loop over each class, re-code it as a
+## binary "this class vs. all others" problem, and score that.
+class_levels <- levels(soy_probs$Class)
+ 
+roc_auc_by_class <- map_dfr(class_levels, function(cls) {
+  prob_col <- paste0(".pred_", cls)
+ 
+  binary_truth <- factor(
+    if_else(soy_probs$Class == cls, cls, "other"),
+    levels = c(cls, "other")   # cls = "event" / first level
+  )
+ 
+  bin_auc <- roc_auc(
+    tibble(truth = binary_truth, prob = soy_probs[[prob_col]]),
+    truth = truth,
+    prob,
+    event_level = "first"
+  )
+ 
+  tibble(.level = cls, .estimate = bin_auc$.estimate)
+})
+ 
+print(roc_auc_by_class, n = Inf)
+ 
+## Overall macro-average AUC (what you'd usually report as "the" AUC)
+roc_auc_macro <- roc_auc(
+  soy_probs,
+  truth = Class,
+  !!!syms(prob_cols)
+)
+print(roc_auc_macro)
+ 
+## ---- 6a. Quick built-in plot: one ROC curve per class, faceted ----
+autoplot(roc_data) +
+  labs(title = "One-vs-Rest ROC Curves per Soybean Disease Class")
+ 
+## ---- 6b. All classes overlaid on ONE plot, AUC in the legend ------
+auc_labels <- roc_auc_by_class |>
+  mutate(label = paste0(.level, " (AUC = ", round(.estimate, 2), ")"))
+ 
+roc_data |>
+  left_join(auc_labels, by = ".level") |>
+  ggplot(aes(x = 1 - specificity, y = sensitivity, color = label)) +
+  geom_path(linewidth = 0.9) +
+  geom_abline(lty = 3, color = "grey50") +
+  coord_equal() +
+  labs(
+    title    = "Multiclass ROC Curves — Soybean Disease Classification",
+    subtitle = "One-vs-rest, colored by disease class",
+    x = "1 - Specificity (False Positive Rate)",
+    y = "Sensitivity (True Positive Rate)",
+    color = "Disease (AUC)"
+  ) +
+  theme_minimal() +
+  theme(legend.text = element_text(size = 8))
+
+```
+
+Let's discuss each part of Multi-Class ROC curves:
+
+- $$ Sensitivity (True Positive Rate) = True_Positive_Cases / (True_Positive_Cases + False_Negative_Cases) $$
+
+- $$ Specificity (False Positive Rate) = True_Negative_Cases / (True_Negative_Cases + False_Positive_Cases) $$
 
 
