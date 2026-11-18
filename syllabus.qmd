@@ -17,7 +17,7 @@ To make the students understand the concepts of data science tools and technique
 The Course is organized as follows:
 
 |  |  |  |  |  |  |  |  |  |
-|----|----|----|----|----|----|----|----|----|
+|--------|--------|--------|--------|--------|--------|--------|--------|--------|
 |  |  |  |  |  |  |  |  |  |
 |  | **No** |  | **Blocks** |  | **Units** |  |  |  |
 |  |  |  |  |  |  |  |  |  |

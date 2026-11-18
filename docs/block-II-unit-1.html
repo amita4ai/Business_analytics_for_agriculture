@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.10.19">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,10 +12,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -76,10 +79,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-9e3e5b9121e68b3f077afb32f2c64d95.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-631496449bf32ff9b0bb69a6bfd9195d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -109,7 +112,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -258,7 +261,7 @@ window.Quarto = {
   <li><a href="#data-split" id="toc-data-split" class="nav-link" data-scroll-target="#data-split"><span class="header-section-number">6.4.1</span> Data Split</a></li>
   <li><a href="#build-the-preprocessing-recipe" id="toc-build-the-preprocessing-recipe" class="nav-link" data-scroll-target="#build-the-preprocessing-recipe"><span class="header-section-number">6.4.2</span> Build the preprocessing <code>recipe</code></a></li>
   <li><a href="#inspect-the-recipe-without-training-a-model" id="toc-inspect-the-recipe-without-training-a-model" class="nav-link" data-scroll-target="#inspect-the-recipe-without-training-a-model"><span class="header-section-number">6.4.3</span> Inspect the recipe without training a model</a></li>
-  <li><a href="#data-pransformation-for-model" id="toc-data-pransformation-for-model" class="nav-link" data-scroll-target="#data-pransformation-for-model"><span class="header-section-number">6.4.4</span> Data Pransformation for Model</a></li>
+  <li><a href="#data-transformation-for-model" id="toc-data-transformation-for-model" class="nav-link" data-scroll-target="#data-transformation-for-model"><span class="header-section-number">6.4.4</span> Data Transformation for Model</a></li>
   <li><a href="#plug-the-recipe-into-a-modeling-workflow" id="toc-plug-the-recipe-into-a-modeling-workflow" class="nav-link" data-scroll-target="#plug-the-recipe-into-a-modeling-workflow"><span class="header-section-number">6.4.5</span> Plug the recipe into a modeling workflow</a></li>
   <li><a href="#evaluate-on-held-out-test-data" id="toc-evaluate-on-held-out-test-data" class="nav-link" data-scroll-target="#evaluate-on-held-out-test-data"><span class="header-section-number">6.4.6</span> Evaluate on held-out test data</a></li>
   <li><a href="#multiclass-roc-one-vs-rest" id="toc-multiclass-roc-one-vs-rest" class="nav-link" data-scroll-target="#multiclass-roc-one-vs-rest"><span class="header-section-number">6.4.7</span> Multiclass ROC (one-vs-rest)</a></li>
@@ -278,21 +281,7 @@ window.Quarto = {
   <li><a href="#quantile-regression" id="toc-quantile-regression" class="nav-link" data-scroll-target="#quantile-regression"><span class="header-section-number">6.5.10</span> QUANTILE REGRESSION</a></li>
   <li><a href="#logistic-regression" id="toc-logistic-regression" class="nav-link" data-scroll-target="#logistic-regression"><span class="header-section-number">6.5.11</span> LOGISTIC REGRESSION</a></li>
   </ul></li>
-  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"><span class="header-section-number">6.6</span> ============================================================</a></li>
-  <li><a href="#summary-when-to-use-which" id="toc-summary-when-to-use-which" class="nav-link" data-scroll-target="#summary-when-to-use-which"><span class="header-section-number">6.7</span> SUMMARY — When to use which</a></li>
-  <li><a href="#section-1" id="toc-section-1" class="nav-link" data-scroll-target="#section-1"><span class="header-section-number">6.8</span> ============================================================</a></li>
-  <li><a href="#linear---one-predictor-straight-line-relationship" id="toc-linear---one-predictor-straight-line-relationship" class="nav-link" data-scroll-target="#linear---one-predictor-straight-line-relationship"><span class="header-section-number">6.9</span> Linear - one predictor, straight-line relationship</a></li>
-  <li><a href="#multiple---several-predictors-each-additivelinear" id="toc-multiple---several-predictors-each-additivelinear" class="nav-link" data-scroll-target="#multiple---several-predictors-each-additivelinear"><span class="header-section-number">6.10</span> Multiple - several predictors, each additive/linear</a></li>
-  <li><a href="#polynomial---curved-relationship-still-fit-within-lm-framework" id="toc-polynomial---curved-relationship-still-fit-within-lm-framework" class="nav-link" data-scroll-target="#polynomial---curved-relationship-still-fit-within-lm-framework"><span class="header-section-number">6.11</span> Polynomial - curved relationship still fit within lm() framework</a></li>
-  <li><a href="#nonlinearnls--true-nonlinear-functional-form-e.g.-saturation" id="toc-nonlinearnls--true-nonlinear-functional-form-e.g.-saturation" class="nav-link" data-scroll-target="#nonlinearnls--true-nonlinear-functional-form-e.g.-saturation"><span class="header-section-number">6.12</span> Nonlinear(nls)- true nonlinear functional form (e.g.&nbsp;saturation,</a></li>
-  <li><a href="#growth-curves---you-must-specify-the-equation" id="toc-growth-curves---you-must-specify-the-equation" class="nav-link" data-scroll-target="#growth-curves---you-must-specify-the-equation"><span class="header-section-number">6.13</span> growth curves) - you must specify the equation</a></li>
-  <li><a href="#stepwise---automatic-predictor-selection-via-aic" id="toc-stepwise---automatic-predictor-selection-via-aic" class="nav-link" data-scroll-target="#stepwise---automatic-predictor-selection-via-aic"><span class="header-section-number">6.14</span> Stepwise - automatic predictor selection via AIC</a></li>
-  <li><a href="#ridge---manycorrelated-predictors-keep-all-shrink-coefficients" id="toc-ridge---manycorrelated-predictors-keep-all-shrink-coefficients" class="nav-link" data-scroll-target="#ridge---manycorrelated-predictors-keep-all-shrink-coefficients"><span class="header-section-number">6.15</span> Ridge - many/correlated predictors, keep all, shrink coefficients</a></li>
-  <li><a href="#lasso---many-predictors-want-automatic-feature-selection" id="toc-lasso---many-predictors-want-automatic-feature-selection" class="nav-link" data-scroll-target="#lasso---many-predictors-want-automatic-feature-selection"><span class="header-section-number">6.16</span> Lasso - many predictors, want automatic feature selection</a></li>
-  <li><a href="#quantile---care-about-a-specific-percentile-not-just-the-mean" id="toc-quantile---care-about-a-specific-percentile-not-just-the-mean" class="nav-link" data-scroll-target="#quantile---care-about-a-specific-percentile-not-just-the-mean"><span class="header-section-number">6.17</span> Quantile - care about a specific percentile, not just the mean</a></li>
-  <li><a href="#e.g.-worst-casebest-case-yield-planning" id="toc-e.g.-worst-casebest-case-yield-planning" class="nav-link" data-scroll-target="#e.g.-worst-casebest-case-yield-planning"><span class="header-section-number">6.18</span> (e.g.&nbsp;worst-case/best-case yield planning)</a></li>
-  <li><a href="#logistic---binary-outcome-successfailure-goodbad-yesno" id="toc-logistic---binary-outcome-successfailure-goodbad-yesno" class="nav-link" data-scroll-target="#logistic---binary-outcome-successfailure-goodbad-yesno"><span class="header-section-number">6.19</span> Logistic - binary outcome (success/failure, good/bad, yes/no)</a></li>
-  <li><a href="#section-2" id="toc-section-2" class="nav-link" data-scroll-target="#section-2"><span class="header-section-number">6.20</span> ============================================================</a></li>
+  <li><a href="#summary-when-to-use-which" id="toc-summary-when-to-use-which" class="nav-link" data-scroll-target="#summary-when-to-use-which"><span class="header-section-number">6.6</span> SUMMARY — When to use which</a></li>
   </ul>
 </nav>
     </div>
@@ -1040,8 +1029,8 @@ predictor: 35</code></pre>
 </div>
 </div>
 </section>
-<section id="data-pransformation-for-model" class="level3" data-number="6.4.4">
-<h3 data-number="6.4.4" class="anchored" data-anchor-id="data-pransformation-for-model"><span class="header-section-number">6.4.4</span> Data Pransformation for Model</h3>
+<section id="data-transformation-for-model" class="level3" data-number="6.4.4">
+<h3 data-number="6.4.4" class="anchored" data-anchor-id="data-transformation-for-model"><span class="header-section-number">6.4.4</span> Data Transformation for Model</h3>
 <p><code>bake()</code> applies the learned transformations to produce the final model-ready data frame:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>train_baked <span class="ot">&lt;-</span> <span class="fu">bake</span>(soy_prep, <span class="at">new_data =</span> <span class="cn">NULL</span>)   <span class="co"># transformed training data</span></span>
@@ -1804,50 +1793,42 @@ Predicted  0  1
 </div>
 </section>
 </section>
-<section id="section" class="level2" data-number="6.6">
-<h2 data-number="6.6" class="anchored" data-anchor-id="section"><span class="header-section-number">6.6</span> ============================================================</h2>
-</section>
-<section id="summary-when-to-use-which" class="level2" data-number="6.7">
-<h2 data-number="6.7" class="anchored" data-anchor-id="summary-when-to-use-which"><span class="header-section-number">6.7</span> SUMMARY — When to use which</h2>
-</section>
-<section id="section-1" class="level2" data-number="6.8">
-<h2 data-number="6.8" class="anchored" data-anchor-id="section-1"><span class="header-section-number">6.8</span> ============================================================</h2>
-</section>
-<section id="linear---one-predictor-straight-line-relationship" class="level2" data-number="6.9">
-<h2 data-number="6.9" class="anchored" data-anchor-id="linear---one-predictor-straight-line-relationship"><span class="header-section-number">6.9</span> Linear - one predictor, straight-line relationship</h2>
-</section>
-<section id="multiple---several-predictors-each-additivelinear" class="level2" data-number="6.10">
-<h2 data-number="6.10" class="anchored" data-anchor-id="multiple---several-predictors-each-additivelinear"><span class="header-section-number">6.10</span> Multiple - several predictors, each additive/linear</h2>
-</section>
-<section id="polynomial---curved-relationship-still-fit-within-lm-framework" class="level2" data-number="6.11">
-<h2 data-number="6.11" class="anchored" data-anchor-id="polynomial---curved-relationship-still-fit-within-lm-framework"><span class="header-section-number">6.11</span> Polynomial - curved relationship still fit within lm() framework</h2>
-</section>
-<section id="nonlinearnls--true-nonlinear-functional-form-e.g.-saturation" class="level2" data-number="6.12">
-<h2 data-number="6.12" class="anchored" data-anchor-id="nonlinearnls--true-nonlinear-functional-form-e.g.-saturation"><span class="header-section-number">6.12</span> Nonlinear(nls)- true nonlinear functional form (e.g.&nbsp;saturation,</h2>
-</section>
-<section id="growth-curves---you-must-specify-the-equation" class="level2" data-number="6.13">
-<h2 data-number="6.13" class="anchored" data-anchor-id="growth-curves---you-must-specify-the-equation"><span class="header-section-number">6.13</span> growth curves) - you must specify the equation</h2>
-</section>
-<section id="stepwise---automatic-predictor-selection-via-aic" class="level2" data-number="6.14">
-<h2 data-number="6.14" class="anchored" data-anchor-id="stepwise---automatic-predictor-selection-via-aic"><span class="header-section-number">6.14</span> Stepwise - automatic predictor selection via AIC</h2>
-</section>
-<section id="ridge---manycorrelated-predictors-keep-all-shrink-coefficients" class="level2" data-number="6.15">
-<h2 data-number="6.15" class="anchored" data-anchor-id="ridge---manycorrelated-predictors-keep-all-shrink-coefficients"><span class="header-section-number">6.15</span> Ridge - many/correlated predictors, keep all, shrink coefficients</h2>
-</section>
-<section id="lasso---many-predictors-want-automatic-feature-selection" class="level2" data-number="6.16">
-<h2 data-number="6.16" class="anchored" data-anchor-id="lasso---many-predictors-want-automatic-feature-selection"><span class="header-section-number">6.16</span> Lasso - many predictors, want automatic feature selection</h2>
-</section>
-<section id="quantile---care-about-a-specific-percentile-not-just-the-mean" class="level2" data-number="6.17">
-<h2 data-number="6.17" class="anchored" data-anchor-id="quantile---care-about-a-specific-percentile-not-just-the-mean"><span class="header-section-number">6.17</span> Quantile - care about a specific percentile, not just the mean</h2>
-</section>
-<section id="e.g.-worst-casebest-case-yield-planning" class="level2" data-number="6.18">
-<h2 data-number="6.18" class="anchored" data-anchor-id="e.g.-worst-casebest-case-yield-planning"><span class="header-section-number">6.18</span> (e.g.&nbsp;worst-case/best-case yield planning)</h2>
-</section>
-<section id="logistic---binary-outcome-successfailure-goodbad-yesno" class="level2" data-number="6.19">
-<h2 data-number="6.19" class="anchored" data-anchor-id="logistic---binary-outcome-successfailure-goodbad-yesno"><span class="header-section-number">6.19</span> Logistic - binary outcome (success/failure, good/bad, yes/no)</h2>
-</section>
-<section id="section-2" class="level2" data-number="6.20">
-<h2 data-number="6.20" class="anchored" data-anchor-id="section-2"><span class="header-section-number">6.20</span> ============================================================</h2>
+<section id="summary-when-to-use-which" class="level2" data-number="6.6">
+<h2 data-number="6.6" class="anchored" data-anchor-id="summary-when-to-use-which"><span class="header-section-number">6.6</span> SUMMARY — When to use which</h2>
+<ul>
+<li>Linear - one predictor, straight-line relationship</li>
+<li>Multiple - several predictors, each additive/linear</li>
+<li>Polynomial - curved relationship still fit within lm() framework</li>
+<li>Nonlinear(nls)- true nonlinear functional form (e.g.&nbsp;saturation, growth curves) - you must specify the equation</li>
+<li>Stepwise - automatic predictor selection via AIC</li>
+<li>Ridge - many/correlated predictors, keep all, shrink coefficients</li>
+<li>Lasso - many predictors, want automatic feature selection</li>
+<li>Quantile - care about a specific percentile, not just the mean (e.g.&nbsp;worst-case/best-case yield planning)</li>
+<li>Logistic - binary outcome (success/failure, good/bad, yes/no)</li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled" title="Assignment Block II Unit 1">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Assignment Block II Unit 1
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Client:</strong> Vinho Verde Estate, a mid-sized winery in northern Portugal.</p>
+<p><strong>Situation:</strong> Wine quality is scored by a tasting panel (0 to 10, median of at least three expert ratings). Tasting is slow, expensive and subjective. The estate’s lab, however, measures 11 physicochemical properties of every batch cheaply and objectively. The owner has hired you as the analytics consultant to answer four business questions:</p>
+<ol type="1">
+<li><p>Which lab measurements actually move quality, and by how much?</p></li>
+<li><p>Can we predict the panel score from lab data alone, so we can screen batches before tasting?</p></li>
+<li><p>Are there diminishing returns, for example does raising alcohol or sulphates help forever, or does the benefit level off?</p></li>
+<li><p>Can we manage risk, meaning guarantee that a batch is rarely poor, and flag batches likely to be premium?</p></li>
+</ol>
+<p><strong>The dataset</strong></p>
+<p>Source: UCI Machine Learning Repository, Wine Quality (Cortez, Cerdeira, Almeida, Matos and Reis, 2009). Direct files:</p>
+<p><a href="https://archive.ics.uci.edu/dataset/186/wine+quality">Download Dataset</a></p>
+</div>
+</div>
 
 
 </section>

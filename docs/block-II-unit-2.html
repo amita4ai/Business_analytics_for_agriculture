@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.10.19">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,16 +12,54 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -41,10 +79,10 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-9e3e5b9121e68b3f077afb32f2c64d95.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-631496449bf32ff9b0bb69a6bfd9195d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -73,6 +111,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -175,8 +242,41 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#linear-discriminant-analysis" id="toc-linear-discriminant-analysis" class="nav-link active" data-scroll-target="#linear-discriminant-analysis"><span class="header-section-number">8</span> Linear Discriminant Analysis</a>
+  <ul class="collapse">
+  <li><a href="#lda-case-study-wheat-seed-classification" id="toc-lda-case-study-wheat-seed-classification" class="nav-link" data-scroll-target="#lda-case-study-wheat-seed-classification"><span class="header-section-number">8.1</span> LDA | Case Study : Wheat Seed Classification</a></li>
+  <li><a href="#split-into-training-75-and-testing-25-sets" id="toc-split-into-training-75-and-testing-25-sets" class="nav-link" data-scroll-target="#split-into-training-75-and-testing-25-sets"><span class="header-section-number">8.2</span> 2. Split into training (75%) and testing (25%) sets</a></li>
+  <li><a href="#create-a-preprocessing-recipe-standardize-all-7-kernel-measurements" id="toc-create-a-preprocessing-recipe-standardize-all-7-kernel-measurements" class="nav-link" data-scroll-target="#create-a-preprocessing-recipe-standardize-all-7-kernel-measurements"><span class="header-section-number">8.3</span> 3. Create a preprocessing recipe (standardize all 7 kernel measurements)</a></li>
+  <li><a href="#specify-the-lda-model-using-the-mass-engine" id="toc-specify-the-lda-model-using-the-mass-engine" class="nav-link" data-scroll-target="#specify-the-lda-model-using-the-mass-engine"><span class="header-section-number">8.4</span> 4. Specify the LDA model using the MASS engine</a></li>
+  <li><a href="#bundle-recipe-and-model-into-a-workflow-and-fit-on-training-data" id="toc-bundle-recipe-and-model-into-a-workflow-and-fit-on-training-data" class="nav-link" data-scroll-target="#bundle-recipe-and-model-into-a-workflow-and-fit-on-training-data"><span class="header-section-number">8.5</span> 5. Bundle recipe and model into a workflow and fit on training data</a></li>
+  </ul></li>
+  <li><a href="#part-a-dimensionality-reduction-7d---2d-subspace" id="toc-part-a-dimensionality-reduction-7d---2d-subspace" class="nav-link" data-scroll-target="#part-a-dimensionality-reduction-7d---2d-subspace"><span class="header-section-number">9</span> PART A: DIMENSIONALITY REDUCTION (7D -&gt; 2D Subspace)</a>
+  <ul class="collapse">
+  <li><a href="#extract-the-underlying-masslda-engine-and-preprocessed-test-predictors" id="toc-extract-the-underlying-masslda-engine-and-preprocessed-test-predictors" class="nav-link" data-scroll-target="#extract-the-underlying-masslda-engine-and-preprocessed-test-predictors"><span class="header-section-number">9.1</span> Extract the underlying MASS::lda engine and preprocessed test predictors</a></li>
+  <li><a href="#project-the-7-geometric-features-onto-ld1-and-ld2-c---1-2-axes" id="toc-project-the-7-geometric-features-onto-ld1-and-ld2-c---1-2-axes" class="nav-link" data-scroll-target="#project-the-7-geometric-features-onto-ld1-and-ld2-c---1-2-axes"><span class="header-section-number">9.2</span> Project the 7 geometric features onto LD1 and LD2 (C - 1 = 2 axes)</a></li>
+  <li><a href="#inspect-the-proportion-of-between-class-variance-captured-by-ld1-and-ld2" id="toc-inspect-the-proportion-of-between-class-variance-captured-by-ld1-and-ld2" class="nav-link" data-scroll-target="#inspect-the-proportion-of-between-class-variance-captured-by-ld1-and-ld2"><span class="header-section-number">9.3</span> Inspect the proportion of between-class variance captured by LD1 and LD2</a></li>
+  </ul></li>
+  <li><a href="#part-b-supervised-classification-evaluation" id="toc-part-b-supervised-classification-evaluation" class="nav-link" data-scroll-target="#part-b-supervised-classification-evaluation"><span class="header-section-number">10</span> PART B: SUPERVISED CLASSIFICATION &amp; EVALUATION</a>
+  <ul class="collapse">
+  <li><a href="#predict-wheat-varieties-on-the-unseen-test-set" id="toc-predict-wheat-varieties-on-the-unseen-test-set" class="nav-link" data-scroll-target="#predict-wheat-varieties-on-the-unseen-test-set"><span class="header-section-number">10.1</span> Predict wheat varieties on the unseen test set</a></li>
+  <li><a href="#compute-classification-accuracy-and-confusion-matrix" id="toc-compute-classification-accuracy-and-confusion-matrix" class="nav-link" data-scroll-target="#compute-classification-accuracy-and-confusion-matrix"><span class="header-section-number">10.2</span> Compute classification accuracy and confusion matrix</a></li>
+  </ul></li>
+  <li><a href="#principal-component-analysis-pca" id="toc-principal-component-analysis-pca" class="nav-link" data-scroll-target="#principal-component-analysis-pca"><span class="header-section-number">11</span> Principal Component Analysis (PCA)</a>
+  <ul class="collapse">
+  <li><a href="#iris-flower-classification" id="toc-iris-flower-classification" class="nav-link" data-scroll-target="#iris-flower-classification"><span class="header-section-number">11.1</span> 1. IRIS Flower Classification</a></li>
+  </ul></li>
+  <li><a href="#part-2-linear-discriminant-analysis-lda---supervised" id="toc-part-2-linear-discriminant-analysis-lda---supervised" class="nav-link" data-scroll-target="#part-2-linear-discriminant-analysis-lda---supervised"><span class="header-section-number">12</span> PART 2: LINEAR DISCRIMINANT ANALYSIS (LDA - Supervised)</a>
+  <ul class="collapse">
+  <li><a href="#lda-uses-species-labels-to-maximize-between-class-separation" id="toc-lda-uses-species-labels-to-maximize-between-class-separation" class="nav-link" data-scroll-target="#lda-uses-species-labels-to-maximize-between-class-separation"><span class="header-section-number">12.1</span> LDA uses Species labels to maximize between-class separation</a></li>
+  </ul></li>
+  <li><a href="#part-3-side-by-side-visualization-pca-vs.-lda" id="toc-part-3-side-by-side-visualization-pca-vs.-lda" class="nav-link" data-scroll-target="#part-3-side-by-side-visualization-pca-vs.-lda"><span class="header-section-number">13</span> PART 3: SIDE-BY-SIDE VISUALIZATION (PCA vs.&nbsp;LDA)</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -210,11 +310,468 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Supervised machine learning: Linear discriminant analysis, principal component analysis, factor analysis, support vector machines, naïve Bayes, nearest neighbors, decision trees,random forest, ensemble methods, k-fold cross validation, X gradient boosting. Unsupervised machine learning—basic framework, concept of clustering, k-means, c-means, hierarchical clustering, hidden Markov models, forecasting models (AR, MA, ARMA and ARIMA).</p>
+<p>Supervised machine learning:&nbsp; Linear discriminant analysis, principal component analysis, factor analysis, support vector machines, naïve Bayes, nearest neighbors, decision trees,random forest, ensemble methods, <em>k</em>-fold cross validation, X gradient boosting. Unsupervised machine learning—basic framework, concept of clustering, k-means, c-means, hierarchical clustering, hidden Markov models, forecasting models (AR, MA, ARMA and ARIMA).</p>
+</div>
+</div>
+<p>Let’s learn more algorithms of supervised machine learning.</p>
+<section id="linear-discriminant-analysis" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Linear Discriminant Analysis</h1>
+<p>Linear Discriminant Analysis (LDA) is a supervised machine learning algorithm used for both classification and dimensionality reduction. It works by projecting high-dimensional data onto a lower-dimensional space (with at most C - 1 axes for C classes) in a way that maximizes the separation between class means while minimizing the spread within each class. See the Figure:</p>
+<p><img src="disc.jpg" class="img-fluid"></p>
+<p><em>Linear Discriminant Analysis (LDA) finds a projection vector</em> <span class="math display">\[w\]</span> that maximizes the separation between class means while minimizing the variance within each class. For a two-class problem (Class A and Class B).</p>
+<p>Let’s take an example case study and learn how LDA helps in dimension reduction. Dimensionality reduction is the process of reducing the number of input features (variables or columns) in a dataset while keeping as much useful information as possible. It transforms data from a high-dimensional space into a lower-dimensional space without losing the core patterns needed to solve a problem.</p>
+<p>Working with too many features—often called the curse of dimensionality—creates several practical and statistical issues, the LDA solves these problems in manchine learning projects:</p>
+<p>• Prevents Overfitting: When a dataset has too many features relative to the number of samples, models tend to memorize random noise rather than learning true patterns. Removing redundant features helps models generalize better to unseen data.</p>
+<p>• Speeds Up Training and Inference: Fewer features mean smaller matrices and fewer calculations. Machine learning algorithms train faster and require less memory and storage.</p>
+<p>• Removes Multicollinearity and Noise: Real-world datasets often contain duplicate or highly correlated features (e.g., recording temperature in both Celsius and Fahrenheit). Dimensionality reduction combines or drops redundant variables.</p>
+<p>• Enables Data Visualization: Humans cannot visualize data in 10 or 100 dimensions. Compressing data down to 2D or 3D allows you to plot clusters, inspect outliers, and verify class separation visually.</p>
+<p>Linear Discriminant Analysis (LDA) performs supervised dimensionality reduction by finding new axes that maximize the separation between known classes.</p>
+<p>• Uses Class Labels: Unlike unsupervised methods such as Principal Component Analysis (PCA), which simply look for directions with the largest overall spread, LDA actively uses target labels to keep different classes far apart.</p>
+<p>• Creates Compact Discriminant Axes: LDA combines original features into linear combinations called Linear Discriminants (LD1, LD2, etc.). Each new axis is specifically chosen to maximize the ratio of between-class variance to within-class variance.</p>
+<p>• Caps Dimensions at (C - 1): For a dataset with (C) distinct classes and (D) original features, LDA reduces the feature space down to at most (C - 1) dimensions. For example, a dataset with 50 features and 3 classes can be compressed into just 2 dimensions (LD1 and LD2) while preserving the maximum possible class separability.</p>
+<p>• Prepares Data for Downstream Models: By projecting noisy, high-dimensional data onto a clean, low-dimensional subspace where classes are already well separated, LDA makes subsequent classifiers (such as Logistic Regression, SVMs, or k-Nearest Neighbors) both faster and more accurate.</p>
+<section id="lda-case-study-wheat-seed-classification" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="lda-case-study-wheat-seed-classification"><span class="header-section-number">8.1</span> LDA | Case Study : Wheat Seed Classification</h2>
+<p>The dataset is imported from UCI Machine Learning Repository and the data Collected at the Institute of Agrophysics of the Polish Academy of Sciences, this agricultural dataset contains 7 geometric X-ray measurements of wheat kernels across 3 commercial wheat varieties (Kama, Rosa, and Canadian). Let’s use LDA to compress 7 grain attributes down to 2 linear discriminants (LD1 and LD2).</p>
+<p><a href="https://archive.ics.uci.edu/dataset/236/seeds">Link of Dataset</a></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">## A. Install and load required packages</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(c("tidymodels", "discrim", "MASS"))</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'tidymodels' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching packages ────────────────────────────────────── tidymodels 1.3.0 ──</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>✔ broom        1.0.7     ✔ recipes      1.3.1
+✔ dials        1.4.0     ✔ rsample      1.3.1
+✔ dplyr        1.2.1     ✔ tibble       3.2.1
+✔ ggplot2      3.5.2     ✔ tidyr        1.3.2
+✔ infer        1.0.7     ✔ tune         2.0.1
+✔ modeldata    1.4.0     ✔ workflows    1.3.0
+✔ parsnip      1.3.2     ✔ workflowsets 1.1.0
+✔ purrr        1.0.4     ✔ yardstick    1.3.2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'broom' was built under R version 4.4.2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'dials' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'dplyr' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'ggplot2' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'infer' was built under R version 4.4.2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'modeldata' was built under R version 4.4.2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'parsnip' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'purrr' was built under R version 4.4.2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'recipes' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'rsample' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'tidyr' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'tune' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'workflows' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'workflowsets' was built under R version 4.4.2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'yardstick' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
+✖ purrr::discard() masks scales::discard()
+✖ dplyr::filter()  masks stats::filter()
+✖ dplyr::lag()     masks stats::lag()
+✖ recipes::step()  masks stats::step()</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(discrim)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'discrim' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'discrim'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:dials':
+
+    smoothness</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="do">## B. Load the dataset</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Read the continuous numbers from text file</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>raw_numbers <span class="ot">&lt;-</span> <span class="fu">scan</span>(<span class="st">"seeds_dataset.txt"</span>)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Reshape into a matrix with 8 columns (filling row by row)</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>data_matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(raw_numbers, <span class="at">ncol =</span> <span class="dv">8</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Converting matrix to data frame</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(data_matrix)</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Setting Column names</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(df) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Area"</span>, <span class="st">"Perimeter"</span>, <span class="st">"Compactness"</span>, <span class="st">"Length_of_Kernel"</span>, </span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"Width_of_Kernel"</span>, <span class="st">"Asymmetry_Coefficient"</span>, </span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"Length_of_Kernel_Groove"</span>, <span class="st">"Class"</span>)</span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Class <span class="ot">=</span> <span class="fu">as.factor</span>(df<span class="sc">$</span>Class)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="split-into-training-75-and-testing-25-sets" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="split-into-training-75-and-testing-25-sets"><span class="header-section-number">8.2</span> 2. Split into training (75%) and testing (25%) sets</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>seeds_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(df, <span class="at">prop =</span> <span class="fl">0.75</span>, <span class="at">strata =</span> Class)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>seeds_train <span class="ot">&lt;-</span> <span class="fu">training</span>(seeds_split)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>seeds_test  <span class="ot">&lt;-</span> <span class="fu">testing</span>(seeds_split)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="create-a-preprocessing-recipe-standardize-all-7-kernel-measurements" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="create-a-preprocessing-recipe-standardize-all-7-kernel-measurements"><span class="header-section-number">8.3</span> 3. Create a preprocessing recipe (standardize all 7 kernel measurements)</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>lda_recipe <span class="ot">&lt;-</span> <span class="fu">recipe</span>(Class <span class="sc">~</span> ., <span class="at">data =</span> seeds_train) <span class="sc">|&gt;</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_predictors</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="specify-the-lda-model-using-the-mass-engine" class="level2" data-number="8.4">
+<h2 data-number="8.4" class="anchored" data-anchor-id="specify-the-lda-model-using-the-mass-engine"><span class="header-section-number">8.4</span> 4. Specify the LDA model using the MASS engine</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>lda_spec <span class="ot">&lt;-</span> <span class="fu">discrim_linear</span>(<span class="at">mode =</span> <span class="st">"classification"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"MASS"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="bundle-recipe-and-model-into-a-workflow-and-fit-on-training-data" class="level2" data-number="8.5">
+<h2 data-number="8.5" class="anchored" data-anchor-id="bundle-recipe-and-model-into-a-workflow-and-fit-on-training-data"><span class="header-section-number">8.5</span> 5. Bundle recipe and model into a workflow and fit on training data</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>lda_workflow <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(lda_recipe) <span class="sc">|&gt;</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(lda_spec)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>lda_fit <span class="ot">&lt;-</span> <span class="fu">fit</span>(lda_workflow, <span class="at">data =</span> seeds_train)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="part-a-dimensionality-reduction-7d---2d-subspace" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> PART A: DIMENSIONALITY REDUCTION (7D -&gt; 2D Subspace)</h1>
+<section id="extract-the-underlying-masslda-engine-and-preprocessed-test-predictors" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="extract-the-underlying-masslda-engine-and-preprocessed-test-predictors"><span class="header-section-number">9.1</span> Extract the underlying MASS::lda engine and preprocessed test predictors</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>lda_engine <span class="ot">&lt;-</span> <span class="fu">extract_fit_engine</span>(lda_fit)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>baked_test <span class="ot">&lt;-</span> <span class="fu">bake</span>(<span class="fu">prep</span>(lda_recipe), <span class="at">new_data =</span> seeds_test)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="project-the-7-geometric-features-onto-ld1-and-ld2-c---1-2-axes" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="project-the-7-geometric-features-onto-ld1-and-ld2-c---1-2-axes"><span class="header-section-number">9.2</span> Project the 7 geometric features onto LD1 and LD2 (C - 1 = 2 axes)</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>lda_projections <span class="ot">&lt;-</span> <span class="fu">predict</span>(lda_engine, <span class="at">newdata =</span> baked_test)<span class="sc">$</span>x <span class="sc">|&gt;</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(<span class="at">Class =</span> seeds_test<span class="sc">$</span>Class)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="inspect-the-proportion-of-between-class-variance-captured-by-ld1-and-ld2" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="inspect-the-proportion-of-between-class-variance-captured-by-ld1-and-ld2"><span class="header-section-number">9.3</span> Inspect the proportion of between-class variance captured by LD1 and LD2</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(lda_engine)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+lda(..y ~ ., data = data)
+
+Prior probabilities of groups:
+        1         2         3 
+0.3333333 0.3333333 0.3333333 
+
+Group means:
+        Area  Perimeter Compactness Length_of_Kernel Width_of_Kernel
+1 -0.1493587 -0.1737584   0.4067885       -0.2480904    -0.006958736
+2  1.2011058  1.2120212   0.5057437        1.1890724     1.101924382
+3 -1.0517470 -1.0382628  -0.9125322       -0.9409821    -1.094965646
+  Asymmetry_Coefficient Length_of_Kernel_Groove
+1           -0.69961318              -0.6404291
+2           -0.07965067               1.2533676
+3            0.77926385              -0.6129385
+
+Coefficients of linear discriminants:
+                               LD1          LD2
+Area                     2.7627804 -14.28896674
+Perimeter               -7.3052242  12.46143536
+Compactness             -0.4329118   2.10773223
+Length_of_Kernel         1.8079011   3.63601973
+Width_of_Kernel          0.5274615  -0.01087034
+Asymmetry_Coefficient    0.1734767  -0.49910423
+Length_of_Kernel_Groove -0.2686843  -3.56788412
+
+Proportion of trace:
+   LD1    LD2 
+0.6806 0.3194 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the 2D projected subspace</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(lda_projections, <span class="fu">aes</span>(<span class="at">x =</span> LD1, <span class="at">y =</span> LD2, <span class="at">color =</span> Class, <span class="at">shape =</span> Class)) <span class="sc">+</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">3.5</span>, <span class="at">alpha =</span> <span class="fl">0.85</span>) <span class="sc">+</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_ellipse</span>(<span class="at">level =</span> <span class="fl">0.90</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"UCI Wheat Seeds Dataset Projected onto LD1 &amp; LD2"</span>,</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Supervised dimensionality reduction from 7 kernel measurements to 2 axes"</span>,</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"First Linear Discriminant (LD1)"</span>,</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Second Linear Discriminant (LD2)"</span></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-II-unit-2_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="part-b-supervised-classification-evaluation" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> PART B: SUPERVISED CLASSIFICATION &amp; EVALUATION</h1>
+<section id="predict-wheat-varieties-on-the-unseen-test-set" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="predict-wheat-varieties-on-the-unseen-test-set"><span class="header-section-number">10.1</span> Predict wheat varieties on the unseen test set</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>test_predictions <span class="ot">&lt;-</span> <span class="fu">predict</span>(lda_fit, <span class="at">new_data =</span> seeds_test) <span class="sc">|&gt;</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(seeds_test <span class="sc">|&gt;</span> <span class="fu">select</span>(Class))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="compute-classification-accuracy-and-confusion-matrix" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="compute-classification-accuracy-and-confusion-matrix"><span class="header-section-number">10.2</span> Compute classification accuracy and confusion matrix</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">accuracy</span>(test_predictions, <span class="at">truth =</span> Class, <span class="at">estimate =</span> .pred_class)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  .metric  .estimator .estimate
+  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+1 accuracy multiclass     0.944</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">conf_mat</span>(test_predictions, <span class="at">truth =</span> Class, <span class="at">estimate =</span> .pred_class)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          Truth
+Prediction  1  2  3
+         1 16  1  0
+         2  0 17  0
+         3  2  0 18</code></pre>
+</div>
+</div>
+<p>In grain processing and seed production, sorting harvested wheat varieties quickly and non-destructively is essential for maintaining seed purity and flour quality. This case study uses the UCI Wheat Seeds Dataset, which contains 210 samples across 3 commercial wheat varieties (Kama, Rosa, and Canadian). Each kernel is measured using soft X-ray imaging to record 7 geometric attributes (Area, Perimeter, Compactness, Kernel_Length, Kernel_Width, Asymmetry_Coeff, and Groove_Length).</p>
+<p>Using Linear Discriminant Analysis (LDA) in tidymodels, these 7 correlated physical measurements are compressed into 2 linear discriminant axes (LD1 and LD2). This supervised projection maximizes the separation between the three wheat varieties while keeping kernels of the same variety tightly clustered, enabling accurate variety classification and clear 2D quality control visualization.</p>
+<p><strong>Benefits of LDA in This Case Study</strong></p>
+<p>• Resolves Strong Multicollinearity: Geometric kernel traits such as Area, Perimeter, Kernel_Length, and Kernel_Width are heavily correlated because larger seeds are larger across almost every dimension. LDA handles this collinearity mathematically by inverting the pooled within-class covariance matrix (S_W), combining redundant measurements into independent composite scores.</p>
+<p>• Compresses 7 Features into 2 Visualizable Indices: By reducing 7 X-ray measurements down to (C - 1 = 2) axes (LD1 and LD2), agronomists and quality control operators can monitor seed batches on a simple 2D chart instead of tracking seven separate thresholds. • High Accuracy on Small Datasets: With only 210 total kernels (70 per variety), complex black-box algorithms like neural networks risk overfitting. LDA estimates a small number of parameters (class means and one shared covariance matrix), achieving 94% to 98% test accuracy reliably.</p>
+<p>• Fast Real-Time Inference: Once trained, classifying a new wheat kernel on a high-speed optical sorting line requires only simple linear dot products ((W^(T).x), making it computationally lightweight for industrial sorting hardware.</p>
+<p><strong>Shortcomings of LDA in This Case Study</strong></p>
+<p>• Assumes Equal Covariance Across Varieties: LDA assumes that Kama, Rosa, and Canadian kernels exhibit the exact same shape and spread of variance in feature space. If one wheat variety is naturally much more variable in size or asymmetry due to growing conditions, linear boundaries become suboptimal compared to Quadratic Discriminant Analysis (QDA).</p>
+<p>• Limited to Linear Decision Boundaries: If two wheat varieties overlap in a curved or non-linear pattern (for instance, due to unusual kernel compactness ratios), straight decision lines in the LD1–LD2 subspace cannot cleanly separate them.</p>
+<p>• Sensitive to Outliers and Measurement Noise: Because LDA relies on class means ((_{i})) and sample covariance matrices, a few damaged, broken, or mis-scanned wheat kernels in the training batch can pull the class centroid and distort the projection axis.</p>
+<p>• Hard Cap of (C - 1) Dimensions: Because there are 3 wheat varieties, LDA can extract at most 2 discriminant axes. If subtle secondary traits require a third dimension to separate overlapping edge cases, LDA cannot generate a third axis without adding more classes.</p>
+</section>
+</section>
+<section id="principal-component-analysis-pca" class="level1" data-number="11">
+<h1 data-number="11"><span class="header-section-number">11</span> Principal Component Analysis (PCA)</h1>
+<p>PCA is an unsupervised dimensionality reduction technique that transforms a set of correlated variables into a smaller set of uncorrelated variables called Principal Components.</p>
+<p>Let’s do it with a case study.</p>
+<section id="iris-flower-classification" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="iris-flower-classification"><span class="header-section-number">11.1</span> 1. IRIS Flower Classification</h2>
+<p>Let’s load the dataset. The dataset is inbuilt in RStudio there fore we don’t need to load it externally.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(iris)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+1          5.1         3.5          1.4         0.2  setosa
+2          4.9         3.0          1.4         0.2  setosa
+3          4.7         3.2          1.3         0.2  setosa
+4          4.6         3.1          1.5         0.2  setosa
+5          5.0         3.6          1.4         0.2  setosa
+6          5.4         3.9          1.7         0.4  setosa</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(iris)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Sepal.Length Sepal.Width Petal.Length Petal.Width   Species
+145          6.7         3.3          5.7         2.5 virginica
+146          6.7         3.0          5.2         2.3 virginica
+147          6.3         2.5          5.0         1.9 virginica
+148          6.5         3.0          5.2         2.0 virginica
+149          6.2         3.4          5.4         2.3 virginica
+150          5.9         3.0          5.1         1.8 virginica</code></pre>
+</div>
+</div>
+<p>We have a dataset containing 150 observations in this dataset. Iris plant has three species - Iris virginica, Iris setosa and Iris versicolor. These species are classified based on four measures - petal length, petal breadth, sepal length and sepal breadth.</p>
+<p><img src="iris.svg" class="img-fluid"> <em>Source:https://www.kaggle.com/code/sunaysawant/iris-eda-pca?scriptVersionId=54806186</em></p>
+<p>Let’s do PCA and compare it with LDA so that we understand both techniques clearly.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Load required packages</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(c("tidymodels", "discrim", "MASS", "patchwork"))</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(discrim)</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'patchwork' was built under R version 4.4.2</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load built-in iris dataset</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(iris)</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>iris_df <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(iris)</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Split into training (75%) and testing (25%) sets</span></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>iris_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(iris_df, <span class="at">prop =</span> <span class="fl">0.75</span>, <span class="at">strata =</span> Species)</span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>iris_train <span class="ot">&lt;-</span> <span class="fu">training</span>(iris_split)</span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>iris_test  <span class="ot">&lt;-</span> <span class="fu">testing</span>(iris_split)</span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================================================</span></span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a><span class="co"># PART 1: PRINCIPAL COMPONENT ANALYSIS (PCA - Unsupervised)</span></span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================================================</span></span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a><span class="co"># PCA ignores Species labels when finding axes of maximum variance</span></span>
+<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a>pca_recipe <span class="ot">&lt;-</span> <span class="fu">recipe</span>(<span class="sc">~</span> ., <span class="at">data =</span> iris_train) <span class="sc">|&gt;</span></span>
+<span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">update_role</span>(Species, <span class="at">new_role =</span> <span class="st">"id"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb46-19"><a href="#cb46-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_pca</span>(<span class="fu">all_numeric_predictors</span>(), <span class="at">num_comp =</span> <span class="dv">2</span>)</span>
+<span id="cb46-20"><a href="#cb46-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-21"><a href="#cb46-21" aria-hidden="true" tabindex="-1"></a>pca_prep <span class="ot">&lt;-</span> <span class="fu">prep</span>(pca_recipe)</span>
+<span id="cb46-22"><a href="#cb46-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-23"><a href="#cb46-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Project the unseen test set onto PC1 and PC2</span></span>
+<span id="cb46-24"><a href="#cb46-24" aria-hidden="true" tabindex="-1"></a>pca_test_proj <span class="ot">&lt;-</span> <span class="fu">bake</span>(pca_prep, <span class="at">new_data =</span> iris_test)</span>
+<span id="cb46-25"><a href="#cb46-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-26"><a href="#cb46-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Check variance explained by PC1 and PC2</span></span>
+<span id="cb46-27"><a href="#cb46-27" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(pca_prep, <span class="at">number =</span> <span class="dv">2</span>, <span class="at">type =</span> <span class="st">"variance"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb46-28"><a href="#cb46-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(terms <span class="sc">==</span> <span class="st">"percent variance"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 4
+  terms             value component id       
+  &lt;chr&gt;             &lt;dbl&gt;     &lt;int&gt; &lt;chr&gt;    
+1 percent variance 72.3           1 pca_9T1IN
+2 percent variance 23.4           2 pca_9T1IN
+3 percent variance  3.70          3 pca_9T1IN
+4 percent variance  0.553         4 pca_9T1IN</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="part-2-linear-discriminant-analysis-lda---supervised" class="level1" data-number="12">
+<h1 data-number="12"><span class="header-section-number">12</span> PART 2: LINEAR DISCRIMINANT ANALYSIS (LDA - Supervised)</h1>
+<section id="lda-uses-species-labels-to-maximize-between-class-separation" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="lda-uses-species-labels-to-maximize-between-class-separation"><span class="header-section-number">12.1</span> LDA uses Species labels to maximize between-class separation</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>lda_recipe <span class="ot">&lt;-</span> <span class="fu">recipe</span>(Species <span class="sc">~</span> ., <span class="at">data =</span> iris_train) <span class="sc">|&gt;</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>())</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>lda_spec <span class="ot">&lt;-</span> <span class="fu">discrim_linear</span>(<span class="at">mode =</span> <span class="st">"classification"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"MASS"</span>)</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>lda_workflow <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span></span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(lda_recipe) <span class="sc">|&gt;</span></span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(lda_spec)</span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a>lda_fit <span class="ot">&lt;-</span> <span class="fu">fit</span>(lda_workflow, <span class="at">data =</span> iris_train)</span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Project the unseen test set onto LD1 and LD2</span></span>
+<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a>lda_engine <span class="ot">&lt;-</span> <span class="fu">extract_fit_engine</span>(lda_fit)</span>
+<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a>baked_test <span class="ot">&lt;-</span> <span class="fu">bake</span>(<span class="fu">prep</span>(lda_recipe), <span class="at">new_data =</span> iris_test)</span>
+<span id="cb48-16"><a href="#cb48-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-17"><a href="#cb48-17" aria-hidden="true" tabindex="-1"></a>lda_test_proj <span class="ot">&lt;-</span> <span class="fu">predict</span>(lda_engine, <span class="at">newdata =</span> baked_test)<span class="sc">$</span>x <span class="sc">|&gt;</span></span>
+<span id="cb48-18"><a href="#cb48-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
+<span id="cb48-19"><a href="#cb48-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(<span class="at">Species =</span> iris_test<span class="sc">$</span>Species)</span>
+<span id="cb48-20"><a href="#cb48-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-21"><a href="#cb48-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluate LDA classification accuracy on the test set</span></span>
+<span id="cb48-22"><a href="#cb48-22" aria-hidden="true" tabindex="-1"></a>lda_preds <span class="ot">&lt;-</span> <span class="fu">predict</span>(lda_fit, <span class="at">new_data =</span> iris_test) <span class="sc">|&gt;</span></span>
+<span id="cb48-23"><a href="#cb48-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(iris_test <span class="sc">|&gt;</span> <span class="fu">select</span>(Species))</span>
+<span id="cb48-24"><a href="#cb48-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-25"><a href="#cb48-25" aria-hidden="true" tabindex="-1"></a><span class="fu">accuracy</span>(lda_preds, <span class="at">truth =</span> Species, <span class="at">estimate =</span> .pred_class)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  .metric  .estimator .estimate
+  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+1 accuracy multiclass     0.974</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">conf_mat</span>(lda_preds, <span class="at">truth =</span> Species, <span class="at">estimate =</span> .pred_class)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Truth
+Prediction   setosa versicolor virginica
+  setosa         13          0         0
+  versicolor      0         13         1
+  virginica       0          0        12</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="part-3-side-by-side-visualization-pca-vs.-lda" class="level1" data-number="13">
+<h1 data-number="13"><span class="header-section-number">13</span> PART 3: SIDE-BY-SIDE VISUALIZATION (PCA vs.&nbsp;LDA)</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>p_pca <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(pca_test_proj, <span class="fu">aes</span>(<span class="at">x =</span> PC1, <span class="at">y =</span> PC2, <span class="at">color =</span> Species, <span class="at">shape =</span> Species)) <span class="sc">+</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">3.5</span>, <span class="at">alpha =</span> <span class="fl">0.85</span>) <span class="sc">+</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stat_ellipse</span>(<span class="at">level =</span> <span class="fl">0.90</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"PCA Projection (Unsupervised)"</span>,</span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Maximizes total variance (ignores Species)"</span>,</span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"PC1"</span>, <span class="at">y =</span> <span class="st">"PC2"</span></span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span>
+<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a>p_lda <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(lda_test_proj, <span class="fu">aes</span>(<span class="at">x =</span> LD1, <span class="at">y =</span> LD2, <span class="at">color =</span> Species, <span class="at">shape =</span> Species)) <span class="sc">+</span></span>
+<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb52-18"><a href="#cb52-18" aria-hidden="true" tabindex="-1"></a>       <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">3.5</span>, <span class="at">alpha =</span> <span class="fl">0.85</span>) <span class="sc">+</span></span>
+<span id="cb52-19"><a href="#cb52-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb52-20"><a href="#cb52-20" aria-hidden="true" tabindex="-1"></a>       <span class="fu">stat_ellipse</span>(<span class="at">level =</span> <span class="fl">0.90</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb52-21"><a href="#cb52-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb52-22"><a href="#cb52-22" aria-hidden="true" tabindex="-1"></a>       <span class="fu">labs</span>(</span>
+<span id="cb52-23"><a href="#cb52-23" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"LDA Projection (Supervised)"</span>,</span>
+<span id="cb52-24"><a href="#cb52-24" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Maximizes class separation (uses Species)"</span>,</span>
+<span id="cb52-25"><a href="#cb52-25" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"LD1"</span>, <span class="at">y =</span> <span class="st">"LD2"</span></span>
+<span id="cb52-26"><a href="#cb52-26" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">+</span></span>
+<span id="cb52-27"><a href="#cb52-27" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb52-28"><a href="#cb52-28" aria-hidden="true" tabindex="-1"></a>      <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span>
+<span id="cb52-29"><a href="#cb52-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-30"><a href="#cb52-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Display both plots side by side</span></span>
+<span id="cb52-31"><a href="#cb52-31" aria-hidden="true" tabindex="-1"></a>p_pca <span class="sc">+</span> p_lda <span class="sc">+</span> <span class="fu">plot_layout</span>(<span class="at">guides =</span> <span class="st">"collect"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-II-unit-2_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
