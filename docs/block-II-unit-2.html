@@ -247,34 +247,35 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#linear-discriminant-analysis" id="toc-linear-discriminant-analysis" class="nav-link active" data-scroll-target="#linear-discriminant-analysis"><span class="header-section-number">8</span> Linear Discriminant Analysis</a>
+  <li><a href="#linear-discriminant-analysis" id="toc-linear-discriminant-analysis" class="nav-link active" data-scroll-target="#linear-discriminant-analysis"><span class="header-section-number">7.1</span> Linear Discriminant Analysis</a>
   <ul class="collapse">
-  <li><a href="#lda-case-study-wheat-seed-classification" id="toc-lda-case-study-wheat-seed-classification" class="nav-link" data-scroll-target="#lda-case-study-wheat-seed-classification"><span class="header-section-number">8.1</span> LDA | Case Study : Wheat Seed Classification</a></li>
-  <li><a href="#split-into-training-75-and-testing-25-sets" id="toc-split-into-training-75-and-testing-25-sets" class="nav-link" data-scroll-target="#split-into-training-75-and-testing-25-sets"><span class="header-section-number">8.2</span> 2. Split into training (75%) and testing (25%) sets</a></li>
-  <li><a href="#create-a-preprocessing-recipe-standardize-all-7-kernel-measurements" id="toc-create-a-preprocessing-recipe-standardize-all-7-kernel-measurements" class="nav-link" data-scroll-target="#create-a-preprocessing-recipe-standardize-all-7-kernel-measurements"><span class="header-section-number">8.3</span> 3. Create a preprocessing recipe (standardize all 7 kernel measurements)</a></li>
-  <li><a href="#specify-the-lda-model-using-the-mass-engine" id="toc-specify-the-lda-model-using-the-mass-engine" class="nav-link" data-scroll-target="#specify-the-lda-model-using-the-mass-engine"><span class="header-section-number">8.4</span> 4. Specify the LDA model using the MASS engine</a></li>
-  <li><a href="#bundle-recipe-and-model-into-a-workflow-and-fit-on-training-data" id="toc-bundle-recipe-and-model-into-a-workflow-and-fit-on-training-data" class="nav-link" data-scroll-target="#bundle-recipe-and-model-into-a-workflow-and-fit-on-training-data"><span class="header-section-number">8.5</span> 5. Bundle recipe and model into a workflow and fit on training data</a></li>
+  <li><a href="#lda-case-study-wheat-seed-classification" id="toc-lda-case-study-wheat-seed-classification" class="nav-link" data-scroll-target="#lda-case-study-wheat-seed-classification"><span class="header-section-number">7.1.1</span> LDA | Case Study : Wheat Seed Classification</a></li>
+  <li><a href="#split-into-training-75-and-testing-25-sets" id="toc-split-into-training-75-and-testing-25-sets" class="nav-link" data-scroll-target="#split-into-training-75-and-testing-25-sets"><span class="header-section-number">7.1.2</span> 2. Split into training (75%) and testing (25%) sets</a></li>
+  <li><a href="#create-a-preprocessing-recipe-standardize-all-7-kernel-measurements" id="toc-create-a-preprocessing-recipe-standardize-all-7-kernel-measurements" class="nav-link" data-scroll-target="#create-a-preprocessing-recipe-standardize-all-7-kernel-measurements"><span class="header-section-number">7.1.3</span> 3. Create a preprocessing recipe (standardize all 7 kernel measurements)</a></li>
+  <li><a href="#specify-the-lda-model-using-the-mass-engine" id="toc-specify-the-lda-model-using-the-mass-engine" class="nav-link" data-scroll-target="#specify-the-lda-model-using-the-mass-engine"><span class="header-section-number">7.1.4</span> 4. Specify the LDA model using the MASS engine</a></li>
+  <li><a href="#bundle-recipe-and-model-into-a-workflow-and-fit-on-training-data" id="toc-bundle-recipe-and-model-into-a-workflow-and-fit-on-training-data" class="nav-link" data-scroll-target="#bundle-recipe-and-model-into-a-workflow-and-fit-on-training-data"><span class="header-section-number">7.1.5</span> 5. Bundle recipe and model into a workflow and fit on training data</a></li>
+  <li><a href="#part-a-dimensionality-reduction-7d---2d-subspace" id="toc-part-a-dimensionality-reduction-7d---2d-subspace" class="nav-link" data-scroll-target="#part-a-dimensionality-reduction-7d---2d-subspace"><span class="header-section-number">7.1.6</span> PART A: DIMENSIONALITY REDUCTION (7D -&gt; 2D Subspace)</a></li>
+  <li><a href="#extract-the-underlying-masslda-engine-and-preprocessed-test-predictors" id="toc-extract-the-underlying-masslda-engine-and-preprocessed-test-predictors" class="nav-link" data-scroll-target="#extract-the-underlying-masslda-engine-and-preprocessed-test-predictors"><span class="header-section-number">7.1.7</span> Extract the underlying MASS::lda engine and preprocessed test predictors</a></li>
+  <li><a href="#project-the-7-geometric-features-onto-ld1-and-ld2-c---1-2-axes" id="toc-project-the-7-geometric-features-onto-ld1-and-ld2-c---1-2-axes" class="nav-link" data-scroll-target="#project-the-7-geometric-features-onto-ld1-and-ld2-c---1-2-axes"><span class="header-section-number">7.1.8</span> Project the 7 geometric features onto LD1 and LD2 (C - 1 = 2 axes)</a></li>
+  <li><a href="#inspect-the-proportion-of-between-class-variance-captured-by-ld1-and-ld2" id="toc-inspect-the-proportion-of-between-class-variance-captured-by-ld1-and-ld2" class="nav-link" data-scroll-target="#inspect-the-proportion-of-between-class-variance-captured-by-ld1-and-ld2"><span class="header-section-number">7.1.9</span> Inspect the proportion of between-class variance captured by LD1 and LD2</a></li>
+  <li><a href="#part-b-supervised-classification-evaluation" id="toc-part-b-supervised-classification-evaluation" class="nav-link" data-scroll-target="#part-b-supervised-classification-evaluation"><span class="header-section-number">7.1.10</span> PART B: SUPERVISED CLASSIFICATION &amp; EVALUATION</a></li>
+  <li><a href="#predict-wheat-varieties-on-the-unseen-test-set" id="toc-predict-wheat-varieties-on-the-unseen-test-set" class="nav-link" data-scroll-target="#predict-wheat-varieties-on-the-unseen-test-set"><span class="header-section-number">7.1.11</span> Predict wheat varieties on the unseen test set</a></li>
+  <li><a href="#compute-classification-accuracy-and-confusion-matrix" id="toc-compute-classification-accuracy-and-confusion-matrix" class="nav-link" data-scroll-target="#compute-classification-accuracy-and-confusion-matrix"><span class="header-section-number">7.1.12</span> Compute classification accuracy and confusion matrix</a></li>
   </ul></li>
-  <li><a href="#part-a-dimensionality-reduction-7d---2d-subspace" id="toc-part-a-dimensionality-reduction-7d---2d-subspace" class="nav-link" data-scroll-target="#part-a-dimensionality-reduction-7d---2d-subspace"><span class="header-section-number">9</span> PART A: DIMENSIONALITY REDUCTION (7D -&gt; 2D Subspace)</a>
+  <li><a href="#principal-component-analysis-pca" id="toc-principal-component-analysis-pca" class="nav-link" data-scroll-target="#principal-component-analysis-pca"><span class="header-section-number">7.2</span> Principal Component Analysis (PCA)</a>
   <ul class="collapse">
-  <li><a href="#extract-the-underlying-masslda-engine-and-preprocessed-test-predictors" id="toc-extract-the-underlying-masslda-engine-and-preprocessed-test-predictors" class="nav-link" data-scroll-target="#extract-the-underlying-masslda-engine-and-preprocessed-test-predictors"><span class="header-section-number">9.1</span> Extract the underlying MASS::lda engine and preprocessed test predictors</a></li>
-  <li><a href="#project-the-7-geometric-features-onto-ld1-and-ld2-c---1-2-axes" id="toc-project-the-7-geometric-features-onto-ld1-and-ld2-c---1-2-axes" class="nav-link" data-scroll-target="#project-the-7-geometric-features-onto-ld1-and-ld2-c---1-2-axes"><span class="header-section-number">9.2</span> Project the 7 geometric features onto LD1 and LD2 (C - 1 = 2 axes)</a></li>
-  <li><a href="#inspect-the-proportion-of-between-class-variance-captured-by-ld1-and-ld2" id="toc-inspect-the-proportion-of-between-class-variance-captured-by-ld1-and-ld2" class="nav-link" data-scroll-target="#inspect-the-proportion-of-between-class-variance-captured-by-ld1-and-ld2"><span class="header-section-number">9.3</span> Inspect the proportion of between-class variance captured by LD1 and LD2</a></li>
+  <li><a href="#iris-flower-classification" id="toc-iris-flower-classification" class="nav-link" data-scroll-target="#iris-flower-classification"><span class="header-section-number">7.2.1</span> 1. IRIS Flower Classification</a></li>
+  <li><a href="#part-2-linear-discriminant-analysis-lda---supervised" id="toc-part-2-linear-discriminant-analysis-lda---supervised" class="nav-link" data-scroll-target="#part-2-linear-discriminant-analysis-lda---supervised"><span class="header-section-number">7.2.2</span> PART 2: LINEAR DISCRIMINANT ANALYSIS (LDA - Supervised)</a></li>
+  <li><a href="#lda-uses-species-labels-to-maximize-between-class-separation" id="toc-lda-uses-species-labels-to-maximize-between-class-separation" class="nav-link" data-scroll-target="#lda-uses-species-labels-to-maximize-between-class-separation"><span class="header-section-number">7.2.3</span> LDA uses Species labels to maximize between-class separation</a></li>
+  <li><a href="#part-3-side-by-side-visualization-pca-vs.-lda" id="toc-part-3-side-by-side-visualization-pca-vs.-lda" class="nav-link" data-scroll-target="#part-3-side-by-side-visualization-pca-vs.-lda"><span class="header-section-number">7.2.4</span> PART 3: SIDE-BY-SIDE VISUALIZATION (PCA vs.&nbsp;LDA)</a></li>
   </ul></li>
-  <li><a href="#part-b-supervised-classification-evaluation" id="toc-part-b-supervised-classification-evaluation" class="nav-link" data-scroll-target="#part-b-supervised-classification-evaluation"><span class="header-section-number">10</span> PART B: SUPERVISED CLASSIFICATION &amp; EVALUATION</a>
+  <li><a href="#factor-analysis" id="toc-factor-analysis" class="nav-link" data-scroll-target="#factor-analysis"><span class="header-section-number">7.3</span> Factor Analysis</a>
   <ul class="collapse">
-  <li><a href="#predict-wheat-varieties-on-the-unseen-test-set" id="toc-predict-wheat-varieties-on-the-unseen-test-set" class="nav-link" data-scroll-target="#predict-wheat-varieties-on-the-unseen-test-set"><span class="header-section-number">10.1</span> Predict wheat varieties on the unseen test set</a></li>
-  <li><a href="#compute-classification-accuracy-and-confusion-matrix" id="toc-compute-classification-accuracy-and-confusion-matrix" class="nav-link" data-scroll-target="#compute-classification-accuracy-and-confusion-matrix"><span class="header-section-number">10.2</span> Compute classification accuracy and confusion matrix</a></li>
+  <li><a href="#part-a-suitability-checks-kmo-bartletts-test" id="toc-part-a-suitability-checks-kmo-bartletts-test" class="nav-link" data-scroll-target="#part-a-suitability-checks-kmo-bartletts-test"><span class="header-section-number">7.3.1</span> PART A: SUITABILITY CHECKS (KMO &amp; BARTLETT’S TEST)</a></li>
+  <li><a href="#part-b-determine-optimal-number-of-factors" id="toc-part-b-determine-optimal-number-of-factors" class="nav-link" data-scroll-target="#part-b-determine-optimal-number-of-factors"><span class="header-section-number">7.3.2</span> PART B: DETERMINE OPTIMAL NUMBER OF FACTORS</a></li>
+  <li><a href="#part-c-fit-exploratory-factor-analysis-3-factors" id="toc-part-c-fit-exploratory-factor-analysis-3-factors" class="nav-link" data-scroll-target="#part-c-fit-exploratory-factor-analysis-3-factors"><span class="header-section-number">7.3.3</span> PART C: FIT EXPLORATORY FACTOR ANALYSIS (3 FACTORS)</a></li>
   </ul></li>
-  <li><a href="#principal-component-analysis-pca" id="toc-principal-component-analysis-pca" class="nav-link" data-scroll-target="#principal-component-analysis-pca"><span class="header-section-number">11</span> Principal Component Analysis (PCA)</a>
-  <ul class="collapse">
-  <li><a href="#iris-flower-classification" id="toc-iris-flower-classification" class="nav-link" data-scroll-target="#iris-flower-classification"><span class="header-section-number">11.1</span> 1. IRIS Flower Classification</a></li>
-  </ul></li>
-  <li><a href="#part-2-linear-discriminant-analysis-lda---supervised" id="toc-part-2-linear-discriminant-analysis-lda---supervised" class="nav-link" data-scroll-target="#part-2-linear-discriminant-analysis-lda---supervised"><span class="header-section-number">12</span> PART 2: LINEAR DISCRIMINANT ANALYSIS (LDA - Supervised)</a>
-  <ul class="collapse">
-  <li><a href="#lda-uses-species-labels-to-maximize-between-class-separation" id="toc-lda-uses-species-labels-to-maximize-between-class-separation" class="nav-link" data-scroll-target="#lda-uses-species-labels-to-maximize-between-class-separation"><span class="header-section-number">12.1</span> LDA uses Species labels to maximize between-class separation</a></li>
-  </ul></li>
-  <li><a href="#part-3-side-by-side-visualization-pca-vs.-lda" id="toc-part-3-side-by-side-visualization-pca-vs.-lda" class="nav-link" data-scroll-target="#part-3-side-by-side-visualization-pca-vs.-lda"><span class="header-section-number">13</span> PART 3: SIDE-BY-SIDE VISUALIZATION (PCA vs.&nbsp;LDA)</a></li>
+  <li><a href="#multiple-machine-learning-models-and-ensemble-models" id="toc-multiple-machine-learning-models-and-ensemble-models" class="nav-link" data-scroll-target="#multiple-machine-learning-models-and-ensemble-models"><span class="header-section-number">7.4</span> Multiple Machine Learning Models and Ensemble Models</a></li>
   </ul>
 </nav>
     </div>
@@ -314,8 +315,8 @@ window.Quarto = {
 </div>
 </div>
 <p>Let’s learn more algorithms of supervised machine learning.</p>
-<section id="linear-discriminant-analysis" class="level1" data-number="8">
-<h1 data-number="8"><span class="header-section-number">8</span> Linear Discriminant Analysis</h1>
+<section id="linear-discriminant-analysis" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="linear-discriminant-analysis"><span class="header-section-number">7.1</span> Linear Discriminant Analysis</h2>
 <p>Linear Discriminant Analysis (LDA) is a supervised machine learning algorithm used for both classification and dimensionality reduction. It works by projecting high-dimensional data onto a lower-dimensional space (with at most C - 1 axes for C classes) in a way that maximizes the separation between class means while minimizing the spread within each class. See the Figure:</p>
 <p><img src="disc.jpg" class="img-fluid"></p>
 <p><em>Linear Discriminant Analysis (LDA) finds a projection vector</em> <span class="math display">\[w\]</span> that maximizes the separation between class means while minimizing the variance within each class. For a two-class problem (Class A and Class B).</p>
@@ -330,8 +331,8 @@ window.Quarto = {
 <p>• Creates Compact Discriminant Axes: LDA combines original features into linear combinations called Linear Discriminants (LD1, LD2, etc.). Each new axis is specifically chosen to maximize the ratio of between-class variance to within-class variance.</p>
 <p>• Caps Dimensions at (C - 1): For a dataset with (C) distinct classes and (D) original features, LDA reduces the feature space down to at most (C - 1) dimensions. For example, a dataset with 50 features and 3 classes can be compressed into just 2 dimensions (LD1 and LD2) while preserving the maximum possible class separability.</p>
 <p>• Prepares Data for Downstream Models: By projecting noisy, high-dimensional data onto a clean, low-dimensional subspace where classes are already well separated, LDA makes subsequent classifiers (such as Logistic Regression, SVMs, or k-Nearest Neighbors) both faster and more accurate.</p>
-<section id="lda-case-study-wheat-seed-classification" class="level2" data-number="8.1">
-<h2 data-number="8.1" class="anchored" data-anchor-id="lda-case-study-wheat-seed-classification"><span class="header-section-number">8.1</span> LDA | Case Study : Wheat Seed Classification</h2>
+<section id="lda-case-study-wheat-seed-classification" class="level3" data-number="7.1.1">
+<h3 data-number="7.1.1" class="anchored" data-anchor-id="lda-case-study-wheat-seed-classification"><span class="header-section-number">7.1.1</span> LDA | Case Study : Wheat Seed Classification</h3>
 <p>The dataset is imported from UCI Machine Learning Repository and the data Collected at the Institute of Agrophysics of the Polish Academy of Sciences, this agricultural dataset contains 7 geometric X-ray measurements of wheat kernels across 3 commercial wheat varieties (Kama, Rosa, and Canadian). Let’s use LDA to compress 7 grain attributes down to 2 linear discriminants (LD1 and LD2).</p>
 <p><a href="https://archive.ics.uci.edu/dataset/236/seeds">Link of Dataset</a></p>
 <div class="cell">
@@ -441,8 +442,8 @@ Attaching package: 'discrim'</code></pre>
 <span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Class <span class="ot">=</span> <span class="fu">as.factor</span>(df<span class="sc">$</span>Class)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="split-into-training-75-and-testing-25-sets" class="level2" data-number="8.2">
-<h2 data-number="8.2" class="anchored" data-anchor-id="split-into-training-75-and-testing-25-sets"><span class="header-section-number">8.2</span> 2. Split into training (75%) and testing (25%) sets</h2>
+<section id="split-into-training-75-and-testing-25-sets" class="level3" data-number="7.1.2">
+<h3 data-number="7.1.2" class="anchored" data-anchor-id="split-into-training-75-and-testing-25-sets"><span class="header-section-number">7.1.2</span> 2. Split into training (75%) and testing (25%) sets</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>seeds_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(df, <span class="at">prop =</span> <span class="fl">0.75</span>, <span class="at">strata =</span> Class)</span>
@@ -450,22 +451,22 @@ Attaching package: 'discrim'</code></pre>
 <span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>seeds_test  <span class="ot">&lt;-</span> <span class="fu">testing</span>(seeds_split)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="create-a-preprocessing-recipe-standardize-all-7-kernel-measurements" class="level2" data-number="8.3">
-<h2 data-number="8.3" class="anchored" data-anchor-id="create-a-preprocessing-recipe-standardize-all-7-kernel-measurements"><span class="header-section-number">8.3</span> 3. Create a preprocessing recipe (standardize all 7 kernel measurements)</h2>
+<section id="create-a-preprocessing-recipe-standardize-all-7-kernel-measurements" class="level3" data-number="7.1.3">
+<h3 data-number="7.1.3" class="anchored" data-anchor-id="create-a-preprocessing-recipe-standardize-all-7-kernel-measurements"><span class="header-section-number">7.1.3</span> 3. Create a preprocessing recipe (standardize all 7 kernel measurements)</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>lda_recipe <span class="ot">&lt;-</span> <span class="fu">recipe</span>(Class <span class="sc">~</span> ., <span class="at">data =</span> seeds_train) <span class="sc">|&gt;</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_predictors</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="specify-the-lda-model-using-the-mass-engine" class="level2" data-number="8.4">
-<h2 data-number="8.4" class="anchored" data-anchor-id="specify-the-lda-model-using-the-mass-engine"><span class="header-section-number">8.4</span> 4. Specify the LDA model using the MASS engine</h2>
+<section id="specify-the-lda-model-using-the-mass-engine" class="level3" data-number="7.1.4">
+<h3 data-number="7.1.4" class="anchored" data-anchor-id="specify-the-lda-model-using-the-mass-engine"><span class="header-section-number">7.1.4</span> 4. Specify the LDA model using the MASS engine</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>lda_spec <span class="ot">&lt;-</span> <span class="fu">discrim_linear</span>(<span class="at">mode =</span> <span class="st">"classification"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"MASS"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="bundle-recipe-and-model-into-a-workflow-and-fit-on-training-data" class="level2" data-number="8.5">
-<h2 data-number="8.5" class="anchored" data-anchor-id="bundle-recipe-and-model-into-a-workflow-and-fit-on-training-data"><span class="header-section-number">8.5</span> 5. Bundle recipe and model into a workflow and fit on training data</h2>
+<section id="bundle-recipe-and-model-into-a-workflow-and-fit-on-training-data" class="level3" data-number="7.1.5">
+<h3 data-number="7.1.5" class="anchored" data-anchor-id="bundle-recipe-and-model-into-a-workflow-and-fit-on-training-data"><span class="header-section-number">7.1.5</span> 5. Bundle recipe and model into a workflow and fit on training data</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>lda_workflow <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(lda_recipe) <span class="sc">|&gt;</span></span>
@@ -474,18 +475,18 @@ Attaching package: 'discrim'</code></pre>
 <span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>lda_fit <span class="ot">&lt;-</span> <span class="fu">fit</span>(lda_workflow, <span class="at">data =</span> seeds_train)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
+<section id="part-a-dimensionality-reduction-7d---2d-subspace" class="level3" data-number="7.1.6">
+<h3 data-number="7.1.6" class="anchored" data-anchor-id="part-a-dimensionality-reduction-7d---2d-subspace"><span class="header-section-number">7.1.6</span> PART A: DIMENSIONALITY REDUCTION (7D -&gt; 2D Subspace)</h3>
 </section>
-<section id="part-a-dimensionality-reduction-7d---2d-subspace" class="level1" data-number="9">
-<h1 data-number="9"><span class="header-section-number">9</span> PART A: DIMENSIONALITY REDUCTION (7D -&gt; 2D Subspace)</h1>
-<section id="extract-the-underlying-masslda-engine-and-preprocessed-test-predictors" class="level2" data-number="9.1">
-<h2 data-number="9.1" class="anchored" data-anchor-id="extract-the-underlying-masslda-engine-and-preprocessed-test-predictors"><span class="header-section-number">9.1</span> Extract the underlying MASS::lda engine and preprocessed test predictors</h2>
+<section id="extract-the-underlying-masslda-engine-and-preprocessed-test-predictors" class="level3" data-number="7.1.7">
+<h3 data-number="7.1.7" class="anchored" data-anchor-id="extract-the-underlying-masslda-engine-and-preprocessed-test-predictors"><span class="header-section-number">7.1.7</span> Extract the underlying MASS::lda engine and preprocessed test predictors</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>lda_engine <span class="ot">&lt;-</span> <span class="fu">extract_fit_engine</span>(lda_fit)</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>baked_test <span class="ot">&lt;-</span> <span class="fu">bake</span>(<span class="fu">prep</span>(lda_recipe), <span class="at">new_data =</span> seeds_test)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="project-the-7-geometric-features-onto-ld1-and-ld2-c---1-2-axes" class="level2" data-number="9.2">
-<h2 data-number="9.2" class="anchored" data-anchor-id="project-the-7-geometric-features-onto-ld1-and-ld2-c---1-2-axes"><span class="header-section-number">9.2</span> Project the 7 geometric features onto LD1 and LD2 (C - 1 = 2 axes)</h2>
+<section id="project-the-7-geometric-features-onto-ld1-and-ld2-c---1-2-axes" class="level3" data-number="7.1.8">
+<h3 data-number="7.1.8" class="anchored" data-anchor-id="project-the-7-geometric-features-onto-ld1-and-ld2-c---1-2-axes"><span class="header-section-number">7.1.8</span> Project the 7 geometric features onto LD1 and LD2 (C - 1 = 2 axes)</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>lda_projections <span class="ot">&lt;-</span> <span class="fu">predict</span>(lda_engine, <span class="at">newdata =</span> baked_test)<span class="sc">$</span>x <span class="sc">|&gt;</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  </span>
@@ -494,8 +495,8 @@ Attaching package: 'discrim'</code></pre>
 <span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(<span class="at">Class =</span> seeds_test<span class="sc">$</span>Class)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="inspect-the-proportion-of-between-class-variance-captured-by-ld1-and-ld2" class="level2" data-number="9.3">
-<h2 data-number="9.3" class="anchored" data-anchor-id="inspect-the-proportion-of-between-class-variance-captured-by-ld1-and-ld2"><span class="header-section-number">9.3</span> Inspect the proportion of between-class variance captured by LD1 and LD2</h2>
+<section id="inspect-the-proportion-of-between-class-variance-captured-by-ld1-and-ld2" class="level3" data-number="7.1.9">
+<h3 data-number="7.1.9" class="anchored" data-anchor-id="inspect-the-proportion-of-between-class-variance-captured-by-ld1-and-ld2"><span class="header-section-number">7.1.9</span> Inspect the proportion of between-class variance captured by LD1 and LD2</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(lda_engine)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -556,19 +557,19 @@ Proportion of trace:
 </div>
 </div>
 </section>
+<section id="part-b-supervised-classification-evaluation" class="level3" data-number="7.1.10">
+<h3 data-number="7.1.10" class="anchored" data-anchor-id="part-b-supervised-classification-evaluation"><span class="header-section-number">7.1.10</span> PART B: SUPERVISED CLASSIFICATION &amp; EVALUATION</h3>
 </section>
-<section id="part-b-supervised-classification-evaluation" class="level1" data-number="10">
-<h1 data-number="10"><span class="header-section-number">10</span> PART B: SUPERVISED CLASSIFICATION &amp; EVALUATION</h1>
-<section id="predict-wheat-varieties-on-the-unseen-test-set" class="level2" data-number="10.1">
-<h2 data-number="10.1" class="anchored" data-anchor-id="predict-wheat-varieties-on-the-unseen-test-set"><span class="header-section-number">10.1</span> Predict wheat varieties on the unseen test set</h2>
+<section id="predict-wheat-varieties-on-the-unseen-test-set" class="level3" data-number="7.1.11">
+<h3 data-number="7.1.11" class="anchored" data-anchor-id="predict-wheat-varieties-on-the-unseen-test-set"><span class="header-section-number">7.1.11</span> Predict wheat varieties on the unseen test set</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>test_predictions <span class="ot">&lt;-</span> <span class="fu">predict</span>(lda_fit, <span class="at">new_data =</span> seeds_test) <span class="sc">|&gt;</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(seeds_test <span class="sc">|&gt;</span> <span class="fu">select</span>(Class))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="compute-classification-accuracy-and-confusion-matrix" class="level2" data-number="10.2">
-<h2 data-number="10.2" class="anchored" data-anchor-id="compute-classification-accuracy-and-confusion-matrix"><span class="header-section-number">10.2</span> Compute classification accuracy and confusion matrix</h2>
+<section id="compute-classification-accuracy-and-confusion-matrix" class="level3" data-number="7.1.12">
+<h3 data-number="7.1.12" class="anchored" data-anchor-id="compute-classification-accuracy-and-confusion-matrix"><span class="header-section-number">7.1.12</span> Compute classification accuracy and confusion matrix</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">accuracy</span>(test_predictions, <span class="at">truth =</span> Class, <span class="at">estimate =</span> .pred_class)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -599,12 +600,12 @@ Prediction  1  2  3
 <p>• Hard Cap of (C - 1) Dimensions: Because there are 3 wheat varieties, LDA can extract at most 2 discriminant axes. If subtle secondary traits require a third dimension to separate overlapping edge cases, LDA cannot generate a third axis without adding more classes.</p>
 </section>
 </section>
-<section id="principal-component-analysis-pca" class="level1" data-number="11">
-<h1 data-number="11"><span class="header-section-number">11</span> Principal Component Analysis (PCA)</h1>
+<section id="principal-component-analysis-pca" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="principal-component-analysis-pca"><span class="header-section-number">7.2</span> Principal Component Analysis (PCA)</h2>
 <p>PCA is an unsupervised dimensionality reduction technique that transforms a set of correlated variables into a smaller set of uncorrelated variables called Principal Components.</p>
 <p>Let’s do it with a case study.</p>
-<section id="iris-flower-classification" class="level2" data-number="11.1">
-<h2 data-number="11.1" class="anchored" data-anchor-id="iris-flower-classification"><span class="header-section-number">11.1</span> 1. IRIS Flower Classification</h2>
+<section id="iris-flower-classification" class="level3" data-number="7.2.1">
+<h3 data-number="7.2.1" class="anchored" data-anchor-id="iris-flower-classification"><span class="header-section-number">7.2.1</span> 1. IRIS Flower Classification</h3>
 <p>Let’s load the dataset. The dataset is inbuilt in RStudio there fore we don’t need to load it externally.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(iris)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -679,11 +680,11 @@ Prediction  1  2  3
 </div>
 </div>
 </section>
+<section id="part-2-linear-discriminant-analysis-lda---supervised" class="level3" data-number="7.2.2">
+<h3 data-number="7.2.2" class="anchored" data-anchor-id="part-2-linear-discriminant-analysis-lda---supervised"><span class="header-section-number">7.2.2</span> PART 2: LINEAR DISCRIMINANT ANALYSIS (LDA - Supervised)</h3>
 </section>
-<section id="part-2-linear-discriminant-analysis-lda---supervised" class="level1" data-number="12">
-<h1 data-number="12"><span class="header-section-number">12</span> PART 2: LINEAR DISCRIMINANT ANALYSIS (LDA - Supervised)</h1>
-<section id="lda-uses-species-labels-to-maximize-between-class-separation" class="level2" data-number="12.1">
-<h2 data-number="12.1" class="anchored" data-anchor-id="lda-uses-species-labels-to-maximize-between-class-separation"><span class="header-section-number">12.1</span> LDA uses Species labels to maximize between-class separation</h2>
+<section id="lda-uses-species-labels-to-maximize-between-class-separation" class="level3" data-number="7.2.3">
+<h3 data-number="7.2.3" class="anchored" data-anchor-id="lda-uses-species-labels-to-maximize-between-class-separation"><span class="header-section-number">7.2.3</span> LDA uses Species labels to maximize between-class separation</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>lda_recipe <span class="ot">&lt;-</span> <span class="fu">recipe</span>(Species <span class="sc">~</span> ., <span class="at">data =</span> iris_train) <span class="sc">|&gt;</span></span>
 <span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>())</span>
@@ -726,9 +727,8 @@ Prediction   setosa versicolor virginica
 </div>
 </div>
 </section>
-</section>
-<section id="part-3-side-by-side-visualization-pca-vs.-lda" class="level1" data-number="13">
-<h1 data-number="13"><span class="header-section-number">13</span> PART 3: SIDE-BY-SIDE VISUALIZATION (PCA vs.&nbsp;LDA)</h1>
+<section id="part-3-side-by-side-visualization-pca-vs.-lda" class="level3" data-number="7.2.4">
+<h3 data-number="7.2.4" class="anchored" data-anchor-id="part-3-side-by-side-visualization-pca-vs.-lda"><span class="header-section-number">7.2.4</span> PART 3: SIDE-BY-SIDE VISUALIZATION (PCA vs.&nbsp;LDA)</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>p_pca <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(pca_test_proj, <span class="fu">aes</span>(<span class="at">x =</span> PC1, <span class="at">y =</span> PC2, <span class="at">color =</span> Species, <span class="at">shape =</span> Species)) <span class="sc">+</span></span>
 <span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -769,6 +769,420 @@ Prediction   setosa versicolor virginica
 </div>
 </div>
 </div>
+</section>
+</section>
+<section id="factor-analysis" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="factor-analysis"><span class="header-section-number">7.3</span> Factor Analysis</h2>
+<p>Factor Analysis is an unsupervised statistical method that uncovers hidden, unobservable variables—called latent factors—that explain why multiple observed variables correlate with one another.</p>
+<p><img src="factor.jpg" class="img-fluid"></p>
+<p>We create a hypothetical dataset of customer reviews on the food preferences. We simulate a 500-shopper organic food survey (9 items, 1-7 scale).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'psych' was built under R version 4.4.2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'psych'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:ggplot2':
+
+    %+%, alpha</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:scales':
+
+    alpha, rescale</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">500</span></span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create 3 true latent consumer drivers</span></span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>health_drive  <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>eco_drive     <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>quality_drive <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate 9 observed survey items driven by the 3 latent factors + noise</span></span>
+<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a>survey_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">No_Preservatives  =</span> <span class="fu">round</span>(<span class="fu">pmin</span>(<span class="fu">pmax</span>(<span class="dv">4</span> <span class="sc">+</span> <span class="fl">1.2</span> <span class="sc">*</span> health_drive  <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="fl">0.6</span>), <span class="dv">1</span>), <span class="dv">7</span>)),</span>
+<span id="cb58-12"><a href="#cb58-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">Low_Pesticides    =</span> <span class="fu">round</span>(<span class="fu">pmin</span>(<span class="fu">pmax</span>(<span class="dv">4</span> <span class="sc">+</span> <span class="fl">1.3</span> <span class="sc">*</span> health_drive  <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="fl">0.6</span>), <span class="dv">1</span>), <span class="dv">7</span>)),</span>
+<span id="cb58-13"><a href="#cb58-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">Nutrient_Density  =</span> <span class="fu">round</span>(<span class="fu">pmin</span>(<span class="fu">pmax</span>(<span class="dv">4</span> <span class="sc">+</span> <span class="fl">1.1</span> <span class="sc">*</span> health_drive  <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="fl">0.7</span>), <span class="dv">1</span>), <span class="dv">7</span>)),</span>
+<span id="cb58-14"><a href="#cb58-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">Eco_Packaging     =</span> <span class="fu">round</span>(<span class="fu">pmin</span>(<span class="fu">pmax</span>(<span class="dv">4</span> <span class="sc">+</span> <span class="fl">1.3</span> <span class="sc">*</span> eco_drive     <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="fl">0.6</span>), <span class="dv">1</span>), <span class="dv">7</span>)),</span>
+<span id="cb58-15"><a href="#cb58-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">Fair_Trade        =</span> <span class="fu">round</span>(<span class="fu">pmin</span>(<span class="fu">pmax</span>(<span class="dv">4</span> <span class="sc">+</span> <span class="fl">1.2</span> <span class="sc">*</span> eco_drive     <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="fl">0.6</span>), <span class="dv">1</span>), <span class="dv">7</span>)),</span>
+<span id="cb58-16"><a href="#cb58-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">Low_Carbon        =</span> <span class="fu">round</span>(<span class="fu">pmin</span>(<span class="fu">pmax</span>(<span class="dv">4</span> <span class="sc">+</span> <span class="fl">1.1</span> <span class="sc">*</span> eco_drive     <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="fl">0.7</span>), <span class="dv">1</span>), <span class="dv">7</span>)),</span>
+<span id="cb58-17"><a href="#cb58-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">Fresher_Flavor    =</span> <span class="fu">round</span>(<span class="fu">pmin</span>(<span class="fu">pmax</span>(<span class="dv">4</span> <span class="sc">+</span> <span class="fl">1.2</span> <span class="sc">*</span> quality_drive <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="fl">0.6</span>), <span class="dv">1</span>), <span class="dv">7</span>)),</span>
+<span id="cb58-18"><a href="#cb58-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">Artisanal_Appeal  =</span> <span class="fu">round</span>(<span class="fu">pmin</span>(<span class="fu">pmax</span>(<span class="dv">4</span> <span class="sc">+</span> <span class="fl">1.1</span> <span class="sc">*</span> quality_drive <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="fl">0.7</span>), <span class="dv">1</span>), <span class="dv">7</span>)),</span>
+<span id="cb58-19"><a href="#cb58-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">Superior_Texture  =</span> <span class="fu">round</span>(<span class="fu">pmin</span>(<span class="fu">pmax</span>(<span class="dv">4</span> <span class="sc">+</span> <span class="fl">1.3</span> <span class="sc">*</span> quality_drive <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="fl">0.6</span>), <span class="dv">1</span>), <span class="dv">7</span>))</span>
+<span id="cb58-20"><a href="#cb58-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb58-21"><a href="#cb58-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-22"><a href="#cb58-22" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(survey_df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 9
+  No_Preservatives Low_Pesticides Nutrient_Density Eco_Packaging Fair_Trade
+             &lt;dbl&gt;          &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt;      &lt;dbl&gt;
+1                4              5                4             5          6
+2                2              3                3             5          5
+3                4              4                5             5          5
+4                4              3                4             6          6
+5                3              3                3             4          3
+6                1              1                1             4          4
+# ℹ 4 more variables: Low_Carbon &lt;dbl&gt;, Fresher_Flavor &lt;dbl&gt;,
+#   Artisanal_Appeal &lt;dbl&gt;, Superior_Texture &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<section id="part-a-suitability-checks-kmo-bartletts-test" class="level3" data-number="7.3.1">
+<h3 data-number="7.3.1" class="anchored" data-anchor-id="part-a-suitability-checks-kmo-bartletts-test"><span class="header-section-number">7.3.1</span> PART A: SUITABILITY CHECKS (KMO &amp; BARTLETT’S TEST)</h3>
+<p>KMO Test is used to check the suitability of the dataset for factor analysis. When KMO statistic value is more than 0.60, we can proceed with Factor Analysis.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co"># KMO &gt; 0.60 confirms strong shared variance suitable for Factor Analysis</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="fu">KMO</span>(survey_df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Kaiser-Meyer-Olkin factor adequacy
+Call: KMO(r = survey_df)
+Overall MSA =  0.73
+MSA for each item = 
+No_Preservatives   Low_Pesticides Nutrient_Density    Eco_Packaging 
+            0.71             0.70             0.80             0.72 
+      Fair_Trade       Low_Carbon   Fresher_Flavor Artisanal_Appeal 
+            0.69             0.79             0.71             0.79 
+Superior_Texture 
+            0.71 </code></pre>
+</div>
+</div>
+<p>We also need to check the correlation between the variable is significantly differs from identity.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bartlett's test checks if correlation matrix differs significantly from identity</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cortest.bartlett</span>(<span class="fu">cor</span>(survey_df), <span class="at">n =</span> <span class="fu">nrow</span>(survey_df))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$chisq
+[1] 2663.103
+
+$p.value
+[1] 0
+
+$df
+[1] 36</code></pre>
+</div>
+</div>
+</section>
+<section id="part-b-determine-optimal-number-of-factors" class="level3" data-number="7.3.2">
+<h3 data-number="7.3.2" class="anchored" data-anchor-id="part-b-determine-optimal-number-of-factors"><span class="header-section-number">7.3.2</span> PART B: DETERMINE OPTIMAL NUMBER OF FACTORS</h3>
+<p>We create Scree-plot to determine number of factors optimal to explain the variance.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Parallel analysis compares real eigenvalues against random noise</span></span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fa.parallel</span>(survey_df, <span class="at">fm =</span> <span class="st">"ml"</span>, <span class="at">fa =</span> <span class="st">"fa"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-II-unit-2_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Parallel analysis suggests that the number of factors =  3  and the number of components =  NA </code></pre>
+</div>
+</div>
+</section>
+<section id="part-c-fit-exploratory-factor-analysis-3-factors" class="level3" data-number="7.3.3">
+<h3 data-number="7.3.3" class="anchored" data-anchor-id="part-c-fit-exploratory-factor-analysis-3-factors"><span class="header-section-number">7.3.3</span> PART C: FIT EXPLORATORY FACTOR ANALYSIS (3 FACTORS)</h3>
+<p>From the scree-plot, we see the angle of the line suddenly changes at the factor number 3. We build 3 Factor model:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use Maximum Likelihood ("ml") with Varimax orthogonal rotation</span></span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>fa_model <span class="ot">&lt;-</span> <span class="fu">fa</span>(survey_df, <span class="at">nfactors =</span> <span class="dv">3</span>, <span class="at">rotate =</span> <span class="st">"varimax"</span>, <span class="at">fm =</span> <span class="st">"ml"</span>)</span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Print factor loadings (hide small loadings &lt; 0.30 for clarity)</span></span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fa_model<span class="sc">$</span>loadings, <span class="at">cutoff =</span> <span class="fl">0.30</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Loadings:
+                 ML1    ML2    ML3   
+No_Preservatives  0.882              
+Low_Pesticides    0.908              
+Nutrient_Density  0.818              
+Eco_Packaging                   0.851
+Fair_Trade                      0.900
+Low_Carbon                      0.766
+Fresher_Flavor           0.871       
+Artisanal_Appeal         0.815       
+Superior_Texture         0.881       
+
+                 ML1   ML2   ML3
+SS loadings    2.276 2.201 2.130
+Proportion Var 0.253 0.245 0.237
+Cumulative Var 0.253 0.498 0.734</code></pre>
+</div>
+</div>
+<p>Let’s see 3 Factor Model visually:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize the latent factor structure diagram</span></span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fa.diagram</span>(fa_model, <span class="at">main =</span> <span class="st">"Latent Factors Driving Organic Food Purchases"</span>, <span class="at">rsize =</span> <span class="fl">0.9</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-II-unit-2_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Now, we can classify each shopper according to the strength of each Factor (ML1, ML2, and ML3) and use this score to promote the products accordingly.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract the 3 standardized factor scores per shopper for downstream segmentation</span></span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>shopper_scores <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(fa_model<span class="sc">$</span>scores)</span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(shopper_scores)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+     ML1     ML2     ML3
+   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+1  0.360  1.22    1.40  
+2 -0.987  0.697   0.639 
+3  0.184  1.30    0.838 
+4 -0.302  0.0509  1.27  
+5 -0.792  0.565  -0.569 
+6 -2.26  -0.206  -0.0751</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled" title="Assignment Block II Unit 2">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Assignment Block II Unit 2
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Use R-inbuilt dataset - <code>Harman74.cor$cov</code> dataset, extract plausible factors, name the factors appropriately, give scores to each row and interpret scores of five rows randomly selected.</p>
+<p>Harman74.cor$cov is a 24 × 24 correlation matrix representing 24 psychological aptitude tests administered to 145 seventh- and eighth-grade students by Karl Holzinger and Frances Swineford.</p>
+<p>Breakdown of All 24 Variables by Cognitive Domain:</p>
+<ol type="1">
+<li>Spatial Ability Tests (Tests 1–4)</li>
+</ol>
+<p>These four tests measure how well a student can visualize, rotate, and manipulate 2D and 3D shapes mentally:</p>
+<p>• VisualPerception: Identifying matching geometric figures and spatial patterns.</p>
+<p>• Cubes: Determining whether two drawings show the same 3D cube rotated into a different position.</p>
+<p>• PaperFormBoard: Visualizing how flat, cut-out geometric pieces fit together to form a complete shape.</p>
+<p>• Flags: Recognizing whether rotated flag designs match a target orientation or are mirror-reversed.</p>
+<ol start="2" type="1">
+<li>Verbal Ability Tests (Tests 5–9)</li>
+</ol>
+<p>These five tests evaluate vocabulary, reading comprehension, and general knowledge:</p>
+<p>• GeneralInformation: Answering factual questions across everyday general knowledge topics.</p>
+<p>• PargraphComprehension: Reading short passages and answering questions about their meaning (spelled without the second “a” in the R dataset).</p>
+<p>• SentenceCompletion: Choosing the best word to fill in a blank within a sentence.</p>
+<p>• WordClassification: Identifying which word does not belong in a group of related words.</p>
+<p>• WordMeaning: Matching target vocabulary words to their correct definitions or synonyms.</p>
+<ol start="3" type="1">
+<li>Perceptual Speed &amp; Clerical Tests (Tests 10–13)</li>
+</ol>
+<p>These four timed tests measure how quickly and accurately a student can perform simple visual-numerical tasks:</p>
+<p>• Addition: Solving basic multi-digit addition problems rapidly.</p>
+<p>• Code: Translating symbols or letters into numbers using a provided substitution key.</p>
+<p>• CountingDots: Quickly counting clusters of dots arranged in irregular patterns.</p>
+<p>• StraightCurvedCapitals: Scanning capital letters to distinguish those made solely of straight lines from those containing curves.</p>
+<ol start="4" type="1">
+<li>Memory &amp; Associative Recall Tests (Tests 14–19)</li>
+</ol>
+<p>These six tests measure short-term recognition and paired-associate recall:</p>
+<p>• WordRecognition: Identifying previously studied words from a mixed list.</p>
+<p>• NumberRecognition: Identifying previously studied multi-digit numbers from a mixed list.</p>
+<p>• FigureRecognition: Identifying previously shown abstract shapes from a larger set.</p>
+<p>• ObjectNumber: Recalling the number paired with a specific object name shown earlier.</p>
+<p>• NumberFigure: Recalling the geometric shape paired with a specific number shown earlier.</p>
+<p>• FigureWord: Recalling the word paired with a specific abstract figure shown earlier.</p>
+<ol start="5" type="1">
+<li>Deductive &amp; Mathematical Reasoning Tests (Tests 20–24)</li>
+</ol>
+<p>These five tests measure logical deduction, pattern completion, and quantitative problem solving:</p>
+<p>• Deduction: Drawing valid logical conclusions from formal premises or syllogisms.</p>
+<p>• NumericalPuzzles: Finding missing numbers in arithmetic grids or mathematical puzzles.</p>
+<p>• ProblemReasoning: Solving multi-step logical and analytical word puzzles.</p>
+<p>• SeriesCompletion: Determining the next number or element in a mathematical sequence.</p>
+<p>• ArithmeticProblems: Solving quantitative math word problems.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="multiple-machine-learning-models-and-ensemble-models" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="multiple-machine-learning-models-and-ensemble-models"><span class="header-section-number">7.4</span> Multiple Machine Learning Models and Ensemble Models</h2>
+<p>So far, we have understood how to apply single model on the dataset. Now, we apply multiple models on same dataset. We will cover support vector machines, naïve Bayes, nearest neighbors, decision trees,random forest, and ensemble methods. To improve model performance, we will also use k-fold validation and gradient boosting algorithm.</p>
+<p>In commercial agriculture and food processing, dried pulses like dry beans must be accurately sorted by variety before packaging and export because different varieties have distinct cooking times, textures, and market prices. Manual sorting is slow and prone to human error.</p>
+<p>Using the UCI Dry Bean Dataset (13,611 grains captured via high-resolution computer vision across 16 morphological and shape features—such as Area, Perimeter, Eccentricity, Roundness, and ShapeFactor1—and 7 commercial bean varieties: Seker, Barbunya, Bombay, Cali, Horoz, Sira, and Dermason), an agribusiness builds a multi-model machine learning benchmark in tidymodels.</p>
+<p>To ensure fair comparison without overfitting, all 6 individual classifiers are evaluated using 5-fold stratified cross-validation, and the top performers are combined into a stacked ensemble meta-model that achieves superior grading accuracy.</p>
+<p>The difference among the various models is shown in the table:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Method / Model</th>
+<th style="text-align: left;">Role in This Agribusiness Case Study</th>
+<th style="text-align: left;">Key Trade-Offs</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong><em>k</em>-Fold Cross-Validation</strong></td>
+<td style="text-align: left;">Splits training data into <strong>5 stratified folds</strong>, training on 4 folds and validating on 1 fold repeatedly to measure true generalization across bean batches.</td>
+<td style="text-align: left;">Prevents data leakage and overfitting, though it multiplies training time by <em>k</em>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Naïve Bayes</strong></td>
+<td style="text-align: left;">Establishes a fast probabilistic baseline assuming all 16 shape measurements are conditionally independent given the bean variety.</td>
+<td style="text-align: left;">Trains in milliseconds, but accuracy suffers because geometric traits (<code>Area</code>, <code>Perimeter</code>) are strongly correlated.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong><em>k</em>-Nearest Neighbors (kNN)</strong></td>
+<td style="text-align: left;">Classifies each bean based on the majority vote of its <strong>7 closest neighbors</strong> in standardized 16D shape space.</td>
+<td style="text-align: left;">Captures irregular local boundaries well, but slows down during real-time sorting line inference.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Decision Tree</strong></td>
+<td style="text-align: left;">Builds transparent, human-readable <strong>if-then rules</strong> (e.g., <em>If Area &gt; 70,000 and AspectRatio &gt; 1.8 → Horoz</em>) for quality control auditors.</td>
+<td style="text-align: left;">Easy to explain to non-technical operators, but single trees overfit noisy seed measurements.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Support Vector Machine (SVM)</strong></td>
+<td style="text-align: left;">Uses a <strong>Radial Basis Function (RBF) kernel</strong> to draw smooth, non-linear margin boundaries separating overlapping varieties like <em>Sira</em> and <em>Dermason</em>.</td>
+<td style="text-align: left;">Excels in high-dimensional continuous spaces, but requires strict feature scaling and longer training times.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Random Forest</strong></td>
+<td style="text-align: left;">Averages predictions across <strong>300 decorrelated decision trees</strong> (bagging + random feature subsets), dramatically reducing variance.</td>
+<td style="text-align: left;">Highly accurate and robust to outliers, though less interpretable than a single tree.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>XGBoost (Extreme Gradient Boosting)</strong></td>
+<td style="text-align: left;">Sequentially builds <strong>300 boosted trees</strong>, where each new tree specifically corrects the misclassified beans from previous trees.</td>
+<td style="text-align: left;">Typically delivers the highest single-model accuracy on tabular shape features, but requires careful tuning.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Ensemble Stacking (<code>stacks</code>)</strong></td>
+<td style="text-align: left;">Trains a regularized <strong>meta-learner</strong> that combines out-of-fold probability predictions from <strong>Random Forest</strong>, <strong>XGBoost</strong>, and <strong>SVM</strong>.</td>
+<td style="text-align: left;">Outperforms every individual model by blending tree-based splits with smooth kernel margins.</td>
+</tr>
+</tbody>
+</table>
+<p>Let’s do the R Coding for building multi models. Begin with loading the dataset:</p>
+<!-- ```{r} -->
+<!-- # 1. Install and load required packages -->
+<!-- # install.packages(c( -->
+<!-- #   "tidymodels", "discrim", "naivebayes", "kknn", -->
+<!-- #   "kernlab", "ranger", "xgboost", "stacks", "readxl" -->
+<!-- # )) -->
+<!-- library(tidymodels) -->
+<!-- library(discrim) -->
+<!-- library(stacks) -->
+<!-- library(readxl) -->
+<!-- # 2. Load the dataset -->
+<!-- beans_raw <- read_excel("Dry_Bean_Dataset.xlsx") |> -->
+<!--   mutate(Class = factor(Class)) -->
+<!-- head(beans_raw) -->
+<!-- ``` -->
+<!-- # Sample 3,500 stratified beans for fast local benchmarking (remove slice_sample for full 13,611 rows) -->
+<!-- set.seed(202) -->
+<!-- beans_df <- beans_raw |> -->
+<!--   slice_sample(n = 3500, by = Class) -->
+<!-- # 3. Train / Test Split (80% Train, 20% Test) & 5-Fold Stratified Cross-Validation -->
+<!-- bean_split <- initial_split(beans_df, prop = 0.80, strata = Class) -->
+<!-- bean_train <- training(bean_split) -->
+<!-- bean_test  <- testing(bean_split) -->
+<!-- set.seed(2026) -->
+<!-- bean_folds <- vfold_cv(bean_train, v = 5, strata = Class) -->
+<!-- # 4. Preprocessing Recipe (Standardize predictors for SVM & kNN) -->
+<!-- bean_recipe <- recipe(Class ~ ., data = bean_train) |> -->
+<!--   step_zv(all_predictors()) |> -->
+<!--   step_normalize(all_numeric_predictors()) -->
+<!-- # ========================================================= -->
+<!-- # PART A: DEFINE ALL 6 INDIVIDUAL MODEL SPECIFICATIONS -->
+<!-- # ========================================================= -->
+<!-- # 1. Naive Bayes -->
+<!-- nb_spec <- naive_Bayes() |> -->
+<!--   set_engine("naivebayes") |> -->
+<!--   set_mode("classification") -->
+<!-- # 2. k-Nearest Neighbors (kNN) -->
+<!-- knn_spec <- nearest_neighbor(neighbors = 7) |> -->
+<!--   set_engine("kknn") |> -->
+<!--   set_mode("classification") -->
+<!-- # 3. Decision Tree -->
+<!-- dt_spec <- decision_tree(cost_complexity = 0.001, tree_depth = 10) |> -->
+<!--   set_engine("rpart") |> -->
+<!--   set_mode("classification") -->
+<!-- # 4. Support Vector Machine (RBF Kernel) -->
+<!-- svm_spec <- svm_rbf(cost = 2, rbf_sigma = 0.05) |> -->
+<!--   set_engine("kernlab") |> -->
+<!--   set_mode("classification") -->
+<!-- # 5. Random Forest (Bagging Ensemble) -->
+<!-- rf_spec <- rand_forest(trees = 300, mtry = 4) |> -->
+<!--   set_engine("ranger") |> -->
+<!--   set_mode("classification") -->
+<!-- # 6. XGBoost (Gradient Boosting Ensemble) -->
+<!-- xgb_spec <- boost_tree(trees = 300, tree_depth = 6, learn_rate = 0.05) |> -->
+<!--   set_engine("xgboost") |> -->
+<!--   set_mode("classification") -->
+<!-- # ========================================================= -->
+<!-- # PART B: EVALUATE ALL MODELS WITH 5-FOLD CROSS-VALIDATION -->
+<!-- # ========================================================= -->
+<!-- # Bundle all 6 models into a single workflow_set -->
+<!-- bean_workflows <- workflow_set( -->
+<!--   preproc = list(norm = bean_recipe), -->
+<!--   models = list( -->
+<!--     Naive_Bayes   = nb_spec, -->
+<!--     KNN           = knn_spec, -->
+<!--     Decision_Tree = dt_spec, -->
+<!--     SVM_RBF       = svm_spec, -->
+<!--     Random_Forest = rf_spec, -->
+<!--     XGBoost       = xgb_spec -->
+<!--   ) -->
+<!-- ) -->
+<!-- # Configure control settings to save out-of-fold predictions for Ensemble Stacking -->
+<!-- stack_ctrl <- control_resamples( -->
+<!--   save_pred = TRUE, -->
+<!--   save_workflow = TRUE -->
+<!-- ) -->
+<!-- # Fit all 6 models across all 5 CV folds (30 total fits) -->
+<!-- cv_results <- bean_workflows |> -->
+<!--   workflow_map( -->
+<!--     fn = "fit_resamples", -->
+<!--     resamples = bean_folds, -->
+<!--     metrics = metric_set(accuracy, roc_auc), -->
+<!--     control = stack_ctrl -->
+<!--   ) -->
+<!-- # Rank all 6 models by 5-fold cross-validated Accuracy and ROC AUC -->
+<!-- rank_results(cv_results, rank_metric = "accuracy", select_best = TRUE) |> -->
+<!--   select(wflow_id, .metric, mean, std_err) -->
+<!-- # Plot CV benchmark comparison -->
+<!-- autoplot(cv_results, metric = "accuracy") + -->
+<!--   labs( -->
+<!--     title = "5-Fold Cross-Validation Performance on Dry Bean Grading", -->
+<!--     subtitle = "Comparing 6 classifiers across 16 computer-vision shape traits" -->
+<!--   ) + -->
+<!--   theme_minimal(base_size = 13) -->
+<!-- # ========================================================= -->
+<!-- # PART C: BUILD & EVALUATE STACKED ENSEMBLE META-MODEL -->
+<!-- # ========================================================= -->
+<!-- # Combine out-of-fold predictions from top diverse learners (SVM + Random Forest + XGBoost) -->
+<!-- bean_stack <- stacks() |> -->
+<!--   add_candidates(cv_results, name = "norm_SVM_RBF") |> -->
+<!--   add_candidates(cv_results, name = "norm_Random_Forest") |> -->
+<!--   add_candidates(cv_results, name = "norm_XGBoost") |> -->
+<!--   blend_predictions() |>   # Fits a penalized meta-learner to assign optimal weights -->
+<!--   fit_members()            # Retrains selected base models on full training data -->
+<!-- # Inspect the learned meta-learner weights assigned to each base model -->
+<!-- autoplot(bean_stack, type = "weights") + -->
+<!--   labs(title = "Stacked Ensemble Meta-Learner Weights") + -->
+<!--   theme_minimal(base_size = 13) -->
+<!-- # Predict on the unseen 20% hold-out test set -->
+<!-- ensemble_preds <- predict(bean_stack, new_data = bean_test) |> -->
+<!--   bind_cols(bean_test |> select(Class)) -->
+<!-- # Final Hold-Out Test Accuracy & Confusion Matrix -->
+<!-- accuracy(ensemble_preds, truth = Class, estimate = .pred_class) -->
+<!-- conf_mat(ensemble_preds, truth = Class, estimate = .pred_class) -->
+<!-- ``` -->
 
 
 </section>

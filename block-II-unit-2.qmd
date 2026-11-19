@@ -8,7 +8,7 @@ Supervised machine learning:  Linear discriminant analysis, principal component
 
 Let's learn more algorithms of supervised machine learning.
 
-# Linear Discriminant Analysis
+## Linear Discriminant Analysis
 
 Linear Discriminant Analysis (LDA) is a supervised machine learning algorithm used for both classification and dimensionality reduction. It works by projecting high-dimensional data onto a lower-dimensional space (with at most C - 1 axes for C classes) in a way that maximizes the separation between class means while minimizing the spread within each class. See the Figure:
 
@@ -38,7 +38,7 @@ Linear Discriminant Analysis (LDA) performs supervised dimensionality reduction 
 
 • Prepares Data for Downstream Models: By projecting noisy, high-dimensional data onto a clean, low-dimensional subspace where classes are already well separated, LDA makes subsequent classifiers (such as Logistic Regression, SVMs, or k-Nearest Neighbors) both faster and more accurate.
 
-## LDA | Case Study : Wheat Seed Classification
+### LDA | Case Study : Wheat Seed Classification
 
 The dataset is imported from UCI Machine Learning Repository and the data Collected at the Institute of Agrophysics of the Polish Academy of Sciences, this agricultural dataset contains 7 geometric X-ray measurements of wheat kernels across 3 commercial wheat varieties (Kama, Rosa, and Canadian). Let's use LDA to compress 7 grain attributes down to 2 linear discriminants (LD1 and LD2).
 
@@ -75,7 +75,7 @@ df$Class = as.factor(df$Class)
 ```
 
 
-## 2. Split into training (75%) and testing (25%) sets
+### 2. Split into training (75%) and testing (25%) sets
 
 ```{r}
 
@@ -87,7 +87,7 @@ seeds_test  <- testing(seeds_split)
 ```
 
 
-## 3. Create a preprocessing recipe (standardize all 7 kernel measurements)
+### 3. Create a preprocessing recipe (standardize all 7 kernel measurements)
 
 ```{r}
 
@@ -96,7 +96,7 @@ lda_recipe <- recipe(Class ~ ., data = seeds_train) |>
 
 ```
 
-## 4. Specify the LDA model using the MASS engine
+### 4. Specify the LDA model using the MASS engine
 
 ```{r}
 
@@ -105,7 +105,7 @@ lda_spec <- discrim_linear(mode = "classification") |>
 
 ```
 
-## 5. Bundle recipe and model into a workflow and fit on training data
+### 5. Bundle recipe and model into a workflow and fit on training data
 
 ```{r}
 
@@ -117,9 +117,9 @@ lda_fit <- fit(lda_workflow, data = seeds_train)
 
 ```
 
-# PART A: DIMENSIONALITY REDUCTION (7D -> 2D Subspace)
+### PART A: DIMENSIONALITY REDUCTION (7D -> 2D Subspace)
 
-## Extract the underlying MASS::lda engine and preprocessed test predictors
+### Extract the underlying MASS::lda engine and preprocessed test predictors
 
 ```{r}
 
@@ -128,7 +128,7 @@ baked_test <- bake(prep(lda_recipe), new_data = seeds_test)
 
 ```
 
-## Project the 7 geometric features onto LD1 and LD2 (C - 1 = 2 axes)
+### Project the 7 geometric features onto LD1 and LD2 (C - 1 = 2 axes)
 
 ```{r}
 
@@ -140,7 +140,7 @@ lda_projections <- predict(lda_engine, newdata = baked_test)$x |>
 
 ```
 
-## Inspect the proportion of between-class variance captured by LD1 and LD2
+### Inspect the proportion of between-class variance captured by LD1 and LD2
 
 ```{r}
 
@@ -169,9 +169,9 @@ ggplot(lda_projections, aes(x = LD1, y = LD2, color = Class, shape = Class)) +
 
 ```
 
-# PART B: SUPERVISED CLASSIFICATION & EVALUATION
+### PART B: SUPERVISED CLASSIFICATION & EVALUATION
 
-## Predict wheat varieties on the unseen test set
+### Predict wheat varieties on the unseen test set
 
 ```{r}
 
@@ -181,7 +181,7 @@ test_predictions <- predict(lda_fit, new_data = seeds_test) |>
 
 ```
 
-## Compute classification accuracy and confusion matrix
+### Compute classification accuracy and confusion matrix
 
 ```{r}
 
@@ -214,13 +214,13 @@ Using Linear Discriminant Analysis (LDA) in tidymodels, these 7 correlated physi
 
 • Hard Cap of \(C - 1\) Dimensions: Because there are 3 wheat varieties, LDA can extract at most 2 discriminant axes. If subtle secondary traits require a third dimension to separate overlapping edge cases, LDA cannot generate a third axis without adding more classes.
 
-# Principal Component Analysis (PCA)
+## Principal Component Analysis (PCA)
 
 PCA is an unsupervised dimensionality reduction technique that transforms a set of correlated variables into a smaller set of uncorrelated variables called Principal Components. 
 
 Let's do it with a case study.
 
-## 1. IRIS Flower Classification
+### 1. IRIS Flower Classification
 
 Let's load the dataset. The dataset is inbuilt in RStudio there fore we don't need to load it externally. 
 
@@ -278,9 +278,9 @@ tidy(pca_prep, number = 2, type = "variance") |>
 
 ```
 
-# PART 2: LINEAR DISCRIMINANT ANALYSIS (LDA - Supervised)
+### PART 2: LINEAR DISCRIMINANT ANALYSIS (LDA - Supervised)
 
-## LDA uses Species labels to maximize between-class separation
+### LDA uses Species labels to maximize between-class separation
 
 ```{r}
 
@@ -313,7 +313,7 @@ conf_mat(lda_preds, truth = Species, estimate = .pred_class)
 
 ```
 
-# PART 3: SIDE-BY-SIDE VISUALIZATION (PCA vs. LDA)
+### PART 3: SIDE-BY-SIDE VISUALIZATION (PCA vs. LDA)
 
 ```{r}
 
@@ -350,6 +350,364 @@ p_lda <- ggplot(lda_test_proj, aes(x = LD1, y = LD2, color = Species, shape = Sp
 p_pca + p_lda + plot_layout(guides = "collect")
 
 ```
+
+
+## Factor Analysis
+
+Factor Analysis is an unsupervised statistical method that uncovers hidden, unobservable variables—called latent factors—that explain why multiple observed variables correlate with one another. 
+
+![](factor.jpg)
+
+We create a hypothetical dataset of customer reviews on the food preferences. We simulate a 500-shopper organic food survey (9 items, 1-7 scale).
+
+```{r}
+
+library(tidymodels)
+library(psych)
+
+set.seed(2026)
+n <- 500
+
+# Create 3 true latent consumer drivers
+health_drive  <- rnorm(n)
+eco_drive     <- rnorm(n)
+quality_drive <- rnorm(n)
+
+# Generate 9 observed survey items driven by the 3 latent factors + noise
+survey_df <- tibble(
+  No_Preservatives  = round(pmin(pmax(4 + 1.2 * health_drive  + rnorm(n, 0, 0.6), 1), 7)),
+  Low_Pesticides    = round(pmin(pmax(4 + 1.3 * health_drive  + rnorm(n, 0, 0.6), 1), 7)),
+  Nutrient_Density  = round(pmin(pmax(4 + 1.1 * health_drive  + rnorm(n, 0, 0.7), 1), 7)),
+  Eco_Packaging     = round(pmin(pmax(4 + 1.3 * eco_drive     + rnorm(n, 0, 0.6), 1), 7)),
+  Fair_Trade        = round(pmin(pmax(4 + 1.2 * eco_drive     + rnorm(n, 0, 0.6), 1), 7)),
+  Low_Carbon        = round(pmin(pmax(4 + 1.1 * eco_drive     + rnorm(n, 0, 0.7), 1), 7)),
+  Fresher_Flavor    = round(pmin(pmax(4 + 1.2 * quality_drive + rnorm(n, 0, 0.6), 1), 7)),
+  Artisanal_Appeal  = round(pmin(pmax(4 + 1.1 * quality_drive + rnorm(n, 0, 0.7), 1), 7)),
+  Superior_Texture  = round(pmin(pmax(4 + 1.3 * quality_drive + rnorm(n, 0, 0.6), 1), 7))
+)
+
+head(survey_df)
+
+```
+
+### PART A: SUITABILITY CHECKS (KMO & BARTLETT'S TEST)
+
+KMO Test is used to check the suitability of the dataset for factor analysis. When KMO statistic value is more than 0.60, we can proceed with Factor Analysis.
+
+```{r}
+
+# KMO > 0.60 confirms strong shared variance suitable for Factor Analysis
+KMO(survey_df)
+
+```
+
+We also need to check the correlation between the variable is significantly differs from identity. 
+
+```{r}
+# Bartlett's test checks if correlation matrix differs significantly from identity
+cortest.bartlett(cor(survey_df), n = nrow(survey_df))
+
+```
+
+### PART B: DETERMINE OPTIMAL NUMBER OF FACTORS
+
+We create Scree-plot to determine number of factors optimal to explain the variance. 
+
+```{r}
+
+## Parallel analysis compares real eigenvalues against random noise
+fa.parallel(survey_df, fm = "ml", fa = "fa")
+
+```
+
+### PART C: FIT EXPLORATORY FACTOR ANALYSIS (3 FACTORS)
+
+
+From the scree-plot, we see the angle of the line suddenly changes at the factor number 3. We build 3 Factor model:
+
+```{r}
+
+# Use Maximum Likelihood ("ml") with Varimax orthogonal rotation
+fa_model <- fa(survey_df, nfactors = 3, rotate = "varimax", fm = "ml")
+
+# Print factor loadings (hide small loadings < 0.30 for clarity)
+print(fa_model$loadings, cutoff = 0.30)
+
+```
+
+Let's see 3 Factor Model visually:
+
+```{r}
+
+# Visualize the latent factor structure diagram
+fa.diagram(fa_model, main = "Latent Factors Driving Organic Food Purchases", rsize = 0.9)
+
+```
+
+Now, we can classify each shopper according to the strength of each Factor (ML1, ML2, and ML3) and use this score to promote the products accordingly. 
+
+```{r}
+
+# Extract the 3 standardized factor scores per shopper for downstream segmentation
+shopper_scores <- as_tibble(fa_model$scores)
+head(shopper_scores)
+
+```
+
+
+:::{.callout-important title = "Assignment Block II Unit 2"}
+
+Use R-inbuilt dataset - `Harman74.cor$cov` dataset, extract plausible factors, name the factors appropriately, give scores to each row and interpret scores of five rows randomly selected.     
+
+Harman74.cor$cov is a 24 × 24 correlation matrix representing 24 psychological aptitude tests administered to 145 seventh- and eighth-grade students by Karl Holzinger and Frances Swineford. 
+
+Breakdown of All 24 Variables by Cognitive Domain:
+
+1. Spatial Ability Tests (Tests 1–4)
+
+These four tests measure how well a student can visualize, rotate, and manipulate 2D and 3D shapes mentally:
+
+• VisualPerception: Identifying matching geometric figures and spatial patterns.
+
+• Cubes: Determining whether two drawings show the same 3D cube rotated into a different position.
+
+• PaperFormBoard: Visualizing how flat, cut-out geometric pieces fit together to form a complete shape.
+
+• Flags: Recognizing whether rotated flag designs match a target orientation or are mirror-reversed. 
+
+2. Verbal Ability Tests (Tests 5–9)
+
+These five tests evaluate vocabulary, reading comprehension, and general knowledge: 
+
+• GeneralInformation: Answering factual questions across everyday general knowledge topics.
+
+• PargraphComprehension: Reading short passages and answering questions about their meaning (spelled without the second "a" in the R dataset).
+
+• SentenceCompletion: Choosing the best word to fill in a blank within a sentence.
+
+• WordClassification: Identifying which word does not belong in a group of related words.
+
+• WordMeaning: Matching target vocabulary words to their correct definitions or synonyms. 
+
+3. Perceptual Speed & Clerical Tests (Tests 10–13)
+
+These four timed tests measure how quickly and accurately a student can perform simple visual-numerical tasks: 
+
+• Addition: Solving basic multi-digit addition problems rapidly.
+
+• Code: Translating symbols or letters into numbers using a provided substitution key.
+
+• CountingDots: Quickly counting clusters of dots arranged in irregular patterns.
+
+• StraightCurvedCapitals: Scanning capital letters to distinguish those made solely of straight lines from those containing curves. 
+
+4. Memory & Associative Recall Tests (Tests 14–19)
+
+These six tests measure short-term recognition and paired-associate recall: 
+
+• WordRecognition: Identifying previously studied words from a mixed list.
+
+• NumberRecognition: Identifying previously studied multi-digit numbers from a mixed list.
+
+• FigureRecognition: Identifying previously shown abstract shapes from a larger set.
+
+• ObjectNumber: Recalling the number paired with a specific object name shown earlier.
+
+• NumberFigure: Recalling the geometric shape paired with a specific number shown earlier.
+
+• FigureWord: Recalling the word paired with a specific abstract figure shown earlier. 
+
+5. Deductive & Mathematical Reasoning Tests (Tests 20–24)
+
+These five tests measure logical deduction, pattern completion, and quantitative problem solving:
+
+• Deduction: Drawing valid logical conclusions from formal premises or syllogisms.
+
+• NumericalPuzzles: Finding missing numbers in arithmetic grids or mathematical puzzles.
+
+• ProblemReasoning: Solving multi-step logical and analytical word puzzles.
+
+• SeriesCompletion: Determining the next number or element in a mathematical sequence.
+
+• ArithmeticProblems: Solving quantitative math word problems. 
+
+:::
+
+## Multiple Machine Learning Models and Ensemble Models
+
+So far, we have understood how to apply single model on the dataset. Now, we apply multiple models on same dataset. We will cover support vector machines, naïve Bayes, nearest neighbors, decision trees,random forest, and ensemble methods. To improve model performance, we will also use k-fold validation and gradient boosting algorithm. 
+
+In commercial agriculture and food processing, dried pulses like dry beans must be accurately sorted by variety before packaging and export because different varieties have distinct cooking times, textures, and market prices. Manual sorting is slow and prone to human error.
+
+Using the UCI Dry Bean Dataset (13,611 grains captured via high-resolution computer vision across 16 morphological and shape features—such as Area, Perimeter, Eccentricity, Roundness, and ShapeFactor1—and 7 commercial bean varieties: Seker, Barbunya, Bombay, Cali, Horoz, Sira, and Dermason), an agribusiness builds a multi-model machine learning benchmark in tidymodels.
+
+To ensure fair comparison without overfitting, all 6 individual classifiers are evaluated using 5-fold stratified cross-validation, and the top performers are combined into a stacked ensemble meta-model that achieves superior grading accuracy.
+
+The difference among the various models is shown in the table:
+
+
+| Method / Model | Role in This Agribusiness Case Study | Key Trade-Offs |
+| :--- | :--- | :--- |
+| ***k*-Fold Cross-Validation** | Splits training data into **5 stratified folds**, training on 4 folds and validating on 1 fold repeatedly to measure true generalization across bean batches. | Prevents data leakage and overfitting, though it multiplies training time by *k*. |
+| **Naïve Bayes** | Establishes a fast probabilistic baseline assuming all 16 shape measurements are conditionally independent given the bean variety. | Trains in milliseconds, but accuracy suffers because geometric traits (`Area`, `Perimeter`) are strongly correlated. |
+| ***k*-Nearest Neighbors (kNN)** | Classifies each bean based on the majority vote of its **7 closest neighbors** in standardized 16D shape space. | Captures irregular local boundaries well, but slows down during real-time sorting line inference. |
+| **Decision Tree** | Builds transparent, human-readable **if-then rules** (e.g., *If Area > 70,000 and AspectRatio > 1.8 → Horoz*) for quality control auditors. | Easy to explain to non-technical operators, but single trees overfit noisy seed measurements. |
+| **Support Vector Machine (SVM)** | Uses a **Radial Basis Function (RBF) kernel** to draw smooth, non-linear margin boundaries separating overlapping varieties like *Sira* and *Dermason*. | Excels in high-dimensional continuous spaces, but requires strict feature scaling and longer training times. |
+| **Random Forest** | Averages predictions across **300 decorrelated decision trees** (bagging + random feature subsets), dramatically reducing variance. | Highly accurate and robust to outliers, though less interpretable than a single tree. |
+| **XGBoost (Extreme Gradient Boosting)** | Sequentially builds **300 boosted trees**, where each new tree specifically corrects the misclassified beans from previous trees. | Typically delivers the highest single-model accuracy on tabular shape features, but requires careful tuning. |
+| **Ensemble Stacking (`stacks`)** | Trains a regularized **meta-learner** that combines out-of-fold probability predictions from **Random Forest**, **XGBoost**, and **SVM**. | Outperforms every individual model by blending tree-based splits with smooth kernel margins. |
+
+Let's do the R Coding for building multi models. Begin with loading the dataset:
+
+<!-- ```{r} -->
+
+<!-- # 1. Install and load required packages -->
+<!-- # install.packages(c( -->
+<!-- #   "tidymodels", "discrim", "naivebayes", "kknn", -->
+<!-- #   "kernlab", "ranger", "xgboost", "stacks", "readxl" -->
+<!-- # )) -->
+<!-- library(tidymodels) -->
+<!-- library(discrim) -->
+<!-- library(stacks) -->
+<!-- library(readxl) -->
+
+<!-- # 2. Load the dataset -->
+
+<!-- beans_raw <- read_excel("Dry_Bean_Dataset.xlsx") |> -->
+<!--   mutate(Class = factor(Class)) -->
+
+<!-- head(beans_raw) -->
+
+<!-- ``` -->
+
+<!-- # Sample 3,500 stratified beans for fast local benchmarking (remove slice_sample for full 13,611 rows) -->
+
+<!-- set.seed(202) -->
+
+<!-- beans_df <- beans_raw |> -->
+<!--   slice_sample(n = 3500, by = Class) -->
+
+<!-- # 3. Train / Test Split (80% Train, 20% Test) & 5-Fold Stratified Cross-Validation -->
+<!-- bean_split <- initial_split(beans_df, prop = 0.80, strata = Class) -->
+<!-- bean_train <- training(bean_split) -->
+<!-- bean_test  <- testing(bean_split) -->
+
+<!-- set.seed(2026) -->
+<!-- bean_folds <- vfold_cv(bean_train, v = 5, strata = Class) -->
+
+<!-- # 4. Preprocessing Recipe (Standardize predictors for SVM & kNN) -->
+<!-- bean_recipe <- recipe(Class ~ ., data = bean_train) |> -->
+<!--   step_zv(all_predictors()) |> -->
+<!--   step_normalize(all_numeric_predictors()) -->
+
+<!-- # ========================================================= -->
+<!-- # PART A: DEFINE ALL 6 INDIVIDUAL MODEL SPECIFICATIONS -->
+<!-- # ========================================================= -->
+
+<!-- # 1. Naive Bayes -->
+<!-- nb_spec <- naive_Bayes() |> -->
+<!--   set_engine("naivebayes") |> -->
+<!--   set_mode("classification") -->
+
+<!-- # 2. k-Nearest Neighbors (kNN) -->
+<!-- knn_spec <- nearest_neighbor(neighbors = 7) |> -->
+<!--   set_engine("kknn") |> -->
+<!--   set_mode("classification") -->
+
+<!-- # 3. Decision Tree -->
+<!-- dt_spec <- decision_tree(cost_complexity = 0.001, tree_depth = 10) |> -->
+<!--   set_engine("rpart") |> -->
+<!--   set_mode("classification") -->
+
+<!-- # 4. Support Vector Machine (RBF Kernel) -->
+<!-- svm_spec <- svm_rbf(cost = 2, rbf_sigma = 0.05) |> -->
+<!--   set_engine("kernlab") |> -->
+<!--   set_mode("classification") -->
+
+<!-- # 5. Random Forest (Bagging Ensemble) -->
+<!-- rf_spec <- rand_forest(trees = 300, mtry = 4) |> -->
+<!--   set_engine("ranger") |> -->
+<!--   set_mode("classification") -->
+
+<!-- # 6. XGBoost (Gradient Boosting Ensemble) -->
+<!-- xgb_spec <- boost_tree(trees = 300, tree_depth = 6, learn_rate = 0.05) |> -->
+<!--   set_engine("xgboost") |> -->
+<!--   set_mode("classification") -->
+
+<!-- # ========================================================= -->
+<!-- # PART B: EVALUATE ALL MODELS WITH 5-FOLD CROSS-VALIDATION -->
+<!-- # ========================================================= -->
+
+<!-- # Bundle all 6 models into a single workflow_set -->
+<!-- bean_workflows <- workflow_set( -->
+<!--   preproc = list(norm = bean_recipe), -->
+<!--   models = list( -->
+<!--     Naive_Bayes   = nb_spec, -->
+<!--     KNN           = knn_spec, -->
+<!--     Decision_Tree = dt_spec, -->
+<!--     SVM_RBF       = svm_spec, -->
+<!--     Random_Forest = rf_spec, -->
+<!--     XGBoost       = xgb_spec -->
+<!--   ) -->
+<!-- ) -->
+
+<!-- # Configure control settings to save out-of-fold predictions for Ensemble Stacking -->
+<!-- stack_ctrl <- control_resamples( -->
+<!--   save_pred = TRUE, -->
+<!--   save_workflow = TRUE -->
+<!-- ) -->
+
+<!-- # Fit all 6 models across all 5 CV folds (30 total fits) -->
+<!-- cv_results <- bean_workflows |> -->
+<!--   workflow_map( -->
+<!--     fn = "fit_resamples", -->
+<!--     resamples = bean_folds, -->
+<!--     metrics = metric_set(accuracy, roc_auc), -->
+<!--     control = stack_ctrl -->
+<!--   ) -->
+
+<!-- # Rank all 6 models by 5-fold cross-validated Accuracy and ROC AUC -->
+<!-- rank_results(cv_results, rank_metric = "accuracy", select_best = TRUE) |> -->
+<!--   select(wflow_id, .metric, mean, std_err) -->
+
+<!-- # Plot CV benchmark comparison -->
+<!-- autoplot(cv_results, metric = "accuracy") + -->
+<!--   labs( -->
+<!--     title = "5-Fold Cross-Validation Performance on Dry Bean Grading", -->
+<!--     subtitle = "Comparing 6 classifiers across 16 computer-vision shape traits" -->
+<!--   ) + -->
+<!--   theme_minimal(base_size = 13) -->
+
+<!-- # ========================================================= -->
+<!-- # PART C: BUILD & EVALUATE STACKED ENSEMBLE META-MODEL -->
+<!-- # ========================================================= -->
+
+<!-- # Combine out-of-fold predictions from top diverse learners (SVM + Random Forest + XGBoost) -->
+<!-- bean_stack <- stacks() |> -->
+<!--   add_candidates(cv_results, name = "norm_SVM_RBF") |> -->
+<!--   add_candidates(cv_results, name = "norm_Random_Forest") |> -->
+<!--   add_candidates(cv_results, name = "norm_XGBoost") |> -->
+<!--   blend_predictions() |>   # Fits a penalized meta-learner to assign optimal weights -->
+<!--   fit_members()            # Retrains selected base models on full training data -->
+
+<!-- # Inspect the learned meta-learner weights assigned to each base model -->
+<!-- autoplot(bean_stack, type = "weights") + -->
+<!--   labs(title = "Stacked Ensemble Meta-Learner Weights") + -->
+<!--   theme_minimal(base_size = 13) -->
+
+<!-- # Predict on the unseen 20% hold-out test set -->
+<!-- ensemble_preds <- predict(bean_stack, new_data = bean_test) |> -->
+<!--   bind_cols(bean_test |> select(Class)) -->
+
+<!-- # Final Hold-Out Test Accuracy & Confusion Matrix -->
+<!-- accuracy(ensemble_preds, truth = Class, estimate = .pred_class) -->
+<!-- conf_mat(ensemble_preds, truth = Class, estimate = .pred_class) -->
+
+
+<!-- ``` -->
+
+
+
 
 
 
