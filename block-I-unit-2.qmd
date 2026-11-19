@@ -688,6 +688,64 @@ fig
 
 ```
 
+### Map Plot
+
+Map plots are useful when the map plot is interactive. We use `leaflet` library to create map plot:
+
+```{r}
+
+# Install packages if needed
+# install.packages(c("leaflet", "maps"))
+
+library(leaflet)
+library(maps)
+
+# Load the built-in world.cities dataset
+data(world.cities)
+
+# Filter for major Indian cities (population > 1,000,000)
+india_cities <- subset(world.cities, country.etc == "India" & pop > 1000000)
+
+# Create a color palette function based on city population
+pal <- colorNumeric(
+  palette = "YlOrRd",
+  domain = india_cities$pop
+)
+
+# Build the interactive leaflet map using free OpenStreetMap tiles
+map <- leaflet(data = india_cities) %>%
+  addTiles() %>% # Uses default OpenStreetMap tiles (No API key needed)
+  setView(lng = 78.9629, lat = 22.5937, zoom = 5) %>%
+  addCircleMarkers(
+    lng = ~long,
+    lat = ~lat,
+    radius = ~sqrt(pop) / 150,
+    color = ~pal(pop),
+    fillColor = ~pal(pop),
+    fillOpacity = 0.75,
+    stroke = TRUE,
+    weight = 1,
+    popup = ~paste0(
+      "<b>City:</b> ", name, "<br>",
+      "<b>Population:</b> ", format(pop, big.mark = ","), "<br>",
+      "<b>Capital Status:</b> ", ifelse(capital == 1, "National Capital", "Major City")
+    ),
+    label = ~name
+  ) %>%
+  addLegend(
+    position = "bottomright",
+    pal = pal,
+    values = ~pop,
+    title = "Population",
+    opacity = 0.8
+  )
+
+# Render the interactive map
+map
+
+```
+
+Here, we map India's population Vs. State and this map is interactive. 
 
 ------------------------------------------------------------------------
 
