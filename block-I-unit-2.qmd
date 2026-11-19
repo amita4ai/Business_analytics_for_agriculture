@@ -747,6 +747,54 @@ map
 
 Here, we map India's population Vs. State and this map is interactive. 
 
+Apart from this, there are many packages we can use to make stunning advance level graphics. Package `rayshader` is useful to build fantastic 3D interactive plots with sum light effects. It is extensively used in urban planning. A sample picture from `rayshader` is shown here:
+
+![](ray.jfif){width="100%" height="100%"}
+
+To see how sun light angle interacts with this 3D plot, [click here](https://www.rayshader.com/)
+
+Here is the profile of Milo who is an data visualisation expert uses `rayshader` package and earn decent income while working at home. Visit his website to take inspiration - [Click Here](https://milosmakesmaps.com/en-inr). 
+
+Check insipring profile of Data Visualization Expert - Pat Schloss: [Click Here](https://www.youtube.com/c/riffomonasproject).
+
+You can gain advance level visualization skills to build fantastic career as a Data Visualization Expert.
+
+
+| Level | Category | Package | Primary Use Case |
+| :--- | :--- | :--- | :--- |
+| **Basic** | Core Plotting | `graphics` | Built-in base R plotting (`plot()`, `hist()`, `boxplot()`). |
+| **Basic** | Multivariate | `lattice` | Built-in Trellis graphics for conditioned multi-panel plots. |
+| **Basic** | Grammar of Graphics | `ggplot2` | Industry-standard layered plotting system. |
+| **Basic** | GUI Builder | `esquisse` | Drag-and-drop interface that generates `ggplot2` code. |
+| **Intermediate** | Layout & Composition | `patchwork` | Combines multiple `ggplot2` plots using simple math operators. |
+| **Intermediate** | Layout & Composition | `cowplot` | Aligns multi-panel figures and adds publication-style annotations. |
+| **Intermediate** | Labels & Text | `ggrepel` | Prevents overlapping text labels on dense scatter and line plots. |
+| **Intermediate** | Statistical Plots | `ggpubr` | Quick publication-ready plots with p-values and significance bars. |
+| **Intermediate** | Exploratory Matrices | `GGally` | Creates correlation matrices and pair plots via `ggpairs()`. |
+| **Intermediate** | Color Palettes | `viridis` | Perceptually uniform, colorblind-safe color scales. |
+| **Intermediate** | Color Palettes | `RColorBrewer` | Curated sequential, diverging, and qualitative color palettes. |
+| **Intermediate** | Styling & Themes | `ggthemes` | Pre-built themes modeled after major publications (*The Economist*, *WSJ*). |
+| **Advanced** | Distributions | `ggdist` | Visualizes uncertainty, confidence intervals, and raincloud plots. |
+| **Advanced** | Distributions | `ggridges` | Creates overlapping ridgeline density plots across categories. |
+| **Advanced** | Typography | `ggtext` | Enables HTML and Markdown styling inside plot titles and labels. |
+| **Advanced** | Typography | `showtext` | Loads custom system and Google Fonts across all graphics devices. |
+| **Advanced** | High-Dimensional | `ComplexHeatmap` | Builds clustered heatmaps with dendrograms and annotation tracks. |
+| **Advanced** | Networks & Trees | `ggraph` | Extends `ggplot2` for network graphs, trees, and circular dendrograms. |
+| **Advanced** | Flows & Diagrams | `ggalluvial` | Constructs Sankey and alluvial diagrams for categorical flows. |
+| **Advanced** | Circular Plots | `circlize` | Generates circular layouts and chord diagrams for complex relationships. |
+| **Advanced** | Big Data Scaling | `ggrastr` | Rasterizes dense point layers while keeping vector axes and text sharp. |
+| **Advanced** | Big Data Scaling | `scattermore` | Fast rasterized scatter plots capable of rendering millions of points. |
+| **Interactive & Spatial** | Web Interactivity | `plotly` | Converts static `ggplot2` charts into interactive HTML widgets. |
+| **Interactive & Spatial** | Web Interactivity | `ggiraph` | Adds custom hover tooltips, click actions, and CSS styling to `ggplot2`. |
+| **Interactive & Spatial** | JS Charting Wrappers | `echarts4r` | Interactive web charts powered by Apache ECharts. |
+| **Interactive & Spatial** | Animation | `gganimate` | Adds frame-by-frame temporal transitions to `ggplot2` objects. |
+| **Interactive & Spatial** | Static Maps | `sf` & `tmap` | Handles spatial vector data and builds publication-grade thematic maps. |
+| **Interactive & Spatial** | Interactive Maps | `leaflet` | Creates interactive web maps with zoom, markers, and tile layers. |
+| **Interactive & Spatial** | 3D Rendering | `rayshader` | Transforms 2D maps and `ggplot2` charts into ray-traced 3D models. |
+| **Interactive & Spatial** | Web Dashboards | `shiny` | Builds full reactive web applications and interactive data dashboards. |
+| **Tables as Viz** | Styled Tables | `gt` & `gtExtras` | Creates publication tables with embedded sparklines and bar charts. |
+
+
 ------------------------------------------------------------------------
 
 **Programming Fundamentals in R**
