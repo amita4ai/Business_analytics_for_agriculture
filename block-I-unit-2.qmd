@@ -1,9 +1,7 @@
 # Block I Unit 2
 
 ::: {.callout-note title="Chapter Outline"}
-
 Fundamentals of R and RStudio, fundamentals of packages of RStudio, data manipulations, data transformations, normalization, standardization, missing values imputation, dummy variables, data visualization (2D and 3D), basic architecture of machine learning analytical cycle, descriptive analytics-case study covering data manipulation, measures of central tendency, measures of dispersion, measures of distribution, measures of associations, t-test, f-test, ANOVA, Chi-square test, basic statistical modeling framework.
-
 :::
 
 ------------------------------------------------------------------------
@@ -298,19 +296,19 @@ df_clean <- na.omit(df)
 
 - **Working Directories:** Setting and managing your file paths using R projects.
 
-_The Problem R Projects Solve_
+*The Problem R Projects Solve*
 
 New R users often write `setwd("C:/Users/Arun/Desktop/data")` at the top of every script. This breaks the moment the script moves to another computer, another folder, or another person's laptop. R Projects fix this permanently.
 
-_Setting It Up_
+*Setting It Up*
 
-1. **Create a Project**: File → New Project → New Directory (or Existing Directory) → give it a name.
+1.  **Create a Project**: File → New Project → New Directory (or Existing Directory) → give it a name.
 
-2. This creates a `.Rproj` file in that folder — this file IS the anchor. Wherever this file sits, that becomes "home" whenever you open the project.
+2.  This creates a `.Rproj` file in that folder — this file IS the anchor. Wherever this file sits, that becomes "home" whenever you open the project.
 
-3. Double-click the `.Rproj` file (or open via RStudio's Project menu) to launch — RStudio automatically sets the working directory to that folder. **No `setwd()` needed, ever.**
+3.  Double-click the `.Rproj` file (or open via RStudio's Project menu) to launch — RStudio automatically sets the working directory to that folder. **No `setwd()` needed, ever.**
 
-_The One Rule to Teach_
+*The One Rule to Teach*
 
 **Never use `setwd()` with absolute paths. Always use paths relative to the project root.**
 
@@ -326,18 +324,13 @@ Write:
 #data <- read.csv("data/sales.csv")
 ```
 
-_Recommended Folder Structure_
+*Recommended Folder Structure*
 
 Have students create this inside every new project:
 
-MyProject/
-├── MyProject.Rproj
-├── data/          (raw data, never edited manually)
-├── scripts/        (.R or .qmd files)
-├── output/        (plots, results, reports)
-└── README.md
+MyProject/ ├── MyProject.Rproj ├── data/ (raw data, never edited manually) ├── scripts/ (.R or .qmd files) ├── output/ (plots, results, reports) └── README.md
 
-_The `here` Package (strongly recommend)_
+*The `here` Package (strongly recommend)*
 
 Even relative paths can break if a script is sourced from a subfolder. The `here` package solves this:
 
@@ -351,7 +344,7 @@ library(here)
 
 `here()` always resolves from the project root, no matter which subfolder the script runs from. Make this a habit from day one — it saves enormous debugging pain later.
 
-_Quick Checklist for Students_
+*Quick Checklist for Students*
 
 - [ ] Every analysis lives inside its own `.Rproj`
 - [ ] Never hardcode a personal folder path
@@ -361,14 +354,14 @@ _Quick Checklist for Students_
 
 **Data Manipulation (Introduction to the Tidyverse)**
 
-_Setup_
+*Setup*
 
 ```{r}
 library(tidyverse)
 head(diamonds)  # already loaded, ~54,000 rows
 ```
 
-1. The Pipe Operator
+1.  The Pipe Operator
 
 Both `%>%` and `|>` do the same thing — pass the object on the left into the function on the right.
 
@@ -380,7 +373,7 @@ diamonds |> head()
 diamonds %>% head()
 ```
 
-2. Filtering and Selecting
+2.  Filtering and Selecting
 
 ```{r}
 diamonds |>
@@ -388,7 +381,7 @@ diamonds |>
   select(carat, cut, price, color)           # columns: keep only these
 ```
 
-3. Sorting and Mutating
+3.  Sorting and Mutating
 
 ```{r}
 diamonds |>
@@ -397,7 +390,7 @@ diamonds |>
   select(carat, price, price_per_carat)
 ```
 
-4. Summarizing Data
+4.  Summarizing Data
 
 ```{r}
 diamonds |>
@@ -425,14 +418,13 @@ diamonds |>
   arrange(desc(avg_price))
 ```
 
-**Pipe operators Reads left to right like a sentence:** *"Take diamonds, filter for price above 1000, create price-per-carat, group by color, summarize, then sort by average price descending."**
+**Pipe operators Reads left to right like a sentence:** \*"Take diamonds, filter for price above 1000, create price-per-carat, group by color, summarize, then sort by average price descending."\*\*
 
 ## Quick Exercise
 
 Find: *"Which diamond `clarity` grade has the highest average price per carat, considering only diamonds under 2 carats?"*
 
 HINT: `filter → mutate → group_by → summarize → arrange`
-
 
 **Basic Data Visualization**
 
@@ -446,13 +438,11 @@ plot(trees$Girth, trees$Volume)
 
 ```
 
-
 ```{r}
 
 hist(trees$Girth, n=30)
 
 ```
-
 
 ```{r}
 
@@ -460,12 +450,11 @@ boxplot(trees$Girth, horizontal = TRUE)
 
 ```
 
-
 - **Introduction to ggplot2:** Understanding the grammar of graphics (Data, Aesthetics, Geoms).
 
 ![](ggplot.png)
 
-`ggplot2` is the most versatile package to create basic to the advance level graphics and plots. You can visit the  [GGPLOT gallery](https://r-graph-gallery.com/), learn more about GGPLOT from this [LINK](https://ggplot2.tidyverse.org/articles/ggplot2.html) to see what `ggplot2` package is capable of. Checkout the [GGPLOT2 CHEATSHEET](https://rstudio.github.io/cheatsheets/html/data-visualization.html) and dedicated book [Data Visualization](https://r4ds.had.co.nz/data-visualisation.html). 
+`ggplot2` is the most versatile package to create basic to the advance level graphics and plots. You can visit the [GGPLOT gallery](https://r-graph-gallery.com/), learn more about GGPLOT from this [LINK](https://ggplot2.tidyverse.org/articles/ggplot2.html) to see what `ggplot2` package is capable of. Checkout the [GGPLOT2 CHEATSHEET](https://rstudio.github.io/cheatsheets/html/data-visualization.html) and dedicated book [Data Visualization](https://r4ds.had.co.nz/data-visualisation.html).
 
 Some experts have used GGPLOT2 to create artistic plots and build career in data visualization and storytelling. Check following profiles of ggplot artists:
 
@@ -476,22 +465,22 @@ Some experts have used GGPLOT2 to create artistic plots and build career in data
 - [Milo Makes Maps](https://www.youtube.com/@milos-makes-maps)
 
 - **Essential Plot Types:** Building scatter plots, bar charts, line graphs, and histograms.
+
 - **Customizing Plots:** Adding titles, changing axis labels, and applying basic themes.
 
-_Anatomy of a Plot_
+*Anatomy of a Plot*
 
 A plot is made up of layers shown as following:
 
 ![](plotlayers.png)
 
-_Components of a plot_
+*Components of a plot*
 
 Therr are variety of components that make a plot. The following image shows the plot components and corresponding command from ggplot package to create that element:
 
-![](plotcomps.png)
-Source: [Author Isabella Benabaye](https://share.google/vzISynxyvpx0seAnv)
+![](plotcomps.png) Source: [Author Isabella Benabaye](https://share.google/vzISynxyvpx0seAnv)
 
-_Steps to create a basic ggplot_
+*Steps to create a basic ggplot*
 
 ```{r}
 
@@ -566,30 +555,149 @@ ggplot(data = ChickWeight, aes(x=Time, y=weight, colour = Diet)) +
 
 ```
 
+### Interactive Plots
 
-:::{.callout-important title= "Assignment 2.1"}
+Interactive plots make data science reports more interesting and impressive. With library `plotly` we can make any ggplot graph interactive with simple command structure. Let's make chart 8 an interactive chart;
 
-Use any inbuilt dataset in R and create 5 different visuals using `ggplot2` package. (Visit GGplot Gallery for the help).
+```{r}
 
-:::
+## Install library plotly
+### install.packages("Plotly", dependencies = TRUE)
 
----
+library(plotly)
+
+# 8. Adding theme to the plot (title, subtitle, axis label, plot background, graph background, caption, annotation, font size, font type, font formats, etc.)
+
+g= ggplot(data = ChickWeight, aes(x=Time, y=weight, colour = Diet)) +
+  geom_point() +                      #To create scatter plot
+  coord_fixed(0.01) +                 # To set coordinates
+  labs(
+    title = "Chick Development Analysis",
+    subtitle = "Outcomes of an experiment with 578 Chicks",
+    caption = "Study done by students of Agri MBA-2 Batch 2024-26 in May 2026 at IABM",
+    x = "Time in Days",
+    y = "Weight in gram"
+  ) +
+  theme(
+      plot.title = element_text(face = "bold", size = 14),
+      plot.subtitle = element_text(face = "bold", size = 9, color="grey70"),
+      axis.title.y = element_text(color = "darkblue"),
+      axis.title.x = element_text(color = "darkgreen")
+    )
+
+g_interactive = ggplotly(g)
+
+g_interactive
+
+```
+
+\:::{.callout-important title= "Assignment 2.1"}
+
+Use any inbuilt dataset in R and create 5 different visuals using `ggplot2` package and make interactive plots using `plotly` library. (Visit GGplot Gallery for the help).
+
+\:::
+
+### 3D static Plots, 3D Interactive Plots and Map Plots
+
+Sometimes, we need 3D plots to explain complext relationship. To build interactive 3D plots, we can use  libraries - `plotly`, `rgl`,`rayshader`, `threejs`, and `echarts4r`. To build static 3D charts, we can use libraries - `plot3D`, `scatterplot3d`, and `lattice`. 
+
+A special category of plots are map based plots mostly used in GIS based plots. For geo-spatial plots, we can use libraries - `leaflet`, `'tmap`, `mapview`, `mapdeck` and `plotly`. 
+
+We will use `plotly` library to make 3D static, 3D Interactive and Map Plot:
+
+```{r}
+
+# Install package if needed
+# install.packages("plot3D")
+
+library(plot3D)
+
+# Load the built-in iris dataset
+data(iris)
+
+# Create the static 3D scatter plot
+scatter3D(
+  x = iris$Sepal.Length,
+  y = iris$Sepal.Width,
+  z = iris$Petal.Length,
+  colvar = as.numeric(iris$Species), # Color by species
+  col = c("#1b9e77", "#d95f02", "#7570b3"), # Custom color palette
+  pch = 19,                            # Solid circle points
+  cex = 1.2,                           # Point size
+  theta = 90,                          # Horizontal viewing angle
+  phi = 30,                            # Vertical viewing angle
+  bty = "g",                           # Gray grid background box
+  ticktype = "detailed",               # Show numeric axis ticks
+  main = "3D Static Iris Scatter Plot",
+  xlab = "Sepal Length",
+  ylab = "Sepal Width",
+  zlab = "Petal Length",
+  colkey = list(
+    at = c(1.0, 2, 2.66),
+    side = 4,
+    addlines = FALSE,
+    length = 1,
+    width = 1,
+    labels = levels(iris$Species)
+  )
+)
+
+```
+
+To change to view of the plot, you van manipulate `theta` and `phi` parameters of the plot command chunck. Experiment with `theta` values - 25, 45, 90, 120 and `phi` values - 5,10,30,50,60 and see how 3D plto changes.  
+
+Now, we make an interactive 3D plot:
+
+```{r}
+
+library(plotly)
+
+# Load the built-in iris dataset
+data(iris)
+
+# Create the interactive 3D scatter plot
+fig <- plot_ly(
+  data = iris,
+  x = ~Sepal.Length,
+  y = ~Sepal.Width,
+  z = ~Petal.Length,
+  color = ~Species,
+  colors = c("#1b9e77", "#d95f02", "#7570b3"),
+  type = "scatter3d",
+  mode = "markers",
+  marker = list(size = 5, opacity = 0.85),
+  text = ~paste(
+    "Species:", Species,
+    "<br>Sepal Length:", Sepal.Length,
+    "<br>Sepal Width:", Sepal.Width,
+    "<br>Petal Length:", Petal.Length
+  ),
+  hoverinfo = "text"
+) %>%
+  layout(
+    title = "3D Interactive Iris Scatter Plot",
+    scene = list(
+      xaxis = list(title = "Sepal Length"),
+      yaxis = list(title = "Sepal Width"),
+      zaxis = list(title = "Petal Length")
+    )
+  )
+
+# Render the plot
+fig
+
+```
+
+
+------------------------------------------------------------------------
 
 **Programming Fundamentals in R**
 
 - **Conditional Logic:** Writing `if`, `else if`, and `else` statements.
 
-_Basic Syntax_
+*Basic Syntax*
 
-
-if (condition) {
-  # code if TRUE
-} else if (another_condition) {
-  # code if that's TRUE
-} else {
-  # code if none are TRUE
-}
-
+if (condition) { \# code if TRUE } else if (another_condition) { \# code if that's TRUE } else { \# code if none are TRUE }
 
 Example 1: Simple `if`
 
@@ -691,13 +799,13 @@ if (age >= 18) {
 
 **Quick Exercise**
 
-Write a function `classify_diamond(price)` that returns `"Budget"` if price < 1000, `"Mid-range"` if price < 5000, and `"Luxury"` otherwise — then test it using values pulled from the `diamonds$price` column.
+Write a function `classify_diamond(price)` that returns `"Budget"` if price \< 1000, `"Mid-range"` if price \< 5000, and `"Luxury"` otherwise — then test it using values pulled from the `diamonds$price` column.
 
----
+------------------------------------------------------------------------
 
 - **Vectorized Operations:** Leveraging R's native speed instead of traditional loops.
 
-_The Core Idea_
+*The Core Idea*
 
 R is built to operate on entire vectors at once, not element-by-element like traditional loops. Vectorized code is faster, shorter, and more "R-like."
 
@@ -721,6 +829,7 @@ for (i in seq_along(x)) {
 ```
 
 **Fast, vectorized way:**
+
 ```{r}
 x <- 1:1000000
 result <- x * 2
@@ -762,7 +871,7 @@ Example 4: Vectorized Math on Data Frame Columns
 diamonds$price_per_carat <- diamonds$price / diamonds$carat
 ```
 
-No loop, no `apply()` — one line operates on all ~54,000 rows simultaneously.
+No loop, no `apply()` — one line operates on all \~54,000 rows simultaneously.
 
 Example 5: Logical Indexing (a vectorized filter)
 
@@ -793,17 +902,13 @@ The Rule of Thumb to Teach
 
 Here is the 20 chick weights:
 
-60, 120, 221, 175, 80,
-280, 305, 155, 98, 103,
-200, 190, 352, 75, 180,
-210, 198, 98, 98, 170
+60, 120, 221, 175, 80, 280, 305, 155, 98, 103, 200, 190, 352, 75, 180, 210, 198, 98, 98, 170
 
 Classify each chick as `"Low"`, `"Medium"`, or `"High"` using nested `ifelse()` — then time it against a loop-based version using `system.time()` to see the speed difference themselves.
 
-
 - **Basic Loops:** Understanding `for` and `while` loops for repetitive tasks.
 
-_`for` Loop — When You Know How Many Times to Repeat_
+*`for` Loop — When You Know How Many Times to Repeat*
 
 ```{r}
 for (i in 1:5) {
@@ -854,7 +959,7 @@ print(total)   # 5850
 
 (Note: `sum(sales)` does this in one vectorized line — loops are for teaching the *concept*, but real code should prefer vectorization once understood.)
 
-_`while` Loop — When You Don't Know the Number of Iterations in Advance_
+*`while` Loop — When You Don't Know the Number of Iterations in Advance*
 
 Repeats **as long as a condition stays TRUE**.
 
@@ -866,7 +971,6 @@ while (count <= 5) {
   count <- count + 1
 }
 ```
-
 
 Example 4: `while` Loop — Practical Case (compounding until a target is hit)
 
@@ -884,7 +988,7 @@ cat("It took", years, "years to double the balance.\n")
 
 This is the kind of problem `while` is made for — you genuinely don't know the iteration count upfront.
 
-_`break` and `next` — Controlling Loop Flow_
+*`break` and `next` — Controlling Loop Flow*
 
 ```{r}
 # break — stop the loop early
@@ -902,7 +1006,7 @@ for (i in 1:10) {
 # 1 3 5 7 9
 ```
 
-_Common Mistake to Warn Students About_
+*Common Mistake to Warn Students About*
 
 Forgetting to update the counter in a `while` loop causes an **infinite loop**:
 
@@ -917,24 +1021,24 @@ Forgetting to update the counter in a `while` loop causes an **infinite loop**:
 
 If this happens in RStudio, hit the **red stop icon** (or `Esc`) to break out.
 
-_`for` vs `while` — Quick Rule of Thumb_
+*`for` vs `while` — Quick Rule of Thumb*
 
 | Use `for` when... | Use `while` when... |
-|---|---|
+|------------------------------------|------------------------------------|
 | You know the number of iterations | You don't know how many iterations you'll need |
 | Looping over a fixed vector/list | Looping until a condition is met |
 
 **Quick Exercise**
 
-Using a `while` loop,  find how many months it takes an LIC premium of ₹5,000 growing at 0.5% monthly interest to cross ₹6,000 — then solve the same problem with a `for` loop capped at 50 iterations using `break` once the target is hit.
+Using a `while` loop, find how many months it takes an LIC premium of ₹5,000 growing at 0.5% monthly interest to cross ₹6,000 — then solve the same problem with a `for` loop capped at 50 iterations using `break` once the target is hit.
 
----
+------------------------------------------------------------------------
 
 - **Writing Custom Functions:** Building reusable code blocks with inputs and outputs.
 
-_Basic Syntax_
+*Basic Syntax*
 
-```r
+``` r
 function_name <- function(arg1, arg2) {
   # code using arg1, arg2
   return(result)
@@ -950,7 +1054,6 @@ square <- function(x) {
 
 square(5)   # 25
 ```
-
 
 Example 2: Multiple Arguments
 
@@ -1007,7 +1110,6 @@ result$average    # 1462.5
 result$highest    # 3400
 ```
 
-
 Example 6: A Vectorized Custom Function (works on a whole column, no loop)
 
 ```{r}
@@ -1027,37 +1129,36 @@ premium_with_gst(premiums)      # 5900  9440  14160
 
 Write a function `lic_maturity(premium, years, rate = 0.06)` that calculates simple maturity value as `premium * years * (1 + rate)`, then apply it to a vector of different premium amounts to show it working without a loop.
 
----
+------------------------------------------------------------------------
 
 **Introduction to Git & GitHub**
 
-Git = version control software installed on your computer. Tracks changes to files over time.
-GitHub = a website that hosts Git repositories online, so you can back up code and collaborate with others.
+Git = version control software installed on your computer. Tracks changes to files over time. GitHub = a website that hosts Git repositories online, so you can back up code and collaborate with others.
 
 Think of Git as the engine, GitHub as the cloud garage where you park it.
 
-_The Three Pieces — What Each One Does_
+*The Three Pieces — What Each One Does*
 
 | Tool | What it is |
-|---|---|
+|------------------------------------|------------------------------------|
 | **Git** | Version control engine installed on your computer |
 | **GitHub** | Website that hosts repositories online |
 | **GitHub Desktop** | A visual app that runs Git commands via buttons/clicks — no terminal needed |
 
 GitHub Desktop doesn't replace Git — it's a friendly face on top of it.
 
-_Step 1: Install Everything_
+*Step 1: Install Everything*
 
-1. Install **Git**: [git-scm.com](https://git-scm.com)
-2. Create a **GitHub** account: [github.com](https://github.com)
-3. Install **GitHub Desktop**: [desktop.github.com](https://desktop.github.com)
-4. Open GitHub Desktop → sign in with your GitHub account (File → Options → Accounts)
+1.  Install **Git**: [git-scm.com](https://git-scm.com)
+2.  Create a **GitHub** account: [github.com](https://github.com)
+3.  Install **GitHub Desktop**: [desktop.github.com](https://desktop.github.com)
+4.  Open GitHub Desktop → sign in with your GitHub account (File → Options → Accounts)
 
-_Step 2: Create a Repository — Two Ways_
+*Step 2: Create a Repository — Two Ways*
 
 **A. Command line:**
 
-```bash
+``` bash
 git init
 git config --global user.name "Amita Sharma"
 git config --global user.email "your_email@example.com"
@@ -1072,24 +1173,22 @@ git config --global user.email "your_email@example.com"
 ## Step 3: Making Changes — The Core Workflow
 
 **Command line:**
-```bash
+
+``` bash
 git add .
 git commit -m "Added data cleaning script"
 git push
 ```
 
-**GitHub Desktop:**
-1. Edit your R script/file as normal.
-2. Open GitHub Desktop — changed files appear automatically in the left panel with a diff view (green = added, red = removed).
-3. Type a commit message in the box at bottom-left → click **Commit to main**.
-4. Click **Push origin** (top bar) to send it to GitHub.
+**GitHub Desktop:** 1. Edit your R script/file as normal. 2. Open GitHub Desktop — changed files appear automatically in the left panel with a diff view (green = added, red = removed). 3. Type a commit message in the box at bottom-left → click **Commit to main**. 4. Click **Push origin** (top bar) to send it to GitHub.
 
 GitHub Desktop's diff view is genuinely useful pedagogically — students *see* exactly what changed line-by-line before committing, which the terminal doesn't show as clearly.
 
-_Step 4: Connecting Local ↔ GitHub Website_
+*Step 4: Connecting Local ↔ GitHub Website*
 
 **Command line:**
-```bash
+
+``` bash
 git remote add origin https://github.com/username/repo-name.git
 git branch -M main
 git push -u origin main
@@ -1100,10 +1199,11 @@ git push -u origin main
 - After creating a repo locally: **Repository → Push** — it auto-creates the matching repo on GitHub and links it (if not already linked), no manual `remote add` needed.
 - Or: File → Clone Repository → paste the GitHub URL → choose local folder.
 
-_Step 5: Branching (Both Ways)_
+*Step 5: Branching (Both Ways)*
 
 **Command line:**
-```bash
+
+``` bash
 git checkout -b feature-x
 git checkout main
 git merge feature-x
@@ -1115,10 +1215,11 @@ git merge feature-x
 - Switch branches from the same dropdown.
 - To merge: switch to `main` → **Branch menu → Merge into current branch** → pick `feature-x`.
 
-_Step 6: History & Undoing_
+*Step 6: History & Undoing*
 
 **Command line:**
-```bash
+
+``` bash
 git log --oneline
 git checkout -- filename.R
 git revert <commit-hash>
@@ -1134,14 +1235,14 @@ git revert <commit-hash>
 
 Same file either way — GitHub Desktop auto-adds one if you pick "R" as the template at repo creation:
 
-```
+```         
 *.Rhistory
 *.RData
 .Rproj.user/
 data/raw/
 ```
 
-_Which Should Students Use Day-to-Day?_
+*Which Should Students Use Day-to-Day?*
 
 - **Learning phase:** GitHub Desktop — visual feedback builds intuition fast, fewer typo-related errors.
 - **Once comfortable:** Push them to the terminal — real jobs and RStudio's Git pane (Terminal tab) expect command-line fluency, and Desktop can't do everything (e.g., interactive rebase, cherry-picking).
@@ -1150,7 +1251,7 @@ _Which Should Students Use Day-to-Day?_
 
 Create a repo in GitHub Desktop → make 3 commits with meaningful messages (visible in the History tab) → push to GitHub → then open a terminal in that same folder and run `git log --oneline` to confirm the same 3 commits appear identically from the command line.
 
----
+------------------------------------------------------------------------
 
 **Documentation Production in R**
 
@@ -1170,7 +1271,7 @@ Visit the gallery of Quardo Documentation: [Click](https://quarto.org/docs/galle
 
 ![Shiny Apps Gallery](https://shiny.posit.co/r/gallery/)
 
-A Shiny app always carries two R files called as `ui.R` and `server.R`. The `ui.R` file builds the interface which interacts with users and takes inputs from users while `server.R` does backend calculations and sends output to the user interface. 
+A Shiny app always carries two R files called as `ui.R` and `server.R`. The `ui.R` file builds the interface which interacts with users and takes inputs from users while `server.R` does backend calculations and sends output to the user interface.
 
 ![](shiny.png)
 
@@ -1190,13 +1291,13 @@ To build production grade shiny apps which can be used by thousands of users, re
 
 ![Production Grade Shiny Apps](https://engineering-shiny.org/successful-shiny-app.html)
 
----
+------------------------------------------------------------------------
 
 **R/Posit Communities**
 
 The classroom learning is only 5% learning. To build real skills for the industry, you are required to communicate with professional networks of R users. These networks help in removing bugs, errors, problems and issues you will encounter while developing projects in R. sFollowing are the platforms to develop a thriving network with R users:
 
-- **Navigating the Ecosystem:** 
+- **Navigating the Ecosystem:**
 
 [Official Posit community forums](https://forum.posit.co/)
 
@@ -1214,7 +1315,7 @@ The global R user community group:
 
 ![R-Bloggers](https://www.r-bloggers.com/)
 
-Use these communities to get help and give help. Remember, you can get a quality placement useing these networking platforms. Interact with authors, give them credits for their help and extend your help are the hidden tactics to get quality projects and jobs. 
+Use these communities to get help and give help. Remember, you can get a quality placement useing these networking platforms. Interact with authors, give them credits for their help and extend your help are the hidden tactics to get quality projects and jobs.
 
 - **Continuous Skill Building:** Leveraging open source initiatives like *TidyTuesday*, kaggle.com, hackerearth.com, analyticsvidya.com, etc. to practice data manipulation and visualization safely.
 
@@ -1226,7 +1327,7 @@ Use these communities to get help and give help. Remember, you can get a quality
 
 ![Hacker Earth](https://www.hackerearth.com/)
 
----
+------------------------------------------------------------------------
 
 **Other Parts of R Ecosystem**
 
@@ -1242,10 +1343,8 @@ Use these communities to get help and give help. Remember, you can get a quality
 
 ![Tidyverse](https://tidyverse.org/)
 
-:::{.callout-important}
-
+::: callout-important
 If you learn `tidymodels` and `tidyverse` packages thoroughly, majority of machine learning and data analysis tasks can be done through these packages only.
-
 :::
 
 ------------------------------------------------------------------------
@@ -1254,26 +1353,25 @@ If you learn `tidymodels` and `tidyverse` packages thoroughly, majority of machi
 
 ![](mlcycle.jpg)
 
-
 **Data Transformations and Preprocessing**
 
-When organisations collect data, they do it for their administrative purposes not for using machine learning tasks and advance level data analysis. In machine learning, various model building algorithms are used. Machine learning model uses the data in specific formats. 
+When organisations collect data, they do it for their administrative purposes not for using machine learning tasks and advance level data analysis. In machine learning, various model building algorithms are used. Machine learning model uses the data in specific formats.
 
-There are various machine learning algorithms in supervised machine learning. Superwised machine learning algorithms are used either to predict the future values or classify an obervation from tow or more categories. 
+There are various machine learning algorithms in supervised machine learning. Superwised machine learning algorithms are used either to predict the future values or classify an obervation from tow or more categories.
 
 For example, a company wants to know what will the next month sales based on last five years sales. This is an estimation problem. Machine learning algorithms which can bsed used to create model are linear regression, lasso regression, ElasticNet regression,random forest, decision tree, XGBoost, Support Vector Machine, k-Nearest Neighbours, Multi Layer Perceptron, Recurrent Neural Net, etc.
 
-To classify an observations in given catgories, we use classification machine learning algorithms. To mention a few; decision tree, logistic regression, random forest, naive Bayes, k-NN, Support Vector Machine, XGBoost, Multi Layer Perceptron, Convolutional neural Network, etc. 
+To classify an observations in given catgories, we use classification machine learning algorithms. To mention a few; decision tree, logistic regression, random forest, naive Bayes, k-NN, Support Vector Machine, XGBoost, Multi Layer Perceptron, Convolutional neural Network, etc.
 
-You can notice that some of the algorithm works in both types of tasks. 
+You can notice that some of the algorithm works in both types of tasks.
 
 Data preprocessing is the step to prepare the data for machine learning tasks so that all data is in ht right format. Following are steps in data preprocessing:
 
 - **Normalization (Min-Max Scaling):** Rescaling feature values to a constrained range between 0 and 1.
 
-Sometimes, we need to scale the data so that comparison of the variables is possible. For example, we can not compare height in inches with weight in kilogram because both carry different units. 
+Sometimes, we need to scale the data so that comparison of the variables is possible. For example, we can not compare height in inches with weight in kilogram because both carry different units.
 
-To get them on same scale, we normalize the data by doing Min-Max scaling. 
+To get them on same scale, we normalize the data by doing Min-Max scaling.
 
 ```{r}
 
@@ -1311,16 +1409,13 @@ print(normalized_df)
 
 ```
 
-
 - **Standardization (Z-Score Scaling):** Transforming features to have a mean of 0 and a standard deviation of 1.
 
-Another way to scale different variables on the same scale is Z-Score scaling in which comparing variables are re-culculated by keeping mean zero and standar deviation 1. See this concept from following image: 
+Another way to scale different variables on the same scale is Z-Score scaling in which comparing variables are re-culculated by keeping mean zero and standar deviation 1. See this concept from following image:
 
 ![](zscore.jpg)
 
-
----
-
+------------------------------------------------------------------------
 
 - **Missing Values Imputation:** Evaluating strategies for handling incomplete data, including listwise deletion, mean/median substitution, and predictive imputation using `mice` or `missMDA`. Let us understand by the example:
 
@@ -1342,8 +1437,7 @@ print(df)
 
 ```
 
-
-1. Listwise Deletion (Complete Case Analysis)
+1.  Listwise Deletion (Complete Case Analysis)
 
 This removes any row that contains at least one missing value. Use this only if data is missing completely at random (MCAR) and you have plenty of data left over.
 
@@ -1355,7 +1449,6 @@ clean_df_base <- na.omit(df)
 
 ```
 
-
 Method B: Tidyverse
 
 ```{r}
@@ -1366,7 +1459,7 @@ print("After Listwise Deletion:")
 print(clean_df_tidy)
 ```
 
-2. Mean / Median Substitution
+2.  Mean / Median Substitution
 
 This replaces missing values with the average or middle value of that specific column. It is simple but artificially reduces the variance of your data.
 
@@ -1386,7 +1479,7 @@ print("After Mean/Median Substitution:")
 print(imputed_simple)
 ```
 
-3. Predictive Imputation via mice (MICE Algorithm)
+3.  Predictive Imputation via mice (MICE Algorithm)
 
 Multivariate Imputation by Chained Equations (MICE) creates multiple plausible imputations by modeling each feature with missing values as a function of the other features in the data.
 
@@ -1406,7 +1499,7 @@ print("After MICE Predictive Imputation:")
 print(completed_df_mice)
 ```
 
-4. Predictive Imputation via missMDA (PCA-based)
+4.  Predictive Imputation via missMDA (PCA-based)
 
 The missMDA package handles missing data using Principal Component Analysis (PCA). It excels at keeping the dimensional structure and correlations between variables intact.
 
@@ -1431,13 +1524,13 @@ print(completed_df_pca)
 Comparison of Methods
 
 | Strategy | When to Use | Key Risk |
-|---|---|---|
-| Listwise Deletion | Drop rate is < 5% and data is missing completely at random. | Loses valuable data and can introduce heavy bias. |
+|------------------------|------------------------|------------------------|
+| Listwise Deletion | Drop rate is \< 5% and data is missing completely at random. | Loses valuable data and can introduce heavy bias. |
 | Mean/Median | Fast baseline calculations on simple datasets. | Destroys correlations and artificially deflates standard deviation. |
 | mice (MICE) | General tabular data; protects relationships between columns. | Computationally intensive on very large datasets. |
 | missMDA (PCA) | Datasets with highly correlated variables or multi-collinearity. | Assumes linear relationships across components. |
 
----
+------------------------------------------------------------------------
 
 - **Dummy Variables (One-Hot Encoding):** Converting categorical string values into numerical binary vectors (`0` or `1`) for machine learning models.
 
@@ -1474,41 +1567,41 @@ print(df_recipes_dummies)
 
 ```
 
-Why we need to create dummy variable instead of original variable? Because many machine learning algorithms do not read categorical data and need only numeric form of data.  
+Why we need to create dummy variable instead of original variable? Because many machine learning algorithms do not read categorical data and need only numeric form of data.
 
----
+------------------------------------------------------------------------
 
 **Basic Architecture of Machine Learning Analytical Cycle**
 
 - **Problem Formulation & Data Collection:** Defining predictive tasks (Classification vs. Estimation) and gathering primary structural observations.
 
-This s very important part of a machine learning project cycle. This sets the core purpose of the machine learning project. As there are two types of tasks - classification and estimation; this must be defined clearly. 
+This s very important part of a machine learning project cycle. This sets the core purpose of the machine learning project. As there are two types of tasks - classification and estimation; this must be defined clearly.
 
-A business wants to predict the next month sales is an estimation tasks while tomorrow, there will be rain or not is a classification problem. 
+A business wants to predict the next month sales is an estimation tasks while tomorrow, there will be rain or not is a classification problem.
 
 ![](mlflow.jpg)
 
 - **Data Cleansing & Feature Engineering:** Formatting raw records, refining variables, and performing exploratory data analysis (EDA).
 
-Before applying machine learning models, each variable, pairs of variables are analyzed through Exploratory Data Analysis. Exploratory data analysis(EDA) is useful in defining the pathway to select the machine learning tasks and model building process, though EDA is directly not involved in machine learning tasks and model building process. We will discuss this in more detail in the next units. 
+Before applying machine learning models, each variable, pairs of variables are analyzed through Exploratory Data Analysis. Exploratory data analysis(EDA) is useful in defining the pathway to select the machine learning tasks and model building process, though EDA is directly not involved in machine learning tasks and model building process. We will discuss this in more detail in the next units.
 
 - **Model Training & Evaluation:** Partitioning datasets into Train/Test splits, validating model performance with metrics (RMSE, Accuracy), and tuning hyperparameters.
 
-Once data is preprocessed and EDA is done, data is split into training and testing. Model is trained on training data using appropriate machine learning algorithm and model is validated/tested for accuracy on testing data. This process is repeated again and again to improve the model by doing hyperparameter tuning. 
+Once data is preprocessed and EDA is done, data is split into training and testing. Model is trained on training data using appropriate machine learning algorithm and model is validated/tested for accuracy on testing data. This process is repeated again and again to improve the model by doing hyperparameter tuning.
 
-Once highest accuracy is achieved, model is ready for deployment and become available for real world use cases. For estimation  tasks, we use Root Mean Squared Error and for classification tasks, we use confusion matrix to check accuracy of the model.
+Once highest accuracy is achieved, model is ready for deployment and become available for real world use cases. For estimation tasks, we use Root Mean Squared Error and for classification tasks, we use confusion matrix to check accuracy of the model.
 
-There are numerous other metrices we use to check evaluate machine learning models. 
+There are numerous other metrices we use to check evaluate machine learning models.
 
 - **Deployment & Monitoring:** Packaging analytical cycles into reproducible code pipelines or production environments.
 
-Once ML model is built, the model should be hosted in the cloud server so that model can be accessed through a web application. With `shiny` framework, we can create web app using the ML model. Afterwards, the app is hosted in the cloud with proper subscriptions and authorization. There are various cloud storage options available like shinyapps.io, R Posit Connect, etc. 
+Once ML model is built, the model should be hosted in the cloud server so that model can be accessed through a web application. With `shiny` framework, we can create web app using the ML model. Afterwards, the app is hosted in the cloud with proper subscriptions and authorization. There are various cloud storage options available like shinyapps.io, R Posit Connect, etc.
 
-Once web app is successfully hosted in the cloud, a web link is generated that can be shared to the users. 
+Once web app is successfully hosted in the cloud, a web link is generated that can be shared to the users.
 
 ![](deploy.jfif)
 
----
+------------------------------------------------------------------------
 
 **Descriptive Analytics Case Study (Covering Data Manipulation)**
 
@@ -1516,9 +1609,9 @@ Once web app is successfully hosted in the cloud, a web link is generated that c
 
 ![](mean.png)
 
-Credit:  https://share.google/WB5HwdNnJvuM4im0X
+Credit: https://share.google/WB5HwdNnJvuM4im0X
 
-1. The Core Functions (Base R & Tidyverse)
+1.  The Core Functions (Base R & Tidyverse)
 
 ```{r}
 library(dplyr)
@@ -1542,8 +1635,7 @@ print(paste("Mean:", mean_val, "| Median:", median_val, "| Mode:", mode_val))
 
 ```
 
-
-2. Computing Central Tendency Across Different Distributions
+2.  Computing Central Tendency Across Different Distributions
 
 The position of these three metrics tells you exactly how your data is distributed. Let's create three different structural scenarios to see how they change.
 
@@ -1575,13 +1667,12 @@ print(t(summary_table)) # Transpose for cleaner reading
 
 ```
 
-
-3. How to Interpret the Metrics Based on Data Structure
+3.  How to Interpret the Metrics Based on Data Structure
 
 When analyzing data shapes in machine learning, remember these rules of thumb:
 
 | Distribution Shape | Visual Behavior | Mathematical Relationship | Best Metric to Use |
-|---|---|---|---|
+|------------------|------------------|------------------|------------------|
 | Symmetric | Perfectly balanced bell curve. | Mean $\approx$ Median $\approx$ Mode | Mean (Utilizes all data points efficiently). |
 | Right-Skewed (Positive) | Long tail pulls out to the high/right side. | Mean $>$ Median $>$ Mode | Median (The Mean is falsely dragged upward by high outliers). |
 | Left-Skewed (Negative) | Long tail pulls out to the low/left side. | Mean $<$ Median $<$ Mode | Median (The Mean is falsely dragged downward by low outliers). |
@@ -1601,7 +1692,6 @@ print(median(house_prices_with_outlier)) # Output: 305,000 (Robust and accurate 
 
 ```
 
-
 Setup: Carrying Forward the Distributions
 
 ```{r}
@@ -1619,8 +1709,7 @@ distributions_df <- data.frame(
 
 ```
 
-
-1. Measures of Dispersion
+1.  Measures of Dispersion
 
 ![](disper.jfif)
 
@@ -1647,8 +1736,7 @@ dispersion_summary %>%
 
 ```
 
-
-2. Measures of Distribution (Shape)
+2.  Measures of Distribution (Shape)
 
 To calculate Skewness (asymmetry) and Kurtosis (thickness of the tails), we use the industry-standard moments package.
 
@@ -1671,11 +1759,11 @@ shape_summary %>%
 
 How to Interpret the Shape Metrics:
 
-* Skewness: A symmetric distribution scores around 0. The Right_Skewed data returns a high positive score (long right tail), while the Left_Skewed data returns a negative score (long left tail).
+- Skewness: A symmetric distribution scores around 0. The Right_Skewed data returns a high positive score (long right tail), while the Left_Skewed data returns a negative score (long left tail).
 
-* Kurtosis: A standard normal distribution has a kurtosis of 3. Scores higher than 3 indicate heavy tails with extreme outlier peaks (Leptokurtic), typical of our log-normal Right_Skewed dataset.
+- Kurtosis: A standard normal distribution has a kurtosis of 3. Scores higher than 3 indicate heavy tails with extreme outlier peaks (Leptokurtic), typical of our log-normal Right_Skewed dataset.
 
-3. Measures of Association
+3.  Measures of Association
 
 To evaluate how variables move together, we will calculate Covariance and compare Pearson Correlation (linear relationships) vs. Spearman Correlation (rank/monotonic relationships).
 
@@ -1688,7 +1776,6 @@ print(round(cov_matrix, 3))
 
 ```
 
-
 ```{r}
 
 # B. Pearson Correlation Matrix (Best for linear, normally distributed features)
@@ -1697,7 +1784,6 @@ print("Pearson Correlation Matrix:")
 print(round(pearson_matrix, 3))
 
 ```
-
 
 ```{r}
 
@@ -1708,18 +1794,17 @@ print(round(spearman_matrix, 3))
 
 ```
 
-
 Why comparing Pearson vs. Spearman matters in Data Preprocessing:
 
 If you compare the correlation metrics between Symmetric and Right_Skewed variables, you will notice their Spearman score is often more robust than their Pearson score. Because Pearson relies on strict linearity, highly skewed variables distort the coefficient. Spearman bypasses this limitation by ranking the data points first, making it a critical choice during feature selection loops.
 
 Now that you have the statistical summaries ready, would you like to:
 
-* Generate a ggplot2 correlation heatmap matrix to easily visualize these feature associations? (Check the ggplot gallery)
+- Generate a ggplot2 correlation heatmap matrix to easily visualize these feature associations? (Check the ggplot gallery)
 
 **Hypothesis Testing & Statistical Modeling Framework**
 
-1. Student’s t-Test & F-Test
+1.  Student’s t-Test & F-Test
 
 We use the t-test to compare means between continuous groups, while the F-test checks if the variances of those two groups are equal (a critical prerequisite for certain t-tests).
 
@@ -1750,8 +1835,7 @@ paired_t_test <- t.test(before_scores, after_scores, paired = TRUE)
 
 ```
 
-
-2. Analysis of Variance (ANOVA)
+2.  Analysis of Variance (ANOVA)
 
 ANOVA evaluates whether the means of three or more unique treatment groups are statistically different from each other.
 
@@ -1777,8 +1861,7 @@ summary(two_way_model)
 
 ```
 
-
-3. Chi-Square Test
+3.  Chi-Square Test
 
 Used strictly for categorical attributes to evaluate frequencies and dependencies.
 
@@ -1806,8 +1889,7 @@ chi_sq_gof <- chisq.test(observed_counts, p = expected_probs)
 
 ```
 
-
-4. Basic Statistical Modeling Framework (GLMs)
+4.  Basic Statistical Modeling Framework (GLMs)
 
 Generalized Linear Models (GLMs) allow you to predict responses that do not follow a normal distribution by utilizing a link function (e.g., Logistic Regression for binary classification).
 
@@ -1839,9 +1921,7 @@ print(paste("Probability of purchase:", round(predicted_probability, 3)))
 
 ```
 
-
-:::{.callout-important title="Block I Unit 2 Assignment"}
-
+::: {.callout-important title="Block I Unit 2 Assignment"}
 **🌾 Agribusiness Analytics Challenge: Precision Grain Quality Engineering at Ceres Agro-Industries**
 
 Dataset Reference: Based on the structural properties of the UCI Machine Learning Repository: Rice (Cammeo and Osmancik) Dataset
@@ -1860,9 +1940,9 @@ Before writing code or running calculations, you must plan your operational blue
 
 📝 Tasks & Questions:
 
-1. Sketch a flowchart mapping out the Machine Learning Analytical Cycle for this project. Start from the raw IoT optical sensor harvest and end with model deployment in the sorting machine.
+1.  Sketch a flowchart mapping out the Machine Learning Analytical Cycle for this project. Start from the raw IoT optical sensor harvest and end with model deployment in the sorting machine.
 
-2. At which specific stage of your cycle should you handle data leakage concerns? Explain why this timing matters for model deployment.
+2.  At which specific stage of your cycle should you handle data leakage concerns? Explain why this timing matters for model deployment.
 
 ⚙️ Phase 2: Data Manipulation & Structural Transformations
 
@@ -1870,31 +1950,30 @@ The raw data file ceres_raw_sensor_feed.csv contains missing rows caused by came
 
 📊 Dataset Context:
 
-* Area ranges from 70,000 to 190,000 pixels.
-* Eccentricity ranges from 0.70 to 0.96.
-* Variety contains string labels: "Cammeo" and "Osmancik".
-* Milling_Efficiency_Pct is highly right-skewed.
+- Area ranges from 70,000 to 190,000 pixels.
+- Eccentricity ranges from 0.70 to 0.96.
+- Variety contains string labels: "Cammeo" and "Osmancik".
+- Milling_Efficiency_Pct is highly right-skewed.
 
 📝 Tasks & Questions:
 
-   1. Missing Value Management:
-   
-   * A small percentage of rows have missing values for Area and Facility_Zone (a categorical label).
-   * Which imputation techniques should you use for each feature? Explain why your choices make sense given the distributions of the data.
-   
-   2. Feature Scaling Strategy:
-   
-   * Explain the math and conceptual differences between Normalization (Min-Max Scaling) and Standardization (Z-score Normalization).
-   * If you plan to train a neural network vs. a regularized linear model, match each algorithm to its ideal scaling approach and justify your choice based on the feature ranges of Area and Eccentricity.
-   
-   3. Categorical Processing:
-   
-   * Convert the string column Variety into a dummy variable. Write down the explicit algebraic indicator equation for Is_Osmancik.
-   
-   4. Variance Stabilization:
-   
-   * The feature Milling_Efficiency_Pct shows a steep right skew. Suggest a specific mathematical transformation to fix this issue so the data satisfies classical linear assumptions.
-   
+1.  Missing Value Management:
+
+- A small percentage of rows have missing values for Area and Facility_Zone (a categorical label).
+- Which imputation techniques should you use for each feature? Explain why your choices make sense given the distributions of the data.
+
+2.  Feature Scaling Strategy:
+
+- Explain the math and conceptual differences between Normalization (Min-Max Scaling) and Standardization (Z-score Normalization).
+- If you plan to train a neural network vs. a regularized linear model, match each algorithm to its ideal scaling approach and justify your choice based on the feature ranges of Area and Eccentricity.
+
+3.  Categorical Processing:
+
+- Convert the string column Variety into a dummy variable. Write down the explicit algebraic indicator equation for Is_Osmancik.
+
+4.  Variance Stabilization:
+
+- The feature Milling_Efficiency_Pct shows a steep right skew. Suggest a specific mathematical transformation to fix this issue so the data satisfies classical linear assumptions.
 
 📊 Phase 3: Descriptive Analytics & Exploratory Data Visualization
 
@@ -1902,24 +1981,22 @@ The plant manager needs a clear summary of the grain geometries before updating 
 
 📝 Tasks & Questions:
 
-   1. Central Tendency vs. Dispersion:
-   
-   * For a batch with high outlier presence due to structural crop debris, evaluate whether the Mean or Median provides a more stable baseline for core grain size.
-   * Provide the mathematical definition of the Interquartile Range (IQR). Write out the standard mathematical equations used to detect lower and upper outliers using the IQR technique.
-   
-   2. Distribution Topology:
-   
-   * Describe what a leptokurtic distribution looks like for grain Perimeter. What does this tell a quality assurance manager about the consistency of a harvest?
-   
-   3. Association Mapping:
-   
-   * The correlation between Area and Perimeter yields a Pearson coefficient of r = 0.96, while the relationship between Eccentricity and Milling_Efficiency_Pct yields a Spearman Rank coefficient of ρ = -0.42.
-    * Interpret what these two metrics mean in plain, non-technical business terms.
-   
-   4. Dimensional Exploration:
-   
-   * Designing an interactive analytics dashboard for the team requires both 2D and 3D visual anchors.
-    * Detail exactly which features you would map onto a 2D Scatter Plot vs. a 3D Spatial Visualization to show clear visual separation between the two rice types before moving to automated classification.
+1.  Central Tendency vs. Dispersion:
+
+- For a batch with high outlier presence due to structural crop debris, evaluate whether the Mean or Median provides a more stable baseline for core grain size.
+- Provide the mathematical definition of the Interquartile Range (IQR). Write out the standard mathematical equations used to detect lower and upper outliers using the IQR technique.
+
+2.  Distribution Topology:
+
+- Describe what a leptokurtic distribution looks like for grain Perimeter. What does this tell a quality assurance manager about the consistency of a harvest?
+
+3.  Association Mapping:
+
+- The correlation between Area and Perimeter yields a Pearson coefficient of r = 0.96, while the relationship between Eccentricity and Milling_Efficiency_Pct yields a Spearman Rank coefficient of ρ = -0.42. \* Interpret what these two metrics mean in plain, non-technical business terms.
+
+4.  Dimensional Exploration:
+
+- Designing an interactive analytics dashboard for the team requires both 2D and 3D visual anchors. \* Detail exactly which features you would map onto a 2D Scatter Plot vs. a 3D Spatial Visualization to show clear visual separation between the two rice types before moving to automated classification.
 
 🧪 Phase 4: Inferential Statistics & Hypothesis Testing
 
@@ -1930,11 +2007,11 @@ Ceres cannot assume sample differences apply to the entire harvest without mathe
 Complete the missing parts of the analytics matrix below to determine which test fits each scenario.
 
 | Scenario | Target Variables & Types | Applicable Statistical Test | Null Hypothesis (H₀) Definition |
-|---|---|---|---|
-| Case A | Independent Variable: Variety (2 groups) Dependent Variable: MajorAxisLength (Continuous) | [Student to Identify] | The true mean MajorAxisLength is identical across both rice varieties. |
-| Case B | Variety 1 Area Variance vs. Variety 2 Area Variance | [Student to Identify] | [Student to Write Formulaic/Text Null] |
-| Case C | Independent Variable: Sorting_Line (Lines A, B, and C) Dependent Variable: MinorAxisLength (Continuous) | [Student to Identify] | The mean MinorAxisLength is equal across all three sorting production lines. |
-| Case D | Variable 1: Variety (Cammeo/Osmancik) Variable 2: Quality_Grade (Premium/Standard) | [Student to Identify] | [Student to Write Formulaic/Text Null] |
+|------------------|------------------|------------------|------------------|
+| Case A | Independent Variable: Variety (2 groups) Dependent Variable: MajorAxisLength (Continuous) | \[Student to Identify\] | The true mean MajorAxisLength is identical across both rice varieties. |
+| Case B | Variety 1 Area Variance vs. Variety 2 Area Variance | \[Student to Identify\] | \[Student to Write Formulaic/Text Null\] |
+| Case C | Independent Variable: Sorting_Line (Lines A, B, and C) Dependent Variable: MinorAxisLength (Continuous) | \[Student to Identify\] | The mean MinorAxisLength is equal across all three sorting production lines. |
+| Case D | Variable 1: Variety (Cammeo/Osmancik) Variable 2: Quality_Grade (Premium/Standard) | \[Student to Identify\] | \[Student to Write Formulaic/Text Null\] |
 
 🤖 Phase 5: Predictive Modeling & Advanced Framework Validation
 
@@ -1942,19 +2019,15 @@ Your final task is to build a baseline Multiple Linear Regression Framework to p
 
 📝 Tasks & Questions:
 
-   1. Model Specification:
+1.  Model Specification:
 
-   * Using the independent features Area, Perimeter, Eccentricity, and your binary dummy variable Is\_Osmancik, write out the complete, formal Multiple Linear Regression Equation. Be sure to include all structural coefficients ($\beta_n$) and the stochastic error term (ε).
-   
-   2. Assumption Auditing:
-   
-   * Your initial model output yields high performance, but you must verify the structural assumptions before deployment.
-   * Match the following validation tests and charts to the specific regression assumption they audit, and explain how to identify a failing result:
-   * Durbin-Watson Test
-         * Breusch-Pagan Test
-         * Normal Quantile-Quantile (Q-Q) Plot
-      
+- Using the independent features Area, Perimeter, Eccentricity, and your binary dummy variable Is_Osmancik, write out the complete, formal Multiple Linear Regression Equation. Be sure to include all structural coefficients ($\beta_n$) and the stochastic error term (ε).
 
-**Share the assignment in the word format on email: amita@iabmbikaner.org with Subject: BA Block I Unit 2 Assignment Submission. In the body text, share name, batch and roll number. 
+2.  Assumption Auditing:
 
+- Your initial model output yields high performance, but you must verify the structural assumptions before deployment.
+- Match the following validation tests and charts to the specific regression assumption they audit, and explain how to identify a failing result:
+- Durbin-Watson Test \* Breusch-Pagan Test \* Normal Quantile-Quantile (Q-Q) Plot
+
+\*\*Share the assignment in the word format on email: amita\@iabmbikaner.org with Subject: BA Block I Unit 2 Assignment Submission. In the body text, share name, batch and roll number.
 :::
