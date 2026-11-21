@@ -1067,3 +1067,395 @@ cm$membership[border, , drop = FALSE] |>
 
 ```
 
+
+## Markov Analysis
+
+**Markov analysis** is a method for modelling how something moves between a set of defined states over time, where the probability of the next state depends only on the current state and not on how it got there.
+
+Its main parts are:
+
+- **States:** mutually exclusive categories, such as a farmer buying your brand, a competitor's brand, or nothing.
+
+- **Transition probabilities:** the chance of moving from each state to each other state in one period, collected in a transition matrix whose rows each sum to 1.
+
+- **The Markov property:** the "memory-less" assumption that the next state depends only on the present one.
+
+Once you have the transition matrix, you can:
+
+- forecast the share in each state several periods ahead (multiply the matrix by itself),
+
+- find the long-run steady-state shares, which show where the system settles if nothing changes,
+
+- for chains with an absorbing state such as churn, calculate the expected time until absorption and the lifetime value of a customer.
+
+In agribusiness, it is typically used for brand switching and market share, customer retention and churn, crop or land-use change, and animal or plant health stages.
+
+It rests on three assumptions: the next state depends only on the current state, the probabilities stay the same over time, and all subjects follow the same matrix. 
+
+Now, let's do a case study to understand how we can apply Markov Analysis to farmer's consumer behavior for seed purchasing from retail network.
+
+Client: Kisan Seva AgriMart (fictional), a retailer of seeds, fertilisers and crop-protection products serving farmers in Rajasthan. Farmers buy twice a year: Kharif (monsoon crop) and Rabi (winter crop).
+
+The management team has two worries:
+
+1.  Brand loyalty: farmers switch between AgriMart's own-brand inputs and two competing brands (CompX and CompY), or skip buying altogether. Where will AgriMart's market share settle if nothing changes, and what would a loyalty programme be worth?
+
+2.  Customer lifecycle: new customers drift from regular buying to occasional buying, then to dormancy, and finally leave for good. How long does a typical customer stay, how much is a customer worth, and is a win-back campaign for dormant customers profitable?
+
+A Markov chain is the natural tool for both questions, because each farmer's next-season behaviour depends mainly on where the farmer is now.
+
+| Concept | Meaning | Agribusiness example |
+|:--------|:--------|:---------------------|
+| **State** | A mutually exclusive category describing the customer at a point in time | Own brand, CompX, CompY, None |
+| **Markov property** | The next state depends only on the current state, not on the earlier history | A farmer's choice next season depends on this season's brand, not on three seasons ago |
+| **Transition matrix $P$** | Row $i$, column $j$ is the probability of moving from state $i$ to state $j$ in one period; each row sums to 1 | The chance an Own-brand buyer stays loyal next season |
+| **Estimation** | Count observed transitions and divide by the row total (the maximum likelihood estimate) | Count how many Own buyers bought Own again |
+| **$n$-step probabilities** | $P$ multiplied by itself $n$ times, $P^n$ | Market share two years from now |
+| **Steady state (stationary distribution)** | The long-run share $\pi$ that satisfies $\pi = \pi P$ | The long-run market share of each brand |
+| **Absorbing state** | A state that, once entered, is never left (its row has 1 on the diagonal) | Churned customers |
+| **Fundamental matrix $N$** | $N = (I - Q)^{-1}$, where $Q$ holds transitions among the non-absorbing states; row sums give expected periods before absorption | Expected seasons before a customer churns |
+
+Let's simulate a dataset for farmer's buying behavior for seed retail purchase.
+
+```{r}
+
+# install.packages(c('tidyverse'))
+library(tidyverse)
+set.seed(2026)
+
+# generic simulator of one customer's state path
+sim_chain <- function(P, init, n) {
+  s <- character(n)
+  s[1] <- sample(rownames(P), 1, prob = init)
+  for (t in 2:n) s[t] <- sample(colnames(P), 1, prob = P[s[t - 1], ])
+  s
+}
+
+# ---------- Data 1: brand switching ----------
+states <- c('Own', 'CompX', 'CompY', 'None')
+P_small <- matrix(c(0.70, 0.12, 0.08, 0.10,
+                    0.15, 0.65, 0.10, 0.10,
+                    0.12, 0.13, 0.65, 0.10,
+                    0.25, 0.25, 0.15, 0.35),
+                  4, byrow = TRUE, dimnames = list(states, states))
+P_large <- matrix(c(0.82, 0.06, 0.05, 0.07,
+                    0.20, 0.62, 0.09, 0.09,
+                    0.18, 0.12, 0.62, 0.08,
+                    0.30, 0.25, 0.15, 0.30),
+                  4, byrow = TRUE, dimnames = list(states, states))
+
+n_f <- 1500; n_s <- 12
+seasons <- paste0(rep(2021:2026, each = 2), c('K', 'R'))     # K = Kharif, R = Rabi
+farmers <- tibble(farmer_id = 1:n_f,
+                  farm_size = sample(c('Small', 'Large'), n_f, replace = TRUE, prob = c(0.7, 0.3)))
+
+brand <- farmers |>
+  mutate(path = purrr::map(farm_size, ~ sim_chain(if (.x == 'Small') P_small else P_large,
+                                           c(0.30, 0.30, 0.25, 0.15), n_s))) |>
+  unnest(path) |>
+  group_by(farmer_id) |>
+  mutate(season_idx = row_number(), season = seasons[season_idx]) |>
+  ungroup() |>
+  rename(state = path) |>
+  mutate(state = factor(state, levels = states))
+
+# ---------- Data 2: customer lifecycle with an absorbing state ----------
+life_states <- c('Active', 'Occasional', 'Dormant', 'Churned')
+P_life <- matrix(c(0.75, 0.15, 0.07, 0.03,
+                   0.25, 0.45, 0.22, 0.08,
+                   0.08, 0.12, 0.55, 0.25,
+                   0.00, 0.00, 0.00, 1.00),
+                 4, byrow = TRUE, dimnames = list(life_states, life_states))
+
+life <- map_dfr(1:2000, function(i)
+  tibble(customer_id = i, period = 1:16,
+         state = factor(sim_chain(P_life, c(0.5, 0.5, 0, 0), 16), levels = life_states)))
+
+dplyr::count(brand, state)
+dplyr::count(life, state)
+
+```
+
+Now, we use Markov Analysis to see how farmer's consumer behavior for seed purchase:
+
+```{r}
+
+brand |>
+  dplyr::count(season_idx, state) |>
+  group_by(season_idx) |>
+  mutate(share = n / sum(n)) |>
+  ggplot(aes(season_idx, share, colour = state)) +
+  geom_line() + geom_point()
+
+```
+
+Calculating transition matrix:
+
+```{r}
+
+trans <- brand |>
+  arrange(farmer_id, season_idx) |>
+  group_by(farmer_id) |>
+  mutate(next_state = lead(state)) |>
+  ungroup() |>
+  filter(!is.na(next_state))
+
+counts <- table(From = trans$state, To = trans$next_state)
+P_hat  <- as.matrix(unclass(prop.table(counts, 1)))
+counts; round(P_hat, 3)
+
+```
+
+```{r}
+
+mpow <- function(P, n) { R <- diag(nrow(P)); for (i in seq_len(n)) R <- R %*% P; R }
+
+s0 <- as.numeric(prop.table(table(filter(brand, season_idx == n_s)$state)))   # latest shares
+names(s0) <- states
+next2 <- s0 %*% mpow(P_hat, 2)       # two seasons ahead
+round(rbind(now = s0, two_seasons = next2, ten_seasons = s0 %*% mpow(P_hat, 10)), 3)
+
+```
+
+
+
+```{r}
+
+ev  <- eigen(t(P_hat))
+v   <- Re(ev$vectors[, 1])
+pi_hat <- v / sum(v); names(pi_hat) <- states
+round(pi_hat, 3)
+round(mpow(P_hat, 50)[1, ], 3)       # every row converges to the same vector
+
+```
+
+
+```{r}
+
+trip <- brand |>
+  arrange(farmer_id, season_idx) |>
+  group_by(farmer_id) |>
+  mutate(prev = lag(state), nxt = lead(state)) |>
+  ungroup() |>
+  filter(!is.na(prev), !is.na(nxt))
+
+own <- filter(trip, state == 'Own')
+chisq.test(table(own$prev, own$nxt))
+
+```
+
+
+```{r}
+
+P_by_size <- trans |>
+  left_join(farmers, by = 'farmer_id') |>
+  group_by(farm_size) |>
+  group_map(~ round(prop.table(table(.x$state, .x$next_state), 1), 3))
+names(P_by_size) <- c('Large', 'Small')
+P_by_size
+
+```
+
+
+
+```{r}
+
+# ------------------------------------------------------------
+# ggplot2 visuals for the Markov analysis case study
+# Run the case study setup block first. It creates:
+#   brand, life, farmers, states, life_states, seasons, n_s, P_small, P_large
+# ------------------------------------------------------------
+library(tidyverse)
+theme_set(theme_minimal(base_size = 13))
+
+state_cols <- c(Own = '#2F6B3A', CompX = '#C8841A', CompY = '#4B6CB7', None = '#8A8A80')
+life_cols  <- c(Active = '#2F6B3A', Occasional = '#7FB069', Dormant = '#C8841A', Churned = '#8A8A80')
+
+# ---------- helper functions ----------
+mpow <- function(P, n) { R <- diag(nrow(P)); for (i in seq_len(n)) R <- R %*% P; R }
+steady <- function(P) {
+  v <- Re(eigen(t(P))$vectors[, 1])
+  setNames(v / sum(v), rownames(P))
+}
+
+# ---------- estimate the matrices used below ----------
+trans <- brand |>
+  arrange(farmer_id, season_idx) |>
+  group_by(farmer_id) |>
+  mutate(next_state = lead(state)) |>
+  ungroup() |>
+  filter(!is.na(next_state))
+P_hat <- as.matrix(unclass(prop.table(table(trans$state, trans$next_state), 1)))
+
+lt <- life |>
+  arrange(customer_id, period) |>
+  group_by(customer_id) |>
+  mutate(next_state = lead(state)) |>
+  ungroup() |>
+  filter(!is.na(next_state))
+Pl_hat <- as.matrix(unclass(prop.table(table(lt$state, lt$next_state), 1)))
+
+# ============================================================
+# PLOT 1. Observed market share by season
+# ============================================================
+p1 <- brand |>
+  dplyr::count(season_idx, state) |>
+  group_by(season_idx) |>
+  mutate(share = n / sum(n)) |>
+  ungroup() |>
+  ggplot(aes(season_idx, share, colour = state)) +
+  geom_line(linewidth = 1) + geom_point(size = 2) +
+  scale_x_continuous(breaks = 1:n_s, labels = seasons) +
+  scale_y_continuous(labels = scales::percent) +
+  scale_colour_manual(values = state_cols) +
+  labs(title = 'Market share by season', x = NULL, y = 'Share of farmers', colour = NULL) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+p1
+
+```
+
+
+```{r}
+# ============================================================
+# PLOT 2. Transition matrix as a heatmap
+# ============================================================
+tm <- as.data.frame(as.table(P_hat))
+names(tm)[1:3] <- c('From', 'To', 'prob')
+tm <- tm |> mutate(From = factor(From, levels = states), To = factor(To, levels = states))
+
+p2 <- ggplot(tm, aes(To, From, fill = prob)) +
+  geom_tile(colour = 'white', linewidth = 1) +
+  geom_text(aes(label = scales::percent(prob, accuracy = 1), colour = prob > 0.5),
+            size = 5, show.legend = FALSE) +
+  scale_colour_manual(values = c('FALSE' = '#141413', 'TRUE' = 'white')) +
+  scale_fill_gradient(low = '#F4F1E8', high = '#2F6B3A', labels = scales::percent) +
+  scale_y_discrete(limits = rev) +
+  labs(title = 'Transition matrix: where farmers go next season',
+       x = 'Next season', y = 'This season', fill = 'Probability')
+p2
+
+```
+
+
+```{r}
+
+# ============================================================
+# PLOT 3. Forecast converging to the steady state
+# ============================================================
+s0 <- as.numeric(table(brand$state[brand$season_idx == max(brand$season_idx)])) |> (\(x) x / sum(x))()
+pi_hat <- steady(P_hat)
+
+proj <- bind_rows(lapply(0:15, function(h)
+  tibble(horizon = h, state = states, share = as.numeric(s0 %*% mpow(P_hat, h)))))
+
+p3 <- ggplot(proj, aes(horizon, share, colour = state)) +
+  geom_line(linewidth = 1.1) +
+  geom_hline(data = tibble(state = states, share = as.numeric(pi_hat)),
+             aes(yintercept = share, colour = state), linetype = 'dashed', alpha = 0.7) +
+  scale_y_continuous(labels = scales::percent) +
+  scale_colour_manual(values = state_cols) +
+  labs(title = 'Forecast converges to the steady state (dashed lines)',
+       x = 'Seasons ahead', y = 'Predicted share', colour = NULL)
+p3
+
+```
+
+
+```{r}
+
+# ============================================================
+# PLOT 4. Steady-state share: small versus large farms
+# ============================================================
+pi_size <- bind_rows(
+  tibble(group = 'Small farms', state = states, share = as.numeric(steady(P_small))),
+  tibble(group = 'Large farms', state = states, share = as.numeric(steady(P_large)))) |>
+  mutate(state = factor(state, levels = states))
+
+p4 <- ggplot(pi_size, aes(state, share, fill = group)) +
+  geom_col(position = position_dodge(width = 0.8), width = 0.7) +
+  geom_text(aes(label = scales::percent(share, accuracy = 1)),
+            position = position_dodge(width = 0.8), vjust = -0.4, size = 4) +
+  scale_y_continuous(labels = scales::percent, expand = expansion(mult = c(0, 0.12))) +
+  scale_fill_manual(values = c('Small farms' = '#C8841A', 'Large farms' = '#2F6B3A')) +
+  labs(title = 'Long-run market share by farm size', x = NULL, y = 'Steady-state share', fill = NULL)
+p4
+
+```
+
+
+```{r}
+
+# ============================================================
+# PLOT 5. Loyalty programme scenario (small farms)
+# ============================================================
+P_new <- P_small
+P_new['Own', ] <- c(0.78, 0.12, 0.08, 0.10) * c(1, rep((1 - 0.78) / (1 - 0.70), 3))
+
+scen <- bind_rows(
+  tibble(case = 'Today', state = states, share = as.numeric(steady(P_small))),
+  tibble(case = 'With loyalty programme', state = states, share = as.numeric(steady(P_new)))) |>
+  mutate(state = factor(state, levels = states),
+         case  = factor(case, levels = c('Today', 'With loyalty programme')))
+
+p5 <- ggplot(scen, aes(state, share, fill = case)) +
+  geom_col(position = position_dodge(width = 0.8), width = 0.7) +
+  geom_text(aes(label = scales::percent(share, accuracy = 1)),
+            position = position_dodge(width = 0.8), vjust = -0.4, size = 4) +
+  scale_y_continuous(labels = scales::percent, expand = expansion(mult = c(0, 0.12))) +
+  scale_fill_manual(values = c('Today' = '#8A8A80', 'With loyalty programme' = '#2F6B3A')) +
+  labs(title = 'What a loyalty programme does to long-run share (small farms)',
+       x = NULL, y = 'Steady-state share', fill = NULL)
+p5
+
+```
+
+
+```{r}
+
+# ============================================================
+# PLOT 6. Customer lifecycle: how the base moves to churn
+# ============================================================
+p6 <- life |>
+  dplyr::count(period, state) |>
+  group_by(period) |>
+  mutate(share = n / sum(n)) |>
+  ungroup() |>
+  ggplot(aes(period, share, fill = state)) +
+  geom_area(alpha = 0.95) +
+  scale_y_continuous(labels = scales::percent, expand = c(0, 0)) +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_fill_manual(values = life_cols) +
+  labs(title = 'Customer lifecycle: the cohort drifts toward churn',
+       x = 'Season since joining', y = 'Share of cohort', fill = NULL)
+p6
+
+```
+
+
+```{r}
+
+# ============================================================
+# PLOT 7. Expected seasons before churn, by current state
+# ============================================================
+Q    <- Pl_hat[1:3, 1:3]
+Nmat <- solve(diag(3) - Q)
+et   <- tibble(state = rownames(Q), seasons = as.numeric(Nmat %*% rep(1, 3)))
+
+p7 <- ggplot(et, aes(reorder(state, seasons), seasons, fill = state)) +
+  geom_col(width = 0.65, show.legend = FALSE) +
+  geom_text(aes(label = round(seasons, 1)), vjust = -0.4, size = 5) +
+  scale_fill_manual(values = life_cols) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.12))) +
+  labs(title = 'Expected seasons before a customer churns',
+       x = 'Current state', y = 'Seasons')
+p7
+
+```
+
+
+
+
+
+
+
+
