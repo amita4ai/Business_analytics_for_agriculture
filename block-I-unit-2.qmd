@@ -688,6 +688,123 @@ fig
 
 ```
 
+
+### Animation Plots
+
+Animation charts are the charts with moving elements. Such charts make reports interesting but animation charts can only be shown in HTML format, not in pdf, word formats. Let's see a sample of animation chart:
+
+```{r}
+
+# ------------------------------------------------------------
+# Two animated charts in R with gganimate
+#   1. Gapminder bubble chart: wealth vs life expectancy, 1952-2007
+#   2. Wine data: quantile regression lines sweeping from tau 0.05 to 0.95
+# ------------------------------------------------------------
+
+# install.packages(c("tidyverse", "gganimate", "gapminder", "gifski",
+#                    "quantreg", "scales", "viridis"))
+
+library(tidyverse)
+library(gganimate)
+library(gapminder)
+library(quantreg)
+
+# ============================================================
+# 1. Gapminder bubble chart
+# ============================================================
+p1 <- ggplot(gapminder,
+             aes(x = gdpPercap, y = lifeExp, size = pop, colour = continent)) +
+  
+  geom_point(alpha = 0.7) +
+  
+  scale_x_log10(labels = scales::label_dollar()) +
+  
+  scale_size(range = c(2, 18), guide = "none") +
+  
+  scale_colour_brewer(palette = "Set2") +
+  
+  labs(title    = "Wealth and health of nations, {round(frame_time)}",
+       subtitle = "Bubble size = population",
+       x = "GDP per capita (log scale)",
+       y = "Life expectancy (years)",
+       colour = NULL) +
+  
+  theme_minimal(base_size = 14) +
+  
+  theme(legend.position = "bottom",
+        plot.title = element_text(face = "bold")) +
+  
+  transition_time(year) +
+  
+  ease_aes("linear") +
+  
+  shadow_wake(wake_length = 0.06, alpha = FALSE)   # fading trails
+
+#anim1 <- animate(p1, nframes = 200, fps = 20,
+#                 width = 900, height = 600, res = 110,
+#                 renderer = gifski_renderer())
+
+#anim_save("gapminder_bubbles.gif", anim1)
+
+#gapminder_bubbles.gif
+
+```
+
+![](gapminder_bubbles.gif)
+
+Here, we can see how Life Expectancy and GDP of the continents is shifting as the time period progresses (See in the title of the plot) and Size of the circle represents the population size at a specific year. The trail of the circle shows the direction of the movement. 
+
+```{r}
+
+# ============================================================
+# 2. Wine quality: quantile regression line sweeping across tau
+# ============================================================
+url  <- "https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv"
+wine <- read.csv(url, sep = ";")
+
+taus <- seq(0.05, 0.95, by = 0.01)
+rng  <- range(wine$alcohol)
+
+# fitted line endpoints for every tau
+lines_df <- map_dfr(taus, function(t) {
+  fit <- suppressWarnings(rq(quality ~ alcohol, tau = t, data = wine))
+  tibble(tau     = t,
+         alcohol = rng,
+         quality = as.numeric(predict(fit, data.frame(alcohol = rng))))
+})
+
+ols <- lm(quality ~ alcohol, data = wine)
+
+p2 <- ggplot() +
+  geom_jitter(data = wine, aes(alcohol, quality),
+              width = 0.05, height = 0.15, alpha = 0.25, colour = "grey40") +
+  geom_abline(intercept = coef(ols)[1], slope = coef(ols)[2],
+              linetype = "dashed", colour = "black") +
+  geom_line(data = lines_df, aes(alcohol, quality, colour = tau),
+            linewidth = 1.6) +
+  scale_colour_viridis_c(option = "plasma", limits = c(0, 1), guide = "none") +
+  labs(title    = "Quantile regression line, tau = {sprintf('%.2f', frame_time)}",
+       subtitle = "Dashed line = OLS (mean). Coloured line = conditional quantile",
+       x = "Alcohol (% vol)", y = "Quality score") +
+  theme_minimal(base_size = 14) +
+  theme(plot.title = element_text(face = "bold")) +
+  transition_time(tau) +
+  ease_aes("linear")
+
+#anim2 <- animate(p2, nframes = length(taus), fps = 15,
+#                 width = 900, height = 600, res = 110,
+#                 renderer = gifski_renderer())
+
+#anim_save("wine_quantile_sweep.gif", anim2)
+
+# Tip: use renderer = ffmpeg_renderer() instead of gifski_renderer()
+# if you want an .mp4 (needs ffmpeg installed).
+
+```
+
+![](wine_quantile_sweep.gif)
+Here, we can see the quantile regression in action. The regression line shifts as per the quality score of the wine. As line moves, the correlation between Alcohol (% val) and Quality Score as per thie shift in Quality Score is shown innthe title of the animated plot. 
+
 ### Map Plot
 
 Map plots are useful when the map plot is interactive. We use `leaflet` library to create map plot:

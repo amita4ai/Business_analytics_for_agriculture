@@ -420,8 +420,8 @@ fa.parallel(survey_df, fm = "ml", fa = "fa")
 
 ```
 
-### PART C: FIT EXPLORATORY FACTOR ANALYSIS (3 FACTORS)
 
+### PART C: FIT EXPLORATORY FACTOR ANALYSIS (3 FACTORS)
 
 From the scree-plot, we see the angle of the line suddenly changes at the factor number 3. We build 3 Factor model:
 
@@ -559,152 +559,214 @@ The difference among the various models is shown in the table:
 
 Let's do the R Coding for building multi models. Begin with loading the dataset:
 
-<!-- ```{r} -->
+```{r , cache=TRUE}
 
-<!-- # 1. Install and load required packages -->
-<!-- # install.packages(c( -->
-<!-- #   "tidymodels", "discrim", "naivebayes", "kknn", -->
-<!-- #   "kernlab", "ranger", "xgboost", "stacks", "readxl" -->
-<!-- # )) -->
-<!-- library(tidymodels) -->
-<!-- library(discrim) -->
-<!-- library(stacks) -->
-<!-- library(readxl) -->
+# 1. Install and load required packages
+# install.packages(c(
+#   "tidymodels", "discrim", "naivebayes", "kknn",
+#   "kernlab", "ranger", "xgboost", "stacks", "readxl"
+# ))
+library(tidymodels)
+library(discrim)
+library(stacks)
+library(readxl)
+library(naivebayes)
 
-<!-- # 2. Load the dataset -->
+# 2. Load the dataset
 
-<!-- beans_raw <- read_excel("Dry_Bean_Dataset.xlsx") |> -->
-<!--   mutate(Class = factor(Class)) -->
+beans_raw <- read_excel("Dry_Bean_Dataset.xlsx") |>
+  mutate(Class = factor(Class))
 
-<!-- head(beans_raw) -->
+head(beans_raw)
 
-<!-- ``` -->
+```
 
-<!-- # Sample 3,500 stratified beans for fast local benchmarking (remove slice_sample for full 13,611 rows) -->
+In the dataset, we have more than 13,611 rows. To process such huge data for multiple models with cross validation needs higher computing power. Therefore, ensure enough RAM space in the system. 
 
-<!-- set.seed(202) -->
+```{r , cache=TRUE}
 
-<!-- beans_df <- beans_raw |> -->
-<!--   slice_sample(n = 3500, by = Class) -->
+set.seed(202)
 
-<!-- # 3. Train / Test Split (80% Train, 20% Test) & 5-Fold Stratified Cross-Validation -->
-<!-- bean_split <- initial_split(beans_df, prop = 0.80, strata = Class) -->
-<!-- bean_train <- training(bean_split) -->
-<!-- bean_test  <- testing(bean_split) -->
+# 3. Train / Test Split (80% Train, 20% Test) & 5-Fold Stratified Cross-Validation
+bean_split <- initial_split(beans_raw, prop = 0.80, strata = Class)
+bean_train <- training(bean_split)
+bean_test  <- testing(bean_split)
 
-<!-- set.seed(2026) -->
-<!-- bean_folds <- vfold_cv(bean_train, v = 5, strata = Class) -->
+paste("Number of observations in train data: ",nrow(bean_train))
 
-<!-- # 4. Preprocessing Recipe (Standardize predictors for SVM & kNN) -->
-<!-- bean_recipe <- recipe(Class ~ ., data = bean_train) |> -->
-<!--   step_zv(all_predictors()) |> -->
-<!--   step_normalize(all_numeric_predictors()) -->
+paste("Number of observations in test data: ",nrow(bean_test))
 
-<!-- # ========================================================= -->
-<!-- # PART A: DEFINE ALL 6 INDIVIDUAL MODEL SPECIFICATIONS -->
-<!-- # ========================================================= -->
+```
 
-<!-- # 1. Naive Bayes -->
-<!-- nb_spec <- naive_Bayes() |> -->
-<!--   set_engine("naivebayes") |> -->
-<!--   set_mode("classification") -->
+Let's set up cross validation. Cross validation basically, runs the machine learning process multiple times using a random sample selection process. 
 
-<!-- # 2. k-Nearest Neighbors (kNN) -->
-<!-- knn_spec <- nearest_neighbor(neighbors = 7) |> -->
-<!--   set_engine("kknn") |> -->
-<!--   set_mode("classification") -->
+```{r , cache=TRUE}
 
-<!-- # 3. Decision Tree -->
-<!-- dt_spec <- decision_tree(cost_complexity = 0.001, tree_depth = 10) |> -->
-<!--   set_engine("rpart") |> -->
-<!--   set_mode("classification") -->
+set.seed(2026)
 
-<!-- # 4. Support Vector Machine (RBF Kernel) -->
-<!-- svm_spec <- svm_rbf(cost = 2, rbf_sigma = 0.05) |> -->
-<!--   set_engine("kernlab") |> -->
-<!--   set_mode("classification") -->
+bean_folds <- vfold_cv(bean_train, v = 5, strata = Class)
 
-<!-- # 5. Random Forest (Bagging Ensemble) -->
-<!-- rf_spec <- rand_forest(trees = 300, mtry = 4) |> -->
-<!--   set_engine("ranger") |> -->
-<!--   set_mode("classification") -->
+bean_folds
 
-<!-- # 6. XGBoost (Gradient Boosting Ensemble) -->
-<!-- xgb_spec <- boost_tree(trees = 300, tree_depth = 6, learn_rate = 0.05) |> -->
-<!--   set_engine("xgboost") |> -->
-<!--   set_mode("classification") -->
+```
 
-<!-- # ========================================================= -->
-<!-- # PART B: EVALUATE ALL MODELS WITH 5-FOLD CROSS-VALIDATION -->
-<!-- # ========================================================= -->
+Now data is ready, we can start building multiple machine learning models using tidymodels package:
 
-<!-- # Bundle all 6 models into a single workflow_set -->
-<!-- bean_workflows <- workflow_set( -->
-<!--   preproc = list(norm = bean_recipe), -->
-<!--   models = list( -->
-<!--     Naive_Bayes   = nb_spec, -->
-<!--     KNN           = knn_spec, -->
-<!--     Decision_Tree = dt_spec, -->
-<!--     SVM_RBF       = svm_spec, -->
-<!--     Random_Forest = rf_spec, -->
-<!--     XGBoost       = xgb_spec -->
-<!--   ) -->
-<!-- ) -->
+```{r , cache=TRUE}
 
-<!-- # Configure control settings to save out-of-fold predictions for Ensemble Stacking -->
-<!-- stack_ctrl <- control_resamples( -->
-<!--   save_pred = TRUE, -->
-<!--   save_workflow = TRUE -->
-<!-- ) -->
+# 4. Preprocessing Recipe (Standardize predictors for SVM & kNN)
+bean_recipe <- recipe(Class ~ ., data = bean_train) |>
+  step_zv(all_predictors()) |>
+  step_normalize(all_numeric_predictors())
 
-<!-- # Fit all 6 models across all 5 CV folds (30 total fits) -->
-<!-- cv_results <- bean_workflows |> -->
-<!--   workflow_map( -->
-<!--     fn = "fit_resamples", -->
-<!--     resamples = bean_folds, -->
-<!--     metrics = metric_set(accuracy, roc_auc), -->
-<!--     control = stack_ctrl -->
-<!--   ) -->
+```
 
-<!-- # Rank all 6 models by 5-fold cross-validated Accuracy and ROC AUC -->
-<!-- rank_results(cv_results, rank_metric = "accuracy", select_best = TRUE) |> -->
-<!--   select(wflow_id, .metric, mean, std_err) -->
+## PART A: DEFINE ALL 6 INDIVIDUAL MODEL SPECIFICATIONS
 
-<!-- # Plot CV benchmark comparison -->
-<!-- autoplot(cv_results, metric = "accuracy") + -->
-<!--   labs( -->
-<!--     title = "5-Fold Cross-Validation Performance on Dry Bean Grading", -->
-<!--     subtitle = "Comparing 6 classifiers across 16 computer-vision shape traits" -->
-<!--   ) + -->
-<!--   theme_minimal(base_size = 13) -->
+We build six different models - Naive Bayes, kNN, Decision Tree, Support Vector Machine, Random Forest and XGBoost. Each model captures the relationship between decision variable and predictors in different way. Each model gives prediction in different way and the predictions may differ with other models. Each model improves the prediction errors through five fold cross-validation. 
 
-<!-- # ========================================================= -->
-<!-- # PART C: BUILD & EVALUATE STACKED ENSEMBLE META-MODEL -->
-<!-- # ========================================================= -->
+Once each model produces the predictions, we build a final model that uses the predictions of each model to build final predictions. There are various methods like average of the predictions, voting based predicitons, etc. 
 
-<!-- # Combine out-of-fold predictions from top diverse learners (SVM + Random Forest + XGBoost) -->
-<!-- bean_stack <- stacks() |> -->
-<!--   add_candidates(cv_results, name = "norm_SVM_RBF") |> -->
-<!--   add_candidates(cv_results, name = "norm_Random_Forest") |> -->
-<!--   add_candidates(cv_results, name = "norm_XGBoost") |> -->
-<!--   blend_predictions() |>   # Fits a penalized meta-learner to assign optimal weights -->
-<!--   fit_members()            # Retrains selected base models on full training data -->
+Let's start with building each model:
 
-<!-- # Inspect the learned meta-learner weights assigned to each base model -->
-<!-- autoplot(bean_stack, type = "weights") + -->
-<!--   labs(title = "Stacked Ensemble Meta-Learner Weights") + -->
-<!--   theme_minimal(base_size = 13) -->
+```{r , cache=TRUE}
 
-<!-- # Predict on the unseen 20% hold-out test set -->
-<!-- ensemble_preds <- predict(bean_stack, new_data = bean_test) |> -->
-<!--   bind_cols(bean_test |> select(Class)) -->
+### 1. Naive Bayes
+nb_spec <- naive_Bayes() |>
+  set_engine("naivebayes") |>
+  set_mode("classification")
 
-<!-- # Final Hold-Out Test Accuracy & Confusion Matrix -->
-<!-- accuracy(ensemble_preds, truth = Class, estimate = .pred_class) -->
-<!-- conf_mat(ensemble_preds, truth = Class, estimate = .pred_class) -->
+# 2. k-Nearest Neighbors (kNN)
+knn_spec <- nearest_neighbor(neighbors = 7) |>
+  set_engine("kknn") |>
+  set_mode("classification")
+
+# 3. Decision Tree
+dt_spec <- decision_tree(cost_complexity = 0.001, tree_depth = 10) |>
+  set_engine("rpart") |>
+  set_mode("classification")
+
+# 4. Support Vector Machine (RBF Kernel)
+svm_spec <- svm_rbf(cost = 2, rbf_sigma = 0.05) |>
+  set_engine("kernlab") |>
+  set_mode("classification")
+
+# 5. Random Forest (Bagging Ensemble)
+rf_spec <- rand_forest(trees = 300, mtry = 4) |>
+  set_engine("ranger") |>
+  set_mode("classification")
+
+# 6. XGBoost (Gradient Boosting Ensemble)
+xgb_spec <- boost_tree(trees = 300, tree_depth = 6, learn_rate = 0.05) |>
+  set_engine("xgboost") |>
+  set_mode("classification")
+
+```
 
 
-<!-- ``` -->
+## PART B: EVALUATE ALL MODELS WITH 5-FOLD CROSS-VALIDATION
+
+After setting up the recipes of each model, we set the workflow for 5 fold cross validation:
+
+```{r , cache=TRUE}
+
+### Bundle all 6 models into a single workflow_set
+bean_workflows <- workflow_set(
+  preproc = list(norm = bean_recipe),
+  models = list(
+    Naive_Bayes   = nb_spec,
+    KNN           = knn_spec,
+    Decision_Tree = dt_spec,
+    SVM_RBF       = svm_spec,
+    Random_Forest = rf_spec,
+    XGBoost       = xgb_spec
+  )
+)
+
+# Configure control settings to save out-of-fold predictions for Ensemble Stacking
+stack_ctrl <- control_resamples(
+  save_pred = TRUE,
+  save_workflow = TRUE
+)
+
+# Fit all 6 models across all 5 CV folds (30 total fits)
+cv_results <- bean_workflows |>
+  workflow_map(
+    fn = "fit_resamples",
+    resamples = bean_folds,
+    metrics = metric_set(accuracy, roc_auc),
+    control = stack_ctrl
+  )
+
+# Rank all 6 models by 5-fold cross-validated Accuracy and ROC AUC
+rank_results(cv_results, rank_metric = "accuracy", select_best = TRUE) |>
+  select(wflow_id, .metric, mean, std_err)
+
+# Plot CV benchmark comparison
+autoplot(cv_results, metric = "accuracy") +
+  labs(
+    title = "5-Fold Cross-Validation Performance on Dry Bean Grading",
+    subtitle = "Comparing 6 classifiers across 16 computer-vision shape traits"
+  ) +
+  theme_minimal(base_size = 13)
+
+```
+
+In the chart, we can see the accuracy of each model. The model `naivebayes` has the lowest mean accuracy and the model `boost_tree` has the highest accuracy. Now, we build an ensemble model and see if accuracy improves.
+
+## PART C: BUILD & EVALUATE STACKED ENSEMBLE META-MODEL
+
+We select three models - SVM, Random Forest and XGBoost to build stacking emsemble model:
+
+```{r , cache=TRUE}
+
+svm_res <- extract_workflow_set_result(cv_results, id = "norm_SVM_RBF")
+rf_res  <- extract_workflow_set_result(cv_results, id = "norm_Random_Forest")
+xgb_res <- extract_workflow_set_result(cv_results, id = "norm_XGBoost")
+
+bean_stack <- stacks() |>
+  add_candidates(svm_res, name = "svm") |>
+  add_candidates(rf_res,  name = "rf")  |>
+  add_candidates(xgb_res, name = "xgb") |>
+  blend_predictions() |>
+  fit_members()
+
+# Inspect the learned meta-learner weights assigned to each base model
+autoplot(bean_stack, type = "weights") +
+  labs(title = "Stacked Ensemble Meta-Learner Weights") +
+  theme_minimal(base_size = 13)
+
+```
+
+**What the plot shows:** the weight the meta-learner gives each base-model member, shown separately for each of the 7 bean classes. Longer bars mean that member's predicted probability counts for more in deciding that class.
+
+- **Colours:** blue is SVM (`svm_rbf`), green is random forest (`rand_forest`), and red is XGBoost (`boost_tree`).
+
+- **SVM dominates:** the largest weights, roughly 10 to 15, are on SVM members. This is clearest in BOMBAY, DERMASON and SIRA, so the RBF-kernel SVM separates these classes best.
+
+- **Tree models play a supporting role:** random forest and XGBoost get smaller weights, mostly in classes that overlap more.
+
+- **Mixed classes:** CALI and HOROZ draw on all three model types, and SEKER leans on SVM and random forest.
+
+- **BARBUNYA:** it shows almost no weight, with only a tiny random forest bar. The panel is cut off at the left edge, so some bars may be hidden. Check this before concluding that little was needed for this class.
+
+- **Sparsity:** many members have no weight at all. This comes from the penalty in `blend_predictions()`, which keeps a few useful members and drops redundant ones.
+
+- **Overall:** the stack is built mainly on the SVM, with random forest and XGBoost added where the SVM alone struggles.
+
+Now, let's check the prediction accuracy of the ensemble model:
+
+```{r , cache=TRUE}
+
+# Predict on the unseen 20% hold-out test set
+ensemble_preds <- predict(bean_stack, new_data = bean_test) |>
+  bind_cols(bean_test |> select(Class))
+
+# Final Hold-Out Test Accuracy & Confusion Matrix
+accuracy(ensemble_preds, truth = Class, estimate = .pred_class)
+conf_mat(ensemble_preds, truth = Class, estimate = .pred_class)
+
+```
 
 
 

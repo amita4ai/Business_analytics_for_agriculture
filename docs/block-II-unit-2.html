@@ -276,6 +276,9 @@ window.Quarto = {
   <li><a href="#part-c-fit-exploratory-factor-analysis-3-factors" id="toc-part-c-fit-exploratory-factor-analysis-3-factors" class="nav-link" data-scroll-target="#part-c-fit-exploratory-factor-analysis-3-factors"><span class="header-section-number">7.3.3</span> PART C: FIT EXPLORATORY FACTOR ANALYSIS (3 FACTORS)</a></li>
   </ul></li>
   <li><a href="#multiple-machine-learning-models-and-ensemble-models" id="toc-multiple-machine-learning-models-and-ensemble-models" class="nav-link" data-scroll-target="#multiple-machine-learning-models-and-ensemble-models"><span class="header-section-number">7.4</span> Multiple Machine Learning Models and Ensemble Models</a></li>
+  <li><a href="#part-a-define-all-6-individual-model-specifications" id="toc-part-a-define-all-6-individual-model-specifications" class="nav-link" data-scroll-target="#part-a-define-all-6-individual-model-specifications"><span class="header-section-number">7.5</span> PART A: DEFINE ALL 6 INDIVIDUAL MODEL SPECIFICATIONS</a></li>
+  <li><a href="#part-b-evaluate-all-models-with-5-fold-cross-validation" id="toc-part-b-evaluate-all-models-with-5-fold-cross-validation" class="nav-link" data-scroll-target="#part-b-evaluate-all-models-with-5-fold-cross-validation"><span class="header-section-number">7.6</span> PART B: EVALUATE ALL MODELS WITH 5-FOLD CROSS-VALIDATION</a></li>
+  <li><a href="#part-c-build-evaluate-stacked-ensemble-meta-model" id="toc-part-c-build-evaluate-stacked-ensemble-meta-model" class="nav-link" data-scroll-target="#part-c-build-evaluate-stacked-ensemble-meta-model"><span class="header-section-number">7.7</span> PART C: BUILD &amp; EVALUATE STACKED ENSEMBLE META-MODEL</a></li>
   </ul>
 </nav>
     </div>
@@ -1068,121 +1071,340 @@ Cumulative Var 0.253 0.498 0.734</code></pre>
 </tbody>
 </table>
 <p>Let’s do the R Coding for building multi models. Begin with loading the dataset:</p>
-<!-- ```{r} -->
-<!-- # 1. Install and load required packages -->
-<!-- # install.packages(c( -->
-<!-- #   "tidymodels", "discrim", "naivebayes", "kknn", -->
-<!-- #   "kernlab", "ranger", "xgboost", "stacks", "readxl" -->
-<!-- # )) -->
-<!-- library(tidymodels) -->
-<!-- library(discrim) -->
-<!-- library(stacks) -->
-<!-- library(readxl) -->
-<!-- # 2. Load the dataset -->
-<!-- beans_raw <- read_excel("Dry_Bean_Dataset.xlsx") |> -->
-<!--   mutate(Class = factor(Class)) -->
-<!-- head(beans_raw) -->
-<!-- ``` -->
-<!-- # Sample 3,500 stratified beans for fast local benchmarking (remove slice_sample for full 13,611 rows) -->
-<!-- set.seed(202) -->
-<!-- beans_df <- beans_raw |> -->
-<!--   slice_sample(n = 3500, by = Class) -->
-<!-- # 3. Train / Test Split (80% Train, 20% Test) & 5-Fold Stratified Cross-Validation -->
-<!-- bean_split <- initial_split(beans_df, prop = 0.80, strata = Class) -->
-<!-- bean_train <- training(bean_split) -->
-<!-- bean_test  <- testing(bean_split) -->
-<!-- set.seed(2026) -->
-<!-- bean_folds <- vfold_cv(bean_train, v = 5, strata = Class) -->
-<!-- # 4. Preprocessing Recipe (Standardize predictors for SVM & kNN) -->
-<!-- bean_recipe <- recipe(Class ~ ., data = bean_train) |> -->
-<!--   step_zv(all_predictors()) |> -->
-<!--   step_normalize(all_numeric_predictors()) -->
-<!-- # ========================================================= -->
-<!-- # PART A: DEFINE ALL 6 INDIVIDUAL MODEL SPECIFICATIONS -->
-<!-- # ========================================================= -->
-<!-- # 1. Naive Bayes -->
-<!-- nb_spec <- naive_Bayes() |> -->
-<!--   set_engine("naivebayes") |> -->
-<!--   set_mode("classification") -->
-<!-- # 2. k-Nearest Neighbors (kNN) -->
-<!-- knn_spec <- nearest_neighbor(neighbors = 7) |> -->
-<!--   set_engine("kknn") |> -->
-<!--   set_mode("classification") -->
-<!-- # 3. Decision Tree -->
-<!-- dt_spec <- decision_tree(cost_complexity = 0.001, tree_depth = 10) |> -->
-<!--   set_engine("rpart") |> -->
-<!--   set_mode("classification") -->
-<!-- # 4. Support Vector Machine (RBF Kernel) -->
-<!-- svm_spec <- svm_rbf(cost = 2, rbf_sigma = 0.05) |> -->
-<!--   set_engine("kernlab") |> -->
-<!--   set_mode("classification") -->
-<!-- # 5. Random Forest (Bagging Ensemble) -->
-<!-- rf_spec <- rand_forest(trees = 300, mtry = 4) |> -->
-<!--   set_engine("ranger") |> -->
-<!--   set_mode("classification") -->
-<!-- # 6. XGBoost (Gradient Boosting Ensemble) -->
-<!-- xgb_spec <- boost_tree(trees = 300, tree_depth = 6, learn_rate = 0.05) |> -->
-<!--   set_engine("xgboost") |> -->
-<!--   set_mode("classification") -->
-<!-- # ========================================================= -->
-<!-- # PART B: EVALUATE ALL MODELS WITH 5-FOLD CROSS-VALIDATION -->
-<!-- # ========================================================= -->
-<!-- # Bundle all 6 models into a single workflow_set -->
-<!-- bean_workflows <- workflow_set( -->
-<!--   preproc = list(norm = bean_recipe), -->
-<!--   models = list( -->
-<!--     Naive_Bayes   = nb_spec, -->
-<!--     KNN           = knn_spec, -->
-<!--     Decision_Tree = dt_spec, -->
-<!--     SVM_RBF       = svm_spec, -->
-<!--     Random_Forest = rf_spec, -->
-<!--     XGBoost       = xgb_spec -->
-<!--   ) -->
-<!-- ) -->
-<!-- # Configure control settings to save out-of-fold predictions for Ensemble Stacking -->
-<!-- stack_ctrl <- control_resamples( -->
-<!--   save_pred = TRUE, -->
-<!--   save_workflow = TRUE -->
-<!-- ) -->
-<!-- # Fit all 6 models across all 5 CV folds (30 total fits) -->
-<!-- cv_results <- bean_workflows |> -->
-<!--   workflow_map( -->
-<!--     fn = "fit_resamples", -->
-<!--     resamples = bean_folds, -->
-<!--     metrics = metric_set(accuracy, roc_auc), -->
-<!--     control = stack_ctrl -->
-<!--   ) -->
-<!-- # Rank all 6 models by 5-fold cross-validated Accuracy and ROC AUC -->
-<!-- rank_results(cv_results, rank_metric = "accuracy", select_best = TRUE) |> -->
-<!--   select(wflow_id, .metric, mean, std_err) -->
-<!-- # Plot CV benchmark comparison -->
-<!-- autoplot(cv_results, metric = "accuracy") + -->
-<!--   labs( -->
-<!--     title = "5-Fold Cross-Validation Performance on Dry Bean Grading", -->
-<!--     subtitle = "Comparing 6 classifiers across 16 computer-vision shape traits" -->
-<!--   ) + -->
-<!--   theme_minimal(base_size = 13) -->
-<!-- # ========================================================= -->
-<!-- # PART C: BUILD & EVALUATE STACKED ENSEMBLE META-MODEL -->
-<!-- # ========================================================= -->
-<!-- # Combine out-of-fold predictions from top diverse learners (SVM + Random Forest + XGBoost) -->
-<!-- bean_stack <- stacks() |> -->
-<!--   add_candidates(cv_results, name = "norm_SVM_RBF") |> -->
-<!--   add_candidates(cv_results, name = "norm_Random_Forest") |> -->
-<!--   add_candidates(cv_results, name = "norm_XGBoost") |> -->
-<!--   blend_predictions() |>   # Fits a penalized meta-learner to assign optimal weights -->
-<!--   fit_members()            # Retrains selected base models on full training data -->
-<!-- # Inspect the learned meta-learner weights assigned to each base model -->
-<!-- autoplot(bean_stack, type = "weights") + -->
-<!--   labs(title = "Stacked Ensemble Meta-Learner Weights") + -->
-<!--   theme_minimal(base_size = 13) -->
-<!-- # Predict on the unseen 20% hold-out test set -->
-<!-- ensemble_preds <- predict(bean_stack, new_data = bean_test) |> -->
-<!--   bind_cols(bean_test |> select(Class)) -->
-<!-- # Final Hold-Out Test Accuracy & Confusion Matrix -->
-<!-- accuracy(ensemble_preds, truth = Class, estimate = .pred_class) -->
-<!-- conf_mat(ensemble_preds, truth = Class, estimate = .pred_class) -->
-<!-- ``` -->
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Install and load required packages</span></span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(c(</span></span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   "tidymodels", "discrim", "naivebayes", "kknn",</span></span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   "kernlab", "ranger", "xgboost", "stacks", "readxl"</span></span>
+<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ))</span></span>
+<span id="cb71-6"><a href="#cb71-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb71-7"><a href="#cb71-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(discrim)</span>
+<span id="cb71-8"><a href="#cb71-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stacks)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'stacks' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Registered S3 method overwritten by 'butcher':
+  method                 from    
+  as.character.dev_topic generics</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(naivebayes)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'naivebayes' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>naivebayes 1.0.0 loaded</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>For more information please visit: </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>https://majkamichal.github.io/naivebayes/</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Load the dataset</span></span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>beans_raw <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"Dry_Bean_Dataset.xlsx"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Class =</span> <span class="fu">factor</span>(Class))</span>
+<span id="cb79-5"><a href="#cb79-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-6"><a href="#cb79-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(beans_raw)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 17
+   Area Perimeter MajorAxisLength MinorAxisLength AspectRation Eccentricity
+  &lt;dbl&gt;     &lt;dbl&gt;           &lt;dbl&gt;           &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
+1 28395      610.            208.            174.         1.20        0.550
+2 28734      638.            201.            183.         1.10        0.412
+3 29380      624.            213.            176.         1.21        0.563
+4 30008      646.            211.            183.         1.15        0.499
+5 30140      620.            202.            190.         1.06        0.334
+6 30279      635.            213.            182.         1.17        0.520
+# ℹ 11 more variables: ConvexArea &lt;dbl&gt;, EquivDiameter &lt;dbl&gt;, Extent &lt;dbl&gt;,
+#   Solidity &lt;dbl&gt;, roundness &lt;dbl&gt;, Compactness &lt;dbl&gt;, ShapeFactor1 &lt;dbl&gt;,
+#   ShapeFactor2 &lt;dbl&gt;, ShapeFactor3 &lt;dbl&gt;, ShapeFactor4 &lt;dbl&gt;, Class &lt;fct&gt;</code></pre>
+</div>
+</div>
+<p>In the dataset, we have more than 13,611 rows. To process such huge data for multiple models with cross validation needs higher computing power. Therefore, ensure enough RAM space in the system.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">202</span>)</span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb81-3"><a href="#cb81-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Train / Test Split (80% Train, 20% Test) &amp; 5-Fold Stratified Cross-Validation</span></span>
+<span id="cb81-4"><a href="#cb81-4" aria-hidden="true" tabindex="-1"></a>bean_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(beans_raw, <span class="at">prop =</span> <span class="fl">0.80</span>, <span class="at">strata =</span> Class)</span>
+<span id="cb81-5"><a href="#cb81-5" aria-hidden="true" tabindex="-1"></a>bean_train <span class="ot">&lt;-</span> <span class="fu">training</span>(bean_split)</span>
+<span id="cb81-6"><a href="#cb81-6" aria-hidden="true" tabindex="-1"></a>bean_test  <span class="ot">&lt;-</span> <span class="fu">testing</span>(bean_split)</span>
+<span id="cb81-7"><a href="#cb81-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb81-8"><a href="#cb81-8" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">"Number of observations in train data: "</span>,<span class="fu">nrow</span>(bean_train))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Number of observations in train data:  10887"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">"Number of observations in test data: "</span>,<span class="fu">nrow</span>(bean_test))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Number of observations in test data:  2724"</code></pre>
+</div>
+</div>
+<p>Let’s set up cross validation. Cross validation basically, runs the machine learning process multiple times using a random sample selection process.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a>bean_folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(bean_train, <span class="at">v =</span> <span class="dv">5</span>, <span class="at">strata =</span> Class)</span>
+<span id="cb85-4"><a href="#cb85-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-5"><a href="#cb85-5" aria-hidden="true" tabindex="-1"></a>bean_folds</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#  5-fold cross-validation using stratification 
+# A tibble: 5 × 2
+  splits              id   
+  &lt;list&gt;              &lt;chr&gt;
+1 &lt;split [8708/2179]&gt; Fold1
+2 &lt;split [8710/2177]&gt; Fold2
+3 &lt;split [8710/2177]&gt; Fold3
+4 &lt;split [8710/2177]&gt; Fold4
+5 &lt;split [8710/2177]&gt; Fold5</code></pre>
+</div>
+</div>
+<p>Now data is ready, we can start building multiple machine learning models using tidymodels package:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Preprocessing Recipe (Standardize predictors for SVM &amp; kNN)</span></span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>bean_recipe <span class="ot">&lt;-</span> <span class="fu">recipe</span>(Class <span class="sc">~</span> ., <span class="at">data =</span> bean_train) <span class="sc">|&gt;</span></span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_zv</span>(<span class="fu">all_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="part-a-define-all-6-individual-model-specifications" class="level2" data-number="7.5">
+<h2 data-number="7.5" class="anchored" data-anchor-id="part-a-define-all-6-individual-model-specifications"><span class="header-section-number">7.5</span> PART A: DEFINE ALL 6 INDIVIDUAL MODEL SPECIFICATIONS</h2>
+<p>We build six different models - Naive Bayes, kNN, Decision Tree, Support Vector Machine, Random Forest and XGBoost. Each model captures the relationship between decision variable and predictors in different way. Each model gives prediction in different way and the predictions may differ with other models. Each model improves the prediction errors through five fold cross-validation.</p>
+<p>Once each model produces the predictions, we build a final model that uses the predictions of each model to build final predictions. There are various methods like average of the predictions, voting based predicitons, etc.</p>
+<p>Let’s start with building each model:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="do">### 1. Naive Bayes</span></span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a>nb_spec <span class="ot">&lt;-</span> <span class="fu">naive_Bayes</span>() <span class="sc">|&gt;</span></span>
+<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"naivebayes"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb88-4"><a href="#cb88-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>)</span>
+<span id="cb88-5"><a href="#cb88-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-6"><a href="#cb88-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. k-Nearest Neighbors (kNN)</span></span>
+<span id="cb88-7"><a href="#cb88-7" aria-hidden="true" tabindex="-1"></a>knn_spec <span class="ot">&lt;-</span> <span class="fu">nearest_neighbor</span>(<span class="at">neighbors =</span> <span class="dv">7</span>) <span class="sc">|&gt;</span></span>
+<span id="cb88-8"><a href="#cb88-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"kknn"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb88-9"><a href="#cb88-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>)</span>
+<span id="cb88-10"><a href="#cb88-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-11"><a href="#cb88-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Decision Tree</span></span>
+<span id="cb88-12"><a href="#cb88-12" aria-hidden="true" tabindex="-1"></a>dt_spec <span class="ot">&lt;-</span> <span class="fu">decision_tree</span>(<span class="at">cost_complexity =</span> <span class="fl">0.001</span>, <span class="at">tree_depth =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
+<span id="cb88-13"><a href="#cb88-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"rpart"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb88-14"><a href="#cb88-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>)</span>
+<span id="cb88-15"><a href="#cb88-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-16"><a href="#cb88-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Support Vector Machine (RBF Kernel)</span></span>
+<span id="cb88-17"><a href="#cb88-17" aria-hidden="true" tabindex="-1"></a>svm_spec <span class="ot">&lt;-</span> <span class="fu">svm_rbf</span>(<span class="at">cost =</span> <span class="dv">2</span>, <span class="at">rbf_sigma =</span> <span class="fl">0.05</span>) <span class="sc">|&gt;</span></span>
+<span id="cb88-18"><a href="#cb88-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"kernlab"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb88-19"><a href="#cb88-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>)</span>
+<span id="cb88-20"><a href="#cb88-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-21"><a href="#cb88-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Random Forest (Bagging Ensemble)</span></span>
+<span id="cb88-22"><a href="#cb88-22" aria-hidden="true" tabindex="-1"></a>rf_spec <span class="ot">&lt;-</span> <span class="fu">rand_forest</span>(<span class="at">trees =</span> <span class="dv">300</span>, <span class="at">mtry =</span> <span class="dv">4</span>) <span class="sc">|&gt;</span></span>
+<span id="cb88-23"><a href="#cb88-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"ranger"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb88-24"><a href="#cb88-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>)</span>
+<span id="cb88-25"><a href="#cb88-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-26"><a href="#cb88-26" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. XGBoost (Gradient Boosting Ensemble)</span></span>
+<span id="cb88-27"><a href="#cb88-27" aria-hidden="true" tabindex="-1"></a>xgb_spec <span class="ot">&lt;-</span> <span class="fu">boost_tree</span>(<span class="at">trees =</span> <span class="dv">300</span>, <span class="at">tree_depth =</span> <span class="dv">6</span>, <span class="at">learn_rate =</span> <span class="fl">0.05</span>) <span class="sc">|&gt;</span></span>
+<span id="cb88-28"><a href="#cb88-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"xgboost"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb88-29"><a href="#cb88-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="part-b-evaluate-all-models-with-5-fold-cross-validation" class="level2" data-number="7.6">
+<h2 data-number="7.6" class="anchored" data-anchor-id="part-b-evaluate-all-models-with-5-fold-cross-validation"><span class="header-section-number">7.6</span> PART B: EVALUATE ALL MODELS WITH 5-FOLD CROSS-VALIDATION</h2>
+<p>After setting up the recipes of each model, we set the workflow for 5 fold cross validation:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Bundle all 6 models into a single workflow_set</span></span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a>bean_workflows <span class="ot">&lt;-</span> <span class="fu">workflow_set</span>(</span>
+<span id="cb89-3"><a href="#cb89-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">preproc =</span> <span class="fu">list</span>(<span class="at">norm =</span> bean_recipe),</span>
+<span id="cb89-4"><a href="#cb89-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">models =</span> <span class="fu">list</span>(</span>
+<span id="cb89-5"><a href="#cb89-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">Naive_Bayes   =</span> nb_spec,</span>
+<span id="cb89-6"><a href="#cb89-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">KNN           =</span> knn_spec,</span>
+<span id="cb89-7"><a href="#cb89-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">Decision_Tree =</span> dt_spec,</span>
+<span id="cb89-8"><a href="#cb89-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">SVM_RBF       =</span> svm_spec,</span>
+<span id="cb89-9"><a href="#cb89-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">Random_Forest =</span> rf_spec,</span>
+<span id="cb89-10"><a href="#cb89-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">XGBoost       =</span> xgb_spec</span>
+<span id="cb89-11"><a href="#cb89-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb89-12"><a href="#cb89-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb89-13"><a href="#cb89-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-14"><a href="#cb89-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Configure control settings to save out-of-fold predictions for Ensemble Stacking</span></span>
+<span id="cb89-15"><a href="#cb89-15" aria-hidden="true" tabindex="-1"></a>stack_ctrl <span class="ot">&lt;-</span> <span class="fu">control_resamples</span>(</span>
+<span id="cb89-16"><a href="#cb89-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">save_pred =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb89-17"><a href="#cb89-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">save_workflow =</span> <span class="cn">TRUE</span></span>
+<span id="cb89-18"><a href="#cb89-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb89-19"><a href="#cb89-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-20"><a href="#cb89-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit all 6 models across all 5 CV folds (30 total fits)</span></span>
+<span id="cb89-21"><a href="#cb89-21" aria-hidden="true" tabindex="-1"></a>cv_results <span class="ot">&lt;-</span> bean_workflows <span class="sc">|&gt;</span></span>
+<span id="cb89-22"><a href="#cb89-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">workflow_map</span>(</span>
+<span id="cb89-23"><a href="#cb89-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">fn =</span> <span class="st">"fit_resamples"</span>,</span>
+<span id="cb89-24"><a href="#cb89-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">resamples =</span> bean_folds,</span>
+<span id="cb89-25"><a href="#cb89-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">metrics =</span> <span class="fu">metric_set</span>(accuracy, roc_auc),</span>
+<span id="cb89-26"><a href="#cb89-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> stack_ctrl</span>
+<span id="cb89-27"><a href="#cb89-27" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>→ A | warning: package 'kknn' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>There were issues with some computations   A: x1
+There were issues with some computations   A: x1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>→ A | warning: Passed invalid argument 'info' - entries on it should be passed as direct arguments. This warning will become an error in a future version.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>→ B | warning: Passed invalid function arguments: nthread, num_class. These should be passed as a list to argument 'params'. Conversion from argument to 'params' entry will be done automatically, but this behavior will become an error in a future version.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>→ C | warning: Parameter 'watchlist' has been renamed to 'evals'. This warning will become an error in a future version.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>→ D | warning: Argument 'objective' is only for custom objectives. For built-in objectives, pass the objective under 'params'. This warning will become an error in a future version.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>There were issues with some computations   A: x1   B: x1   C: x1   D: x1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>There were issues with some computations   A: x2   B: x2   C: x2   D: x2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>There were issues with some computations   A: x3   B: x3   C: x3   D: x3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>There were issues with some computations   A: x4   B: x4   C: x4   D: x4</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>There were issues with some computations   A: x5   B: x5   C: x5   D: x5
+There were issues with some computations   A: x5   B: x5   C: x5   D: x5</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb103"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Rank all 6 models by 5-fold cross-validated Accuracy and ROC AUC</span></span>
+<span id="cb103-2"><a href="#cb103-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rank_results</span>(cv_results, <span class="at">rank_metric =</span> <span class="st">"accuracy"</span>, <span class="at">select_best =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb103-3"><a href="#cb103-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(wflow_id, .metric, mean, std_err)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 12 × 4
+   wflow_id           .metric   mean  std_err
+   &lt;chr&gt;              &lt;chr&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+ 1 norm_SVM_RBF       accuracy 0.931 0.00394 
+ 2 norm_SVM_RBF       roc_auc  0.947 0.00258 
+ 3 norm_XGBoost       accuracy 0.929 0.00441 
+ 4 norm_XGBoost       roc_auc  0.996 0.000445
+ 5 norm_Random_Forest accuracy 0.925 0.00486 
+ 6 norm_Random_Forest roc_auc  0.995 0.000651
+ 7 norm_KNN           accuracy 0.922 0.00227 
+ 8 norm_KNN           roc_auc  0.988 0.00105 
+ 9 norm_Decision_Tree accuracy 0.909 0.00406 
+10 norm_Decision_Tree roc_auc  0.986 0.00138 
+11 norm_Naive_Bayes   accuracy 0.899 0.00503 
+12 norm_Naive_Bayes   roc_auc  0.992 0.000773</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb105"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot CV benchmark comparison</span></span>
+<span id="cb105-2"><a href="#cb105-2" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(cv_results, <span class="at">metric =</span> <span class="st">"accuracy"</span>) <span class="sc">+</span></span>
+<span id="cb105-3"><a href="#cb105-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb105-4"><a href="#cb105-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"5-Fold Cross-Validation Performance on Dry Bean Grading"</span>,</span>
+<span id="cb105-5"><a href="#cb105-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Comparing 6 classifiers across 16 computer-vision shape traits"</span></span>
+<span id="cb105-6"><a href="#cb105-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb105-7"><a href="#cb105-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-II-unit-2_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In the chart, we can see the accuracy of each model. The model <code>naivebayes</code> has the lowest mean accuracy and the model <code>boost_tree</code> has the highest accuracy. Now, we build an ensemble model and see if accuracy improves.</p>
+</section>
+<section id="part-c-build-evaluate-stacked-ensemble-meta-model" class="level2" data-number="7.7">
+<h2 data-number="7.7" class="anchored" data-anchor-id="part-c-build-evaluate-stacked-ensemble-meta-model"><span class="header-section-number">7.7</span> PART C: BUILD &amp; EVALUATE STACKED ENSEMBLE META-MODEL</h2>
+<p>We select three models - SVM, Random Forest and XGBoost to build stacking emsemble model:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a>svm_res <span class="ot">&lt;-</span> <span class="fu">extract_workflow_set_result</span>(cv_results, <span class="at">id =</span> <span class="st">"norm_SVM_RBF"</span>)</span>
+<span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a>rf_res  <span class="ot">&lt;-</span> <span class="fu">extract_workflow_set_result</span>(cv_results, <span class="at">id =</span> <span class="st">"norm_Random_Forest"</span>)</span>
+<span id="cb106-3"><a href="#cb106-3" aria-hidden="true" tabindex="-1"></a>xgb_res <span class="ot">&lt;-</span> <span class="fu">extract_workflow_set_result</span>(cv_results, <span class="at">id =</span> <span class="st">"norm_XGBoost"</span>)</span>
+<span id="cb106-4"><a href="#cb106-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb106-5"><a href="#cb106-5" aria-hidden="true" tabindex="-1"></a>bean_stack <span class="ot">&lt;-</span> <span class="fu">stacks</span>() <span class="sc">|&gt;</span></span>
+<span id="cb106-6"><a href="#cb106-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_candidates</span>(svm_res, <span class="at">name =</span> <span class="st">"svm"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb106-7"><a href="#cb106-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_candidates</span>(rf_res,  <span class="at">name =</span> <span class="st">"rf"</span>)  <span class="sc">|&gt;</span></span>
+<span id="cb106-8"><a href="#cb106-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_candidates</span>(xgb_res, <span class="at">name =</span> <span class="st">"xgb"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb106-9"><a href="#cb106-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">blend_predictions</span>() <span class="sc">|&gt;</span></span>
+<span id="cb106-10"><a href="#cb106-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit_members</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: The inputted `candidates` argument `xgb` generated notes during
+tuning/resampling. Model stacking may fail due to these issues; see
+`collect_notes()` (`?tune::collect_notes()`) if so.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in throw_err_or_depr_msg("Passed invalid argument 'info' - entries on
+it should be passed as direct arguments."): Passed invalid argument 'info' -
+entries on it should be passed as direct arguments. This warning will become an
+error in a future version.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in check.deprecation(deprecated_train_params, match.call(), ...):
+Passed invalid function arguments: nthread, num_class. These should be passed
+as a list to argument 'params'. Conversion from argument to 'params' entry will
+be done automatically, but this behavior will become an error in a future
+version.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in throw_err_or_depr_msg("Parameter '", match_old, "' has been renamed
+to '", : Parameter 'watchlist' has been renamed to 'evals'. This warning will
+become an error in a future version.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in check.custom.obj(params, objective): Argument 'objective' is only
+for custom objectives. For built-in objectives, pass the objective under
+'params'. This warning will become an error in a future version.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect the learned meta-learner weights assigned to each base model</span></span>
+<span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(bean_stack, <span class="at">type =</span> <span class="st">"weights"</span>) <span class="sc">+</span></span>
+<span id="cb112-3"><a href="#cb112-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Stacked Ensemble Meta-Learner Weights"</span>) <span class="sc">+</span></span>
+<span id="cb112-4"><a href="#cb112-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-II-unit-2_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>What the plot shows:</strong> the weight the meta-learner gives each base-model member, shown separately for each of the 7 bean classes. Longer bars mean that member’s predicted probability counts for more in deciding that class.</p>
+<ul>
+<li><p><strong>Colours:</strong> blue is SVM (<code>svm_rbf</code>), green is random forest (<code>rand_forest</code>), and red is XGBoost (<code>boost_tree</code>).</p></li>
+<li><p><strong>SVM dominates:</strong> the largest weights, roughly 10 to 15, are on SVM members. This is clearest in BOMBAY, DERMASON and SIRA, so the RBF-kernel SVM separates these classes best.</p></li>
+<li><p><strong>Tree models play a supporting role:</strong> random forest and XGBoost get smaller weights, mostly in classes that overlap more.</p></li>
+<li><p><strong>Mixed classes:</strong> CALI and HOROZ draw on all three model types, and SEKER leans on SVM and random forest.</p></li>
+<li><p><strong>BARBUNYA:</strong> it shows almost no weight, with only a tiny random forest bar. The panel is cut off at the left edge, so some bars may be hidden. Check this before concluding that little was needed for this class.</p></li>
+<li><p><strong>Sparsity:</strong> many members have no weight at all. This comes from the penalty in <code>blend_predictions()</code>, which keeps a few useful members and drops redundant ones.</p></li>
+<li><p><strong>Overall:</strong> the stack is built mainly on the SVM, with random forest and XGBoost added where the SVM alone struggles.</p></li>
+</ul>
+<p>Now, let’s check the prediction accuracy of the ensemble model:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb113"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict on the unseen 20% hold-out test set</span></span>
+<span id="cb113-2"><a href="#cb113-2" aria-hidden="true" tabindex="-1"></a>ensemble_preds <span class="ot">&lt;-</span> <span class="fu">predict</span>(bean_stack, <span class="at">new_data =</span> bean_test) <span class="sc">|&gt;</span></span>
+<span id="cb113-3"><a href="#cb113-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(bean_test <span class="sc">|&gt;</span> <span class="fu">select</span>(Class))</span>
+<span id="cb113-4"><a href="#cb113-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb113-5"><a href="#cb113-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Final Hold-Out Test Accuracy &amp; Confusion Matrix</span></span>
+<span id="cb113-6"><a href="#cb113-6" aria-hidden="true" tabindex="-1"></a><span class="fu">accuracy</span>(ensemble_preds, <span class="at">truth =</span> Class, <span class="at">estimate =</span> .pred_class)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  .metric  .estimator .estimate
+  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+1 accuracy multiclass     0.926</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb115"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="fu">conf_mat</span>(ensemble_preds, <span class="at">truth =</span> Class, <span class="at">estimate =</span> .pred_class)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          Truth
+Prediction BARBUNYA BOMBAY CALI DERMASON HOROZ SEKER SIRA
+  BARBUNYA      236      0    8        0     2     6    4
+  BOMBAY          0     95    0        0     0     0    0
+  CALI           10      0  315        0     7     0    4
+  DERMASON        0      0    0      664     0     8   49
+  HOROZ           0      0    9        0   376     0    6
+  SEKER           2      0    0        9     0   384    8
+  SIRA            4      0    0       46     9    11  452</code></pre>
+</div>
+</div>
 
 
 </section>
