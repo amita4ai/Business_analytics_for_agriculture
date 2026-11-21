@@ -769,7 +769,192 @@ conf_mat(ensemble_preds, truth = Class, estimate = .pred_class)
 ```
 
 
+## Unsupervised machine learning—basic framework, concept of clustering, k-means, c-means, hierarchical clustering
+
+Unsupervised machine learning is a machine learning technique used for segmenting the data. In contrast to supervised machine learning, there is no decision variable and prediction done in unsupervised machine learning model.
+
+We use the data on diet pattern on 130 countries and try to cluster them in some groups. We want to cluster the countries based on `co2_emission` variable so that the Internal Carbon Emission Control strategy can be defined as per country position. 
+
+```{r}
+
+# ------------------------------------------------------------
+# Unsupervised learning with food diet and countries
+#   Part A: diet patterns of 130 countries  (k-means + PCA)
+
+# install.packages(c('tidyverse', 'cluster', 'factoextra'))
+library(tidyverse)
+library(cluster)
+library(factoextra)
+
+options(timeout = 600)
+set.seed(2026)
+
+tt <- 'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/'
+food   <- read_csv(paste0(tt, '2020/2020-02-18/food_consumption.csv'))
+
+head(food)
+
+```
+
+We can see that in the dataset, there are four variables - country, food_category, consumption and co2_emission. First, let's do some exploratory data analysis:
+
+```{r}
+
+# PART A: Diet patterns across countries
+diet <- food |>
+  select(country, food_category, co2_emmission) |>
+  pivot_wider(names_from = food_category, values_from = co2_emmission) |>
+  as.data.frame() |>
+  column_to_rownames('country')
+
+M <- scale(diet)                                   # standardise all 11 foods
+
+```
+
+Now, we check how many potential clusters are there in the dataset:
+
+```{r}
+
+# How many clusters?
+fviz_nbclust(M, kmeans, method = 'wss',        k.max = 8, nstart = 25)
+
+fviz_nbclust(M, kmeans, method = 'silhouette', k.max = 8, nstart = 25)
+
+```
+
+We can see that there are potentially two clusters in the data as per the plots. Two cluster is a small number of clusters. We decide to guess four clusters in the data. We use kmeans clustering algorithm to build clusters:
+
+```{r}
+
+# Fit k-means and profile the clusters
+km <- kmeans(M, centers = 4, nstart = 25)
+
+km
+
+```
+
+Now, we label each row with the cluster it belongs to as per the `km` model:
+
+```{r}
+
+split(rownames(diet), km$cluster)                  # countries in each cluster
+
+diet |>
+  mutate(cluster = km$cluster) |>
+  group_by(cluster) |>
+  summarise(n = n(), across(everything(), ~ round(mean(.x), 1)))
+
+```
+
+Let's check clusters visually:
+
+```{r}
+
+# PCA to see the structure in 2D
+pca <- prcomp(M)
+
+summary(pca)$importance[, 1:4]
+
+fviz_pca_biplot(pca, col.ind = factor(km$cluster), repel = TRUE)
+
+```
 
 
+Let's interpret the biplot. The biplot shows the 130 countries as points, coloured by the four k-means diet clusters. The arrows are the 11 food categories. A country sits in the direction of the foods it consumes a lot of, and arrows that point the same way tend to be eaten together.
 
+**What the axes mean**
+
+- **Dim1 (32.9%):** it separates animal-heavy diets on the right (milk and cheese, beef, pork, eggs) from staple-based, low-meat diets on the left (rice, wheat, and some soybeans and nuts). It behaves like a dietary affluence axis.
+
+- **Dim2 (14.6%):** the downward arrows are rice, fish, soybeans and nuts, which is an Asian-style pattern. The upward side is more wheat-based, which fits Europe and North Africa.
+
+- Together the two axes capture only about 47.5% of the variation, so the 2D picture hides more than half of the story.
+
+**What the clusters look like** (cluster numbers are from your run, and many labels overlap, so my reading is approximate)
+
+- **Cluster 3 (teal squares, left):** low-income, staple-based diets with little meat. Examples include Ethiopia, Mozambique, Rwanda, Togo, Nepal and Madagascar, plus Indonesia and the Philippines.
+
+- **Cluster 4 (purple crosses, bottom left and bottom):** East and Southeast Asian diets built on rice, fish and soy: Vietnam, Cambodia, Myanmar, Japan, South Korea, Taiwan. The Maldives and Taiwan sit furthest out, which points to very high fish consumption.
+
+- **Cluster 2 (green triangles, right):** high-meat and dairy diets of wealthy countries, such as the USA, Denmark, Luxembourg and Argentina. Hong Kong lies far below the rest of this group because its diet mixes high pork and meat with rice and fish.
+
+- **Cluster 1 (red circles, centre and upper right):** an intermediate group, mostly European, Mediterranean and Middle Eastern countries, with some Latin American ones.
+
+**Things to be careful about**
+
+- Clusters 1 and 2, and clusters 1 and 3, overlap on the plot. The boundaries are soft, so a country near the edge could have landed in either group.
+
+- k-means used all 11 dimensions, so two countries that look close in this 2D view may be apart in the dimensions you cannot see.
+
+- Hong Kong, the Maldives and Taiwan are outliers that stretch the axes. They are real, unusual diets, not errors.
+
+
+```{r}
+fviz_pca_biplot(pca,
+                habillage = factor(km$cluster),
+                geom.ind = 'point',
+                label = 'var',
+                repel = TRUE,
+                addEllipses = TRUE, ellipse.level = 0.8,
+                legend.title = 'Diet cluster')
+```
+
+Now, let's check which cluster is contributing to the CO2 emission:
+
+```{r}
+
+# Climate footprint per cluster
+food |>
+  left_join(tibble(country = rownames(diet), cluster = km$cluster), by = 'country') |>
+  group_by(country, cluster) |>
+  summarise(co2 = sum(co2_emmission), .groups = 'drop') |>    # note the data's spelling
+  group_by(cluster) |>
+  summarise(mean_co2 = mean(co2))
+
+```
+
+
+We can check Highest per-person food footprint:
+
+```{r}
+
+top_countries <- food |>
+  group_by(country) |>
+  summarise(co2_per_person = sum(co2_emmission)) |>
+  arrange(desc(co2_per_person))
+
+head(top_countries, 10)
+
+```
+
+
+In the table, we find the top CO2 emmission countries. 
+
+```{r}
+
+top_countries |>
+  slice_max(co2_per_person, n = 15) |>
+  ggplot(aes(co2_per_person, reorder(country, co2_per_person))) +
+  geom_col(fill = 'tomato') +
+  labs(x = 'kg CO2 per person per year', y = NULL,
+       title = 'Top 15 countries by food-related CO2 per person')
+
+```
+
+So, which food drives the top countries:
+
+```{r}
+
+food |>
+  filter(country %in% top_countries$country) |>
+  ggplot(aes(co2_emmission, reorder(country, co2_emmission, FUN = sum), fill = food_category)) +
+  
+  geom_col() +
+  
+  theme(legend.position = "bottom",
+        axis.text.y = element_text(size=5))
+
+```
+
+We can see from the plot that the Beef, Lamb and Goat contributes high proportion of CO2 emmission. Argentina tops the CO2 emissions. India is at the 11th position due to the major consumption of rice, milk, etc. 
 

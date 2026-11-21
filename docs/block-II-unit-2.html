@@ -279,6 +279,7 @@ window.Quarto = {
   <li><a href="#part-a-define-all-6-individual-model-specifications" id="toc-part-a-define-all-6-individual-model-specifications" class="nav-link" data-scroll-target="#part-a-define-all-6-individual-model-specifications"><span class="header-section-number">7.5</span> PART A: DEFINE ALL 6 INDIVIDUAL MODEL SPECIFICATIONS</a></li>
   <li><a href="#part-b-evaluate-all-models-with-5-fold-cross-validation" id="toc-part-b-evaluate-all-models-with-5-fold-cross-validation" class="nav-link" data-scroll-target="#part-b-evaluate-all-models-with-5-fold-cross-validation"><span class="header-section-number">7.6</span> PART B: EVALUATE ALL MODELS WITH 5-FOLD CROSS-VALIDATION</a></li>
   <li><a href="#part-c-build-evaluate-stacked-ensemble-meta-model" id="toc-part-c-build-evaluate-stacked-ensemble-meta-model" class="nav-link" data-scroll-target="#part-c-build-evaluate-stacked-ensemble-meta-model"><span class="header-section-number">7.7</span> PART C: BUILD &amp; EVALUATE STACKED ENSEMBLE META-MODEL</a></li>
+  <li><a href="#unsupervised-machine-learningbasic-framework-concept-of-clustering-k-means-c-means-hierarchical-clustering" id="toc-unsupervised-machine-learningbasic-framework-concept-of-clustering-k-means-c-means-hierarchical-clustering" class="nav-link" data-scroll-target="#unsupervised-machine-learningbasic-framework-concept-of-clustering-k-means-c-means-hierarchical-clustering"><span class="header-section-number">7.8</span> Unsupervised machine learning—basic framework, concept of clustering, k-means, c-means, hierarchical clustering</a></li>
   </ul>
 </nav>
     </div>
@@ -1405,6 +1406,443 @@ Prediction BARBUNYA BOMBAY CALI DERMASON HOROZ SEKER SIRA
   SIRA            4      0    0       46     9    11  452</code></pre>
 </div>
 </div>
+</section>
+<section id="unsupervised-machine-learningbasic-framework-concept-of-clustering-k-means-c-means-hierarchical-clustering" class="level2" data-number="7.8">
+<h2 data-number="7.8" class="anchored" data-anchor-id="unsupervised-machine-learningbasic-framework-concept-of-clustering-k-means-c-means-hierarchical-clustering"><span class="header-section-number">7.8</span> Unsupervised machine learning—basic framework, concept of clustering, k-means, c-means, hierarchical clustering</h2>
+<p>Unsupervised machine learning is a machine learning technique used for segmenting the data. In contrast to supervised machine learning, there is no decision variable and prediction done in unsupervised machine learning model.</p>
+<p>We use the data on diet pattern on 130 countries and try to cluster them in some groups. We want to cluster the countries based on <code>co2_emission</code> variable so that the Internal Carbon Emission Control strategy can be defined as per country position.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------------------</span></span>
+<span id="cb117-2"><a href="#cb117-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Unsupervised learning with food diet and countries</span></span>
+<span id="cb117-3"><a href="#cb117-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   Part A: diet patterns of 130 countries  (k-means + PCA)</span></span>
+<span id="cb117-4"><a href="#cb117-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb117-5"><a href="#cb117-5" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(c('tidyverse', 'cluster', 'factoextra'))</span></span>
+<span id="cb117-6"><a href="#cb117-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'tidyverse' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'stringr' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'lubridate' was built under R version 4.4.2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ forcats   1.0.0     ✔ readr     2.1.5
+✔ lubridate 1.9.4     ✔ stringr   1.6.0
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ psych::%+%()        masks ggplot2::%+%()
+✖ psych::alpha()      masks ggplot2::alpha(), scales::alpha()
+✖ readr::col_factor() masks scales::col_factor()
+✖ purrr::discard()    masks scales::discard()
+✖ dplyr::filter()     masks stats::filter()
+✖ stringr::fixed()    masks recipes::fixed()
+✖ dplyr::lag()        masks stats::lag()
+✖ readr::spec()       masks yardstick::spec()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb122"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cluster)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'cluster' was built under R version 4.4.3</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb124"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(factoextra)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Welcome to factoextra!
+Want to learn more? See two factoextra-related books at https://www.datanovia.com/library/principal-component-methods</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb126"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">timeout =</span> <span class="dv">600</span>)</span>
+<span id="cb126-2"><a href="#cb126-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb126-3"><a href="#cb126-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb126-4"><a href="#cb126-4" aria-hidden="true" tabindex="-1"></a>tt <span class="ot">&lt;-</span> <span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/'</span></span>
+<span id="cb126-5"><a href="#cb126-5" aria-hidden="true" tabindex="-1"></a>food   <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">paste0</span>(tt, <span class="st">'2020/2020-02-18/food_consumption.csv'</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 1430 Columns: 4
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (2): country, food_category
+dbl (2): consumption, co2_emmission
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb128"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(food)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 4
+  country   food_category consumption co2_emmission
+  &lt;chr&gt;     &lt;chr&gt;               &lt;dbl&gt;         &lt;dbl&gt;
+1 Argentina Pork                10.5          37.2 
+2 Argentina Poultry             38.7          41.5 
+3 Argentina Beef                55.5        1712   
+4 Argentina Lamb &amp; Goat          1.56         54.6 
+5 Argentina Fish                 4.36          6.96
+6 Argentina Eggs                11.4          10.5 </code></pre>
+</div>
+</div>
+<p>We can see that in the dataset, there are four variables - country, food_category, consumption and co2_emission. First, let’s do some exploratory data analysis:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb130"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb130-1"><a href="#cb130-1" aria-hidden="true" tabindex="-1"></a><span class="co"># PART A: Diet patterns across countries</span></span>
+<span id="cb130-2"><a href="#cb130-2" aria-hidden="true" tabindex="-1"></a>diet <span class="ot">&lt;-</span> food <span class="sc">|&gt;</span></span>
+<span id="cb130-3"><a href="#cb130-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(country, food_category, co2_emmission) <span class="sc">|&gt;</span></span>
+<span id="cb130-4"><a href="#cb130-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> food_category, <span class="at">values_from =</span> co2_emmission) <span class="sc">|&gt;</span></span>
+<span id="cb130-5"><a href="#cb130-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
+<span id="cb130-6"><a href="#cb130-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(<span class="st">'country'</span>)</span>
+<span id="cb130-7"><a href="#cb130-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb130-8"><a href="#cb130-8" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="fu">scale</span>(diet)                                   <span class="co"># standardise all 11 foods</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Now, we check how many potential clusters are there in the dataset:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb131"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb131-1"><a href="#cb131-1" aria-hidden="true" tabindex="-1"></a><span class="co"># How many clusters?</span></span>
+<span id="cb131-2"><a href="#cb131-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_nbclust</span>(M, kmeans, <span class="at">method =</span> <span class="st">'wss'</span>,        <span class="at">k.max =</span> <span class="dv">8</span>, <span class="at">nstart =</span> <span class="dv">25</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-II-unit-2_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb132"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb132-1"><a href="#cb132-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_nbclust</span>(M, kmeans, <span class="at">method =</span> <span class="st">'silhouette'</span>, <span class="at">k.max =</span> <span class="dv">8</span>, <span class="at">nstart =</span> <span class="dv">25</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-II-unit-2_files/figure-html/unnamed-chunk-33-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can see that there are potentially two clusters in the data as per the plots. Two cluster is a small number of clusters. We decide to guess four clusters in the data. We use kmeans clustering algorithm to build clusters:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb133"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb133-1"><a href="#cb133-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit k-means and profile the clusters</span></span>
+<span id="cb133-2"><a href="#cb133-2" aria-hidden="true" tabindex="-1"></a>km <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(M, <span class="at">centers =</span> <span class="dv">4</span>, <span class="at">nstart =</span> <span class="dv">25</span>)</span>
+<span id="cb133-3"><a href="#cb133-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb133-4"><a href="#cb133-4" aria-hidden="true" tabindex="-1"></a>km</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>K-means clustering with 4 clusters of sizes 33, 44, 42, 11
+
+Cluster means:
+        Pork    Poultry       Beef Lamb &amp; Goat        Fish        Eggs
+1 -0.4770561  0.8244410  0.2151949   1.0410233  0.01201217 -0.07850992
+2  1.0383120  0.2402688  0.5907533  -0.2933346 -0.01493102  0.85878999
+3 -0.7863110 -0.8614758 -0.6468791  -0.3786972 -0.35325587 -0.99700900
+4  0.2801983 -0.1451269 -0.5386958  -0.5037969  1.37248270  0.60713143
+  Milk - inc. cheese Wheat and Wheat Products       Rice    Soybeans
+1         0.09604397                0.7253350 -0.2361264 -0.27463239
+2         0.90645874                0.5029048 -0.5935754 -0.24014648
+3        -0.79785666               -0.9011449  0.3629731 -0.05830221
+4        -0.86760510               -0.7468893  1.6967835  2.00709149
+  Nuts inc. Peanut Butter
+1              0.22527677
+2              0.08941835
+3             -0.34062174
+4              0.26705203
+
+Clustering vector:
+             Argentina              Australia                Albania 
+                     2                      1                      1 
+               Iceland            New Zealand                    USA 
+                     1                      1                      2 
+               Uruguay             Luxembourg                 Brazil 
+                     1                      2                      2 
+            Kazakhstan                 Sweden                Bermuda 
+                     1                      2                      2 
+               Denmark                Finland                Ireland 
+                     2                      2                      2 
+                Greece                 France                 Canada 
+                     1                      2                      2 
+                Norway   Hong Kong SAR. China       French Polynesia 
+                     2                      2                      1 
+                Israel            Switzerland            Netherlands 
+                     1                      2                      2 
+                Kuwait         United Kingdom                Austria 
+                     1                      2                      2 
+                  Oman                  Italy                Bahamas 
+                     1                      2                      1 
+              Portugal                  Malta                Armenia 
+                     2                      2                      2 
+              Slovenia                  Chile              Venezuela 
+                     2                      2                      1 
+               Belgium                Germany                 Russia 
+                     2                      2                      2 
+               Croatia                Belarus                  Spain 
+                     2                      2                      2 
+              Paraguay          New Caledonia           South Africa 
+                     2                      1                      1 
+              Barbados              Lithuania                 Turkey 
+                     1                      2                      1 
+               Estonia                 Mexico             Costa Rica 
+                     2                      2                      2 
+               Bolivia                Ecuador                 Panama 
+                     1                      3                      3 
+        Czech Republic                Romania               Colombia 
+                     2                      2                      3 
+              Maldives                 Cyprus                 Serbia 
+                     4                      2                      2 
+  United Arab Emirates                Algeria                Ukraine 
+                     1                      1                      2 
+              Pakistan              Swaziland                 Latvia 
+                     3                      3                      2 
+Bosnia and Herzegovina                   Fiji            South Korea 
+                     3                      1                      4 
+                Poland           Saudi Arabia               Botswana 
+                     2                      1                      3 
+             Macedonia                Hungary    Trinidad and Tobago 
+                     1                      2                      1 
+               Tunisia                  Egypt              Mauritius 
+                     1                      1                      1 
+              Bulgaria                Morocco               Slovakia 
+                     2                      1                      2 
+                 Niger                  Kenya                 Jordan 
+                     3                      3                      1 
+                 Japan                Georgia                Grenada 
+                     4                      1                      1 
+           El Salvador                   Cuba                  China 
+                     3                      4                      4 
+              Honduras            Taiwan. ROC                 Angola 
+                     3                      4                      3 
+               Jamaica                Namibia                 Belize 
+                     1                      3                      3 
+              Malaysia               Zimbabwe              Guatemala 
+                     4                      3                      3 
+                Uganda                  Nepal                   Iran 
+                     3                      3                      1 
+              Tanzania                Senegal                   Peru 
+                     3                      3                      3 
+             Nicaragua                Vietnam               Ethiopia 
+                     3                      4                      3 
+               Myanmar                  Congo                 Zambia 
+                     4                      3                      3 
+              Cameroon             Madagascar                 Malawi 
+                     3                      3                      3 
+                Guinea                Nigeria                 Rwanda 
+                     3                      3                      3 
+           Philippines                  Ghana                   Togo 
+                     3                      3                      3 
+                Gambia                  India               Thailand 
+                     3                      3                      4 
+            Mozambique               Cambodia           Sierra Leone 
+                     3                      4                      3 
+             Sri Lanka              Indonesia                Liberia 
+                     3                      3                      3 
+            Bangladesh 
+                     3 
+
+Within cluster sum of squares by cluster:
+[1] 280.5328 215.2718 164.3027 178.3748
+ (between_SS / total_SS =  40.9 %)
+
+Available components:
+
+[1] "cluster"      "centers"      "totss"        "withinss"     "tot.withinss"
+[6] "betweenss"    "size"         "iter"         "ifault"      </code></pre>
+</div>
+</div>
+<p>Now, we label each row with the cluster it belongs to as per the <code>km</code> model:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb135"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb135-1"><a href="#cb135-1" aria-hidden="true" tabindex="-1"></a><span class="fu">split</span>(<span class="fu">rownames</span>(diet), km<span class="sc">$</span>cluster)                  <span class="co"># countries in each cluster</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$`1`
+ [1] "Australia"            "Albania"              "Iceland"             
+ [4] "New Zealand"          "Uruguay"              "Kazakhstan"          
+ [7] "Greece"               "French Polynesia"     "Israel"              
+[10] "Kuwait"               "Oman"                 "Bahamas"             
+[13] "Venezuela"            "New Caledonia"        "South Africa"        
+[16] "Barbados"             "Turkey"               "Bolivia"             
+[19] "United Arab Emirates" "Algeria"              "Fiji"                
+[22] "Saudi Arabia"         "Macedonia"            "Trinidad and Tobago" 
+[25] "Tunisia"              "Egypt"                "Mauritius"           
+[28] "Morocco"              "Jordan"               "Georgia"             
+[31] "Grenada"              "Jamaica"              "Iran"                
+
+$`2`
+ [1] "Argentina"            "USA"                  "Luxembourg"          
+ [4] "Brazil"               "Sweden"               "Bermuda"             
+ [7] "Denmark"              "Finland"              "Ireland"             
+[10] "France"               "Canada"               "Norway"              
+[13] "Hong Kong SAR. China" "Switzerland"          "Netherlands"         
+[16] "United Kingdom"       "Austria"              "Italy"               
+[19] "Portugal"             "Malta"                "Armenia"             
+[22] "Slovenia"             "Chile"                "Belgium"             
+[25] "Germany"              "Russia"               "Croatia"             
+[28] "Belarus"              "Spain"                "Paraguay"            
+[31] "Lithuania"            "Estonia"              "Mexico"              
+[34] "Costa Rica"           "Czech Republic"       "Romania"             
+[37] "Cyprus"               "Serbia"               "Ukraine"             
+[40] "Latvia"               "Poland"               "Hungary"             
+[43] "Bulgaria"             "Slovakia"            
+
+$`3`
+ [1] "Ecuador"                "Panama"                 "Colombia"              
+ [4] "Pakistan"               "Swaziland"              "Bosnia and Herzegovina"
+ [7] "Botswana"               "Niger"                  "Kenya"                 
+[10] "El Salvador"            "Honduras"               "Angola"                
+[13] "Namibia"                "Belize"                 "Zimbabwe"              
+[16] "Guatemala"              "Uganda"                 "Nepal"                 
+[19] "Tanzania"               "Senegal"                "Peru"                  
+[22] "Nicaragua"              "Ethiopia"               "Congo"                 
+[25] "Zambia"                 "Cameroon"               "Madagascar"            
+[28] "Malawi"                 "Guinea"                 "Nigeria"               
+[31] "Rwanda"                 "Philippines"            "Ghana"                 
+[34] "Togo"                   "Gambia"                 "India"                 
+[37] "Mozambique"             "Sierra Leone"           "Sri Lanka"             
+[40] "Indonesia"              "Liberia"                "Bangladesh"            
+
+$`4`
+ [1] "Maldives"    "South Korea" "Japan"       "Cuba"        "China"      
+ [6] "Taiwan. ROC" "Malaysia"    "Vietnam"     "Myanmar"     "Thailand"   
+[11] "Cambodia"   </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb137"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb137-1"><a href="#cb137-1" aria-hidden="true" tabindex="-1"></a>diet <span class="sc">|&gt;</span></span>
+<span id="cb137-2"><a href="#cb137-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">cluster =</span> km<span class="sc">$</span>cluster) <span class="sc">|&gt;</span></span>
+<span id="cb137-3"><a href="#cb137-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(cluster) <span class="sc">|&gt;</span></span>
+<span id="cb137-4"><a href="#cb137-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>(), <span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span> <span class="fu">round</span>(<span class="fu">mean</span>(.x), <span class="dv">1</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 13
+  cluster     n  Pork Poultry  Beef `Lamb &amp; Goat`  Fish  Eggs
+    &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1       1    33  30.5    35.7  438.         225.   28     7.1
+2       2    44 115.     26.6  550.          53.4  27.1  11.5
+3       3    42  13.3     9.3  181.          42.4  16.9   2.9
+4       4    11  72.7    20.5  214.          26.4  69.3  10.3
+# ℹ 5 more variables: `Milk - inc. cheese` &lt;dbl&gt;,
+#   `Wheat and Wheat Products` &lt;dbl&gt;, Rice &lt;dbl&gt;, Soybeans &lt;dbl&gt;,
+#   `Nuts inc. Peanut Butter` &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>Let’s check clusters visually:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb139"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb139-1"><a href="#cb139-1" aria-hidden="true" tabindex="-1"></a><span class="co"># PCA to see the structure in 2D</span></span>
+<span id="cb139-2"><a href="#cb139-2" aria-hidden="true" tabindex="-1"></a>pca <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(M)</span>
+<span id="cb139-3"><a href="#cb139-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb139-4"><a href="#cb139-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(pca)<span class="sc">$</span>importance[, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                            PC1      PC2      PC3       PC4
+Standard deviation     1.901046 1.266653 1.162943 0.9819288
+Proportion of Variance 0.328540 0.145860 0.122950 0.0876500
+Cumulative Proportion  0.328540 0.474400 0.597350 0.6850000</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb141"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb141-1"><a href="#cb141-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_pca_biplot</span>(pca, <span class="at">col.ind =</span> <span class="fu">factor</span>(km<span class="sc">$</span>cluster), <span class="at">repel =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-II-unit-2_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Let’s interpret the biplot. The biplot shows the 130 countries as points, coloured by the four k-means diet clusters. The arrows are the 11 food categories. A country sits in the direction of the foods it consumes a lot of, and arrows that point the same way tend to be eaten together.</p>
+<p><strong>What the axes mean</strong></p>
+<ul>
+<li><p><strong>Dim1 (32.9%):</strong> it separates animal-heavy diets on the right (milk and cheese, beef, pork, eggs) from staple-based, low-meat diets on the left (rice, wheat, and some soybeans and nuts). It behaves like a dietary affluence axis.</p></li>
+<li><p><strong>Dim2 (14.6%):</strong> the downward arrows are rice, fish, soybeans and nuts, which is an Asian-style pattern. The upward side is more wheat-based, which fits Europe and North Africa.</p></li>
+<li><p>Together the two axes capture only about 47.5% of the variation, so the 2D picture hides more than half of the story.</p></li>
+</ul>
+<p><strong>What the clusters look like</strong> (cluster numbers are from your run, and many labels overlap, so my reading is approximate)</p>
+<ul>
+<li><p><strong>Cluster 3 (teal squares, left):</strong> low-income, staple-based diets with little meat. Examples include Ethiopia, Mozambique, Rwanda, Togo, Nepal and Madagascar, plus Indonesia and the Philippines.</p></li>
+<li><p><strong>Cluster 4 (purple crosses, bottom left and bottom):</strong> East and Southeast Asian diets built on rice, fish and soy: Vietnam, Cambodia, Myanmar, Japan, South Korea, Taiwan. The Maldives and Taiwan sit furthest out, which points to very high fish consumption.</p></li>
+<li><p><strong>Cluster 2 (green triangles, right):</strong> high-meat and dairy diets of wealthy countries, such as the USA, Denmark, Luxembourg and Argentina. Hong Kong lies far below the rest of this group because its diet mixes high pork and meat with rice and fish.</p></li>
+<li><p><strong>Cluster 1 (red circles, centre and upper right):</strong> an intermediate group, mostly European, Mediterranean and Middle Eastern countries, with some Latin American ones.</p></li>
+</ul>
+<p><strong>Things to be careful about</strong></p>
+<ul>
+<li><p>Clusters 1 and 2, and clusters 1 and 3, overlap on the plot. The boundaries are soft, so a country near the edge could have landed in either group.</p></li>
+<li><p>k-means used all 11 dimensions, so two countries that look close in this 2D view may be apart in the dimensions you cannot see.</p></li>
+<li><p>Hong Kong, the Maldives and Taiwan are outliers that stretch the axes. They are real, unusual diets, not errors.</p></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb142"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb142-1"><a href="#cb142-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_pca_biplot</span>(pca,</span>
+<span id="cb142-2"><a href="#cb142-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">habillage =</span> <span class="fu">factor</span>(km<span class="sc">$</span>cluster),</span>
+<span id="cb142-3"><a href="#cb142-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">geom.ind =</span> <span class="st">'point'</span>,</span>
+<span id="cb142-4"><a href="#cb142-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">label =</span> <span class="st">'var'</span>,</span>
+<span id="cb142-5"><a href="#cb142-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">repel =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb142-6"><a href="#cb142-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">addEllipses =</span> <span class="cn">TRUE</span>, <span class="at">ellipse.level =</span> <span class="fl">0.8</span>,</span>
+<span id="cb142-7"><a href="#cb142-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">legend.title =</span> <span class="st">'Diet cluster'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-II-unit-2_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Now, let’s check which cluster is contributing to the CO2 emission:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb143"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb143-1"><a href="#cb143-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Climate footprint per cluster</span></span>
+<span id="cb143-2"><a href="#cb143-2" aria-hidden="true" tabindex="-1"></a>food <span class="sc">|&gt;</span></span>
+<span id="cb143-3"><a href="#cb143-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(<span class="fu">tibble</span>(<span class="at">country =</span> <span class="fu">rownames</span>(diet), <span class="at">cluster =</span> km<span class="sc">$</span>cluster), <span class="at">by =</span> <span class="st">'country'</span>) <span class="sc">|&gt;</span></span>
+<span id="cb143-4"><a href="#cb143-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(country, cluster) <span class="sc">|&gt;</span></span>
+<span id="cb143-5"><a href="#cb143-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">co2 =</span> <span class="fu">sum</span>(co2_emmission), <span class="at">.groups =</span> <span class="st">'drop'</span>) <span class="sc">|&gt;</span>    <span class="co"># note the data's spelling</span></span>
+<span id="cb143-6"><a href="#cb143-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(cluster) <span class="sc">|&gt;</span></span>
+<span id="cb143-7"><a href="#cb143-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_co2 =</span> <span class="fu">mean</span>(co2))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 2
+  cluster mean_co2
+    &lt;int&gt;    &lt;dbl&gt;
+1       1    1011.
+2       2    1118.
+3       3     406.
+4       4     614.</code></pre>
+</div>
+</div>
+<p>We can check Highest per-person food footprint:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb145"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb145-1"><a href="#cb145-1" aria-hidden="true" tabindex="-1"></a>top_countries <span class="ot">&lt;-</span> food <span class="sc">|&gt;</span></span>
+<span id="cb145-2"><a href="#cb145-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(country) <span class="sc">|&gt;</span></span>
+<span id="cb145-3"><a href="#cb145-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">co2_per_person =</span> <span class="fu">sum</span>(co2_emmission)) <span class="sc">|&gt;</span></span>
+<span id="cb145-4"><a href="#cb145-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(co2_per_person))</span>
+<span id="cb145-5"><a href="#cb145-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb145-6"><a href="#cb145-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(top_countries, <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 2
+   country     co2_per_person
+   &lt;chr&gt;                &lt;dbl&gt;
+ 1 Argentina            2172.
+ 2 Australia            1939.
+ 3 Albania              1778.
+ 4 New Zealand          1751.
+ 5 Iceland              1731.
+ 6 USA                  1719.
+ 7 Uruguay              1635.
+ 8 Brazil               1617.
+ 9 Luxembourg           1598.
+10 Kazakhstan           1575.</code></pre>
+</div>
+</div>
+<p>In the table, we find the top CO2 emmission countries.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb147"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb147-1"><a href="#cb147-1" aria-hidden="true" tabindex="-1"></a>top_countries <span class="sc">|&gt;</span></span>
+<span id="cb147-2"><a href="#cb147-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_max</span>(co2_per_person, <span class="at">n =</span> <span class="dv">15</span>) <span class="sc">|&gt;</span></span>
+<span id="cb147-3"><a href="#cb147-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(co2_per_person, <span class="fu">reorder</span>(country, co2_per_person))) <span class="sc">+</span></span>
+<span id="cb147-4"><a href="#cb147-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">'tomato'</span>) <span class="sc">+</span></span>
+<span id="cb147-5"><a href="#cb147-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'kg CO2 per person per year'</span>, <span class="at">y =</span> <span class="cn">NULL</span>,</span>
+<span id="cb147-6"><a href="#cb147-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">'Top 15 countries by food-related CO2 per person'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-II-unit-2_files/figure-html/unnamed-chunk-40-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>So, which food drives the top countries:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb148"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb148-1"><a href="#cb148-1" aria-hidden="true" tabindex="-1"></a>food <span class="sc">|&gt;</span></span>
+<span id="cb148-2"><a href="#cb148-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(country <span class="sc">%in%</span> top_countries<span class="sc">$</span>country) <span class="sc">|&gt;</span></span>
+<span id="cb148-3"><a href="#cb148-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(co2_emmission, <span class="fu">reorder</span>(country, co2_emmission, <span class="at">FUN =</span> sum), <span class="at">fill =</span> food_category)) <span class="sc">+</span></span>
+<span id="cb148-4"><a href="#cb148-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb148-5"><a href="#cb148-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb148-6"><a href="#cb148-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb148-7"><a href="#cb148-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
+<span id="cb148-8"><a href="#cb148-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="block-II-unit-2_files/figure-html/unnamed-chunk-41-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can see from the plot that the Beef, Lamb and Goat contributes high proportion of CO2 emmission. Argentina tops the CO2 emissions. India is at the 11th position due to the major consumption of rice, milk, etc.</p>
 
 
 </section>
