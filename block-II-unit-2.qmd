@@ -958,3 +958,112 @@ food |>
 
 We can see from the plot that the Beef, Lamb and Goat contributes high proportion of CO2 emmission. Argentina tops the CO2 emissions. India is at the 11th position due to the major consumption of rice, milk, etc. 
 
+```{r}
+
+# install.packages(c('tidyverse', 'factoextra', 'e1071', 'ggrepel'))
+library(tidyverse)
+library(factoextra)
+library(e1071)
+library(ggrepel)
+
+options(timeout = 600)
+set.seed(2026)
+
+
+# ---------- 2. Fuzzy c-means ----------
+cm <- cmeans(M, centers = 4, m = 2, iter.max = 100)
+
+U <- cm$membership
+rownames(U) <- rownames(M)               # make sure country names are attached
+maxU <- apply(U, 1, max)
+
+length(cm$cluster)                       # must be 130
+head(round(U, 2))
+
+```
+
+
+```{r}
+
+# Plot 1: countries on the PCA map, faded = borderline diets
+
+pc <- as_tibble(pca$x[, 1:2]) |>
+  mutate(country   = rownames(M),
+         cluster   = factor(cm$cluster),
+         certainty = maxU)
+
+ggplot(pc, aes(PC1, PC2, colour = cluster, alpha = certainty)) +
+  geom_point(size = 3) +
+  geom_text_repel(data = filter(pc, certainty < 0.6), aes(label = country),
+                  size = 3, show.legend = FALSE) +
+  labs(title = 'Fuzzy c-means: faded points are borderline diets',
+       alpha = 'Max membership') +
+  theme_minimal(base_size = 13)
+
+```
+
+
+```{r}
+
+# Plot 2: how borderline countries split their membership
+border <- names(maxU[maxU < 0.6])
+length(border)                           # if 0, raise the threshold to 0.7
+
+if (length(border) > 0) {
+  U[border, , drop = FALSE] |>
+    as.data.frame() |>
+    rownames_to_column('country') |>
+    pivot_longer(-country, names_to = 'cluster', values_to = 'membership') |>
+    ggplot(aes(membership, country, fill = cluster)) +
+    geom_col() +
+    labs(title = 'How borderline countries split across clusters') +
+    theme_minimal(base_size = 13) +
+    theme(axis.text = element_text(size = 5))
+}
+
+```
+
+
+```{r}
+
+# ---------- 4. Hierarchical clustering ----------
+hc <- hclust(dist(M), method = 'ward.D2')
+
+fviz_dend(hc, k = 4, cex = 0.4, k_colors = 'jco', rect = TRUE,
+          main = 'Diet patterns: Ward clustering')
+
+```
+
+```{r}
+fviz_dend(hc, k = 4, cex = 0.4, type = 'circular', k_colors = 'jco')
+
+```
+
+```{r}
+heatmap(M, Rowv = as.dendrogram(hc), Colv = NA, scale = 'none',
+        cexRow = 0.4, margins = c(9, 4))
+
+```
+
+```{r}
+
+groups <- cutree(hc, k = 4)
+table(Hierarchical = groups, KMeans = km$cluster)
+```
+
+
+```{r}
+
+# 2. Membership profile of the borderline countries
+border <- names(maxU[maxU < 0.6])
+
+cm$membership[border, , drop = FALSE] |>
+  as.data.frame() |>
+  rownames_to_column('country') |>
+  pivot_longer(-country, names_to = 'cluster', values_to = 'membership') |>
+  ggplot(aes(membership, country, fill = cluster)) +
+  geom_col() +
+  labs(title = 'How borderline countries split across clusters')
+
+```
+
